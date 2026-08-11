@@ -4,6 +4,7 @@ import { API_URL, getMediaUrl } from '../config';
 
 const ProfilePage = ({ partner, setActiveTab }) => {
   const [currentPartner, setCurrentPartner] = useState(partner);
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [activeTabMenu, setActiveTabMenu] = useState('images');
   const [activeMediaTab, setActiveMediaTab] = useState('self');
   const [details, setDetails] = useState({ taskCount: 0, usersCount: 0, membersCount: 0, media: [] });
@@ -18,6 +19,22 @@ const ProfilePage = ({ partner, setActiveTab }) => {
     state: partner?.state || '',
     address: partner?.address || ''
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem('userToken');
+    if (token) {
+      fetch(`${API_URL}/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data && data.id) {
+            setCurrentUserId(data.id);
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
 
   useEffect(() => {
     if (!partner) return;
@@ -38,6 +55,8 @@ const ProfilePage = ({ partner, setActiveTab }) => {
   }, [partner]);
 
   if (!partner) return null;
+
+  const isOwner = currentUserId && partner && Number(currentUserId) === Number(partner.id);
 
   const targetPartner = currentPartner || partner;
   const displayName = targetPartner.organization_name || targetPartner.name;
@@ -278,30 +297,32 @@ const ProfilePage = ({ partner, setActiveTab }) => {
               background: 'linear-gradient(to top, rgba(0,0,0,0.35), transparent)'
             }}></div>
 
-            {/* Edit Cover Photo Badge */}
-            <label style={{
-              position: 'absolute',
-              bottom: '16px',
-              right: '24px',
-              backgroundColor: 'rgba(0, 0, 0, 0.65)',
-              color: '#ffffff',
-              padding: '8px 18px',
-              borderRadius: '30px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '13px',
-              fontWeight: 600,
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              backdropFilter: 'blur(4px)',
-              transition: 'all 0.2s ease',
-              zIndex: 10
-            }} title="Upload Cover Image">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>photo_camera</span>
-              <span>Edit Cover Photo</span>
-              <input type="file" accept="image/*" onChange={handleCoverUpload} style={{ display: 'none' }} />
-            </label>
+            {/* Edit Cover Photo Badge - ONLY SHOW IF LOGGED IN USER IS OWNER */}
+            {isOwner && (
+              <label style={{
+                position: 'absolute',
+                bottom: '16px',
+                right: '24px',
+                backgroundColor: 'rgba(0, 0, 0, 0.65)',
+                color: '#ffffff',
+                padding: '8px 18px',
+                borderRadius: '30px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '13px',
+                fontWeight: 600,
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                backdropFilter: 'blur(4px)',
+                transition: 'all 0.2s ease',
+                zIndex: 10
+              }} title="Upload Cover Image">
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>photo_camera</span>
+                <span>Edit Cover Photo</span>
+                <input type="file" accept="image/*" onChange={handleCoverUpload} style={{ display: 'none' }} />
+              </label>
+            )}
           </div>
 
           {/* Profile Info Container */}
@@ -348,42 +369,47 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                   </div>
                 )}
 
-                <label style={{
-                  position: 'absolute', bottom: '6px', right: '6px',
-                  background: '#FF9933', color: '#FFF', width: '34px', height: '34px',
-                  borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', zIndex: 12,
-                  border: '2px solid #FFF'
-                }} title="Change Profile Picture">
-                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>camera_alt</span>
-                  <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ display: 'none' }} />
-                </label>
+                {/* Profile Photo Camera Badge - ONLY SHOW IF LOGGED IN USER IS OWNER */}
+                {isOwner && (
+                  <label style={{
+                    position: 'absolute', bottom: '6px', right: '6px',
+                    background: '#FF9933', color: '#FFF', width: '34px', height: '34px',
+                    borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', zIndex: 12,
+                    border: '2px solid #FFF'
+                  }} title="Change Profile Picture">
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>camera_alt</span>
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ display: 'none' }} />
+                  </label>
+                )}
               </div>
 
-              {/* Edit Profile Action Button */}
-              <div style={{ zIndex: 10 }}>
-                <button 
-                  onClick={() => setShowEditModal(true)}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 22px',
-                    borderRadius: '30px',
-                    background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
-                    color: '#FFFFFF',
-                    fontWeight: 700,
-                    fontSize: '14px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 14px rgba(255, 153, 51, 0.3)',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>edit</span>
-                  <span>Edit Profile</span>
-                </button>
-              </div>
+              {/* Edit Profile Action Button - ONLY SHOW IF LOGGED IN USER IS OWNER */}
+              {isOwner && (
+                <div style={{ zIndex: 10 }}>
+                  <button 
+                    onClick={() => setShowEditModal(true)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 22px',
+                      borderRadius: '30px',
+                      background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      color: '#FFFFFF',
+                      fontWeight: 700,
+                      fontSize: '14px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 14px rgba(255, 153, 51, 0.3)',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>edit</span>
+                    <span>Edit Profile</span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Text Details */}
