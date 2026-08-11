@@ -21,7 +21,7 @@ jobs:
       - name: 📦 Install Frontend Dependencies & Build React App
         run: |
           cd Front
-          npm ci
+          npm install
           npm run build
 
       - name: 🚀 Deploy Frontend (React Build) to swarna.hopeharbor.co.in
@@ -31,11 +31,9 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          protocol: ftp
-          security: loose
           local-dir: ./Front/dist/
-          server-dir: ./swarna.hopeharbor.co.in/
-          state-name: .ftp-deploy-sync-frontend.json
+          server-dir: swarna.hopeharbor.co.in/
+          security: loose
 
       - name: 🚀 Deploy Backend (Node.js API) to swarnaback.hopeharbor.co.in
         uses: SamKirland/FTP-Deploy-Action@v4.3.5
@@ -44,12 +42,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          protocol: ftp
-          security: loose
           local-dir: ./Back/
-          server-dir: ./swarnaback.hopeharbor.co.in/
+          server-dir: swarnaback.hopeharbor.co.in/
+          security: loose
           exclude: |
             **/node_modules/**
             **/.git/**
             **/.env
-          state-name: .ftp-deploy-sync-backend.json
