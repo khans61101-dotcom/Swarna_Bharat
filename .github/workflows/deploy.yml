@@ -31,8 +31,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
+          protocol: ftp
+          security: loose
           local-dir: ./Front/dist/
-          server-dir: ${{ secrets.FTP_FRONTEND_DIR || '/swarna.hopeharbor.co.in/' }}
+          server-dir: ./swarna.hopeharbor.co.in/
           state-name: .ftp-deploy-sync-frontend.json
 
       - name: 🚀 Deploy Backend (Node.js API) to swarnaback.hopeharbor.co.in
@@ -42,8 +44,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
+          protocol: ftp
+          security: loose
           local-dir: ./Back/
-          server-dir: ${{ secrets.FTP_BACKEND_DIR || '/swarnaback.hopeharbor.co.in/' }}
+          server-dir: ./swarnaback.hopeharbor.co.in/
           exclude: |
             **/node_modules/**
             **/.git/**
