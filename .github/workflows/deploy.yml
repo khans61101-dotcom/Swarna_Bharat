@@ -24,7 +24,7 @@ jobs:
           npm ci
           npm run build
 
-      - name: 🚀 Deploy Frontend (React Build) to cPanel via FTP
+      - name: 🚀 Deploy Frontend (React Build) to swarna.hopeharbor.co.in
         uses: SamKirland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -32,10 +32,10 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           local-dir: ./Front/dist/
-          server-dir: ${{ secrets.FTP_FRONTEND_DIR || '/public_html/' }}
+          server-dir: ${{ secrets.FTP_FRONTEND_DIR || '/swarna.hopeharbor.co.in/' }}
           state-name: .ftp-deploy-sync-frontend.json
 
-      - name: 🚀 Deploy Backend (Node.js API) to cPanel via FTP
+      - name: 🚀 Deploy Backend (Node.js API) to swarnaback.hopeharbor.co.in
         uses: SamKirland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -43,7 +43,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           local-dir: ./Back/
-          server-dir: ${{ secrets.FTP_BACKEND_DIR || '/backend/' }}
+          server-dir: ${{ secrets.FTP_BACKEND_DIR || '/swarnaback.hopeharbor.co.in/' }}
           exclude: |
             **/node_modules/**
             **/.git/**
