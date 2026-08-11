@@ -29,6 +29,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
+// Health Check Endpoint for cPanel & Uptime Monitoring
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Swarna India API Server Running Successfully' });
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
