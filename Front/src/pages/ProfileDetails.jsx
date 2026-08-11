@@ -190,9 +190,9 @@ const ProfilePage = ({ partner, setActiveTab }) => {
   });
 
   return (
-    <div style={{
-      backgroundColor: '#f9f9f9',
-      color: '#1a1c1c',
+    <div className="profile-card" style={{
+      backgroundColor: 'var(--bg-light)',
+      color: 'var(--text-dark)',
       fontFamily: "'Montserrat', sans-serif",
       minHeight: '100vh',
       display: 'flex',
@@ -204,16 +204,16 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         top: 0,
         width: '100%',
         zIndex: 50,
-        backgroundColor: '#f9f9f9',
+        backgroundColor: 'var(--card-bg)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0 24px',
         height: '64px',
-        borderBottom: '1px solid #e2e2e2'
+        borderBottom: '1px solid var(--card-border)'
       }} className="md:hidden">
         <button aria-label="Go back" style={{
-          color: '#000666',
+          color: '#FF9933',
           background: 'none',
           border: 'none',
           cursor: 'pointer',
@@ -224,10 +224,10 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         <h1 style={{
           fontSize: '20px',
           fontWeight: 700,
-          color: '#1a1c1c'
+          color: 'var(--text-dark)'
         }}>{displayName}</h1>
         <button aria-label="More options" style={{
-          color: '#454652',
+          color: 'var(--text-muted)',
           background: 'none',
           border: 'none',
           cursor: 'pointer'
@@ -266,7 +266,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         <section style={{
           position: 'relative',
           width: '100%',
-          backgroundColor: '#f9f9f9'
+          backgroundColor: 'var(--bg-light)'
         }}>
           {/* Cover Image Container */}
           <div style={{

@@ -272,12 +272,12 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   });
 
   return (
-    <div style={{ background: '#F8FAFC', minHeight: '100vh', padding: '30px 16px 60px' }}>
+    <div style={{ background: 'var(--bg-light)', color: 'var(--text-dark)', minHeight: '100vh', padding: '30px 16px 60px' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
         
         {/* Header Profile Summary Card */}
-        <div style={{ 
-          background: '#FFF', 
+        <div className="dashboard-card" style={{ 
+          background: 'var(--card-bg)', 
           borderRadius: '24px', 
           padding: '28px',
           boxShadow: '0 10px 30px rgba(0,0,0,0.04)',
@@ -287,7 +287,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           alignItems: 'center',
           marginBottom: '20px',
           position: 'relative',
-          border: '1px solid #E2E8F0'
+          border: '1px solid var(--card-border)'
         }}>
           <button 
             onClick={handleLogout}
@@ -299,13 +299,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           <div style={{ position: 'relative' }}>
             <div style={{ 
               width: '105px', height: '105px', borderRadius: '50%', 
-              background: '#E2E8F0', overflow: 'hidden', border: '4px solid #FFF',
+              background: 'var(--bg-alt)', overflow: 'hidden', border: '4px solid var(--card-bg)',
               boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
             }}>
               {user.profile_image ? (
                 <img src={getMediaUrl(user.profile_image)} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
-                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.4rem', color: '#94A3B8', fontWeight: 700 }}>
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.4rem', color: 'var(--text-muted)', fontWeight: 700 }}>
                   {user.name.substring(0,2).toUpperCase()}
                 </div>
               )}
@@ -324,13 +324,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <h2 style={{ margin: 0, fontSize: '1.7rem', color: '#1E293B', fontWeight: 800 }}>{user.name}</h2>
+              <h2 style={{ margin: 0, fontSize: '1.7rem', color: 'var(--text-dark)', fontWeight: 800 }}>{user.name}</h2>
               <span style={{ background: '#EFF6FF', color: '#2563EB', padding: '4px 14px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                 <Shield size={14} /> {user.role_name}
               </span>
             </div>
             
-            <div style={{ display: 'flex', gap: '20px', marginTop: '10px', flexWrap: 'wrap', color: '#64748B', fontSize: '0.9rem' }}>
+            <div style={{ display: 'flex', gap: '20px', marginTop: '10px', flexWrap: 'wrap', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Mail size={15} color="#FF9933" /> {user.email}</span>
               {user.phone && <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Phone size={15} color="#FF9933" /> {user.phone}</span>}
               {user.city && <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><MapPin size={15} color="#FF9933" /> {user.city}, {user.state}</span>}

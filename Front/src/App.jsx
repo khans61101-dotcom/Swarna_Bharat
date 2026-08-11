@@ -519,25 +519,26 @@ export default function App() {
       {activeTab === 'Home' && (
         <>
           {/* Dynamic Hero Video Banner Section */}
-          <section className="banner-section" style={{ position: 'relative', overflow: 'hidden', minHeight: '580px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <video 
-              autoPlay 
-              loop 
-              muted 
-              playsInline 
-              key={heroVideoSrc}
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transform: 'translate(-50%, -50%)', 
-                zIndex: 0
-              }}
-              src={heroVideoSrc}
-            />
+          <section className="banner-section" style={{ position: 'relative', overflow: 'hidden', minHeight: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+           <video
+  autoPlay
+  loop
+  muted
+  playsInline
+  key={heroVideoSrc}
+  style={{
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    transform: 'translate(-50%, -50%)',
+    filter: 'brightness(1.4)', 
+    zIndex: 0
+  }}
+  src={heroVideoSrc}
+/>  
             <div className="banner-overlay" style={{ background: 'linear-gradient(180deg, rgba(11, 43, 74, 0.75) 0%, rgba(11, 43, 74, 0.88) 100%)', zIndex: 1 }}></div>
 
             <div className="section-container banner-content" style={{ position: 'relative', zIndex: 2, padding: '60px 20px', textAlign: 'center', maxWidth: '920px', margin: '0 auto', color: '#FFF' }}>
@@ -612,9 +613,9 @@ export default function App() {
             )}
           </section>  
 
-         <section className="overflow-hidden w-full bg-gray-100 py-3">
-  <div className="animate-marquee whitespace-nowrap">
-    Hello 👋 Welcome to our website • Best Software Development • AI Solutions • Web Development • Digital Marketing 🚀
+          <section className="marquee-section overflow-hidden w-full py-3" style={{ borderTop: '1px solid var(--card-border)', borderBottom: '1px solid var(--card-border)' }}>
+  <div className="animate-marquee whitespace-nowrap" style={{ fontWeight: 600 }}>
+    Hello 👋 Welcome to Swarna Bharat • Youth Power & Cultural Revival • Education • Digital Empowerment 🚀
   </div>
 </section> 
 

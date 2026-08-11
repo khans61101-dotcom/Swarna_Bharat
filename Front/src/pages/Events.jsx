@@ -120,11 +120,11 @@ export default function EventsPage() {
 
       {/* Search & Category Filter Bar */}
       <div style={{
-        background: '#FFF',
+        background: 'var(--card-bg)',
         padding: '20px',
         borderRadius: '12px',
         boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-        border: '1px solid #E2E8F0',
+        border: '1px solid var(--card-border)',
         marginBottom: '35px',
         display: 'flex',
         flexWrap: 'wrap',

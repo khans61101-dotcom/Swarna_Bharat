@@ -1810,7 +1810,8 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
       display: 'flex', 
       alignItems: 'center', 
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 30%, #FEF3C7 60%, #FFF7ED 100%)',
+      background: 'var(--bg-light)',
+      color: 'var(--text-dark)',
       padding: '20px',
       position: 'relative'
     }}>
@@ -1839,20 +1840,20 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
         gridTemplateColumns: mode === 'register' ? '1fr 1.2fr' : '1fr 1.2fr',
         maxWidth: '1000px',
         width: '100%',
-        background: 'rgba(255, 255, 255, 0.9)',
+        background: 'var(--card-bg)',
         backdropFilter: 'blur(20px)',
         borderRadius: '24px',
         boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
         overflow: 'hidden',
-        border: '1px solid rgba(255, 255, 255, 0.3)',
+        border: '1px solid var(--card-border)',
         position: 'relative',
         zIndex: 1,
         minHeight: '620px'
       }}>
         {/* Left Side - Info Panel (for both login and register) */}
         <div style={{
-          background: 'linear-gradient(135deg, #FFF7ED, #FFEDD5)',
-          borderRight: '1px solid rgba(226, 232, 240, 0.5)',
+          background: 'var(--bg-alt)',
+          borderRight: '1px solid var(--card-border)',
           display: 'flex',
           flexDirection: 'column'
         }}>
