@@ -278,6 +278,25 @@ async function setupDatabase() {
       )
     `);
 
+    console.log('Creating hero_settings table...');
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS hero_settings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        video_url VARCHAR(500) NULL,
+        title VARCHAR(255) NULL,
+        title_hi VARCHAR(255) NULL,
+        subtitle TEXT NULL,
+        subtitle_hi TEXT NULL,
+        badge_text VARCHAR(100) NULL,
+        badge_text_hi VARCHAR(100) NULL,
+        btn1_text VARCHAR(100) NULL,
+        btn1_link VARCHAR(255) NULL,
+        btn2_text VARCHAR(100) NULL,
+        btn2_link VARCHAR(255) NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+
     console.log('Creating gallery table...');
     await connection.query(`
       CREATE TABLE IF NOT EXISTS gallery (

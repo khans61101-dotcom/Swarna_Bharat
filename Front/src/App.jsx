@@ -39,6 +39,7 @@ import GalleryPage from './pages/Gallery';
 import PartnersPage from './pages/Partners';
 import logoImg from './assets/logo.jpg';
 import { useLang } from './LanguageContext';
+import { API_URL, getMediaUrl } from './config';
 
 import ProfileDetails from "./pages/ProfileDetails";
 import Dashboard from "./pages/Dashboard";
@@ -187,6 +188,46 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
+
+  const [heroSettings, setHeroSettings] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/hero`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d && d.hero) {
+          setHeroSettings(d.hero);
+        }
+      })
+      .catch(e => console.error('Error fetching hero settings:', e));
+  }, []);
+
+  const demoVideo = 'https://assets.mixkit.co/videos/preview/mixkit-flag-of-india-waving-in-the-wind-41551-large.mp4';
+  const heroVideoSrc = heroSettings && heroSettings.video_url
+    ? (heroSettings.video_url.startsWith('http') ? heroSettings.video_url : getMediaUrl(heroSettings.video_url))
+    : demoVideo;
+
+  const heroBadge = lang === 'en'
+    ? (heroSettings?.badge_text || '🚩 Vishwaguru Bharat Abhiyan')
+    : (heroSettings?.badge_text_hi || heroSettings?.badge_text || '🚩 विश्वगुरु भारत अभियान');
+
+  const heroTitle = lang === 'en'
+    ? (heroSettings?.title || 'Rebuilding Golden Bharat with Youth Power & Cultural Revival')
+    : (heroSettings?.title_hi || heroSettings?.title || 'विश्वगुरु भारत अभियान - राष्ट्र निर्माण और युवा जागृति का महाअभियान 🚩');
+
+  const heroSubtitle = lang === 'en'
+    ? (heroSettings?.subtitle || 'Empowerment through education, heritage, wellness, and national development across all sectors.')
+    : (heroSettings?.subtitle_hi || heroSettings?.subtitle || 'शिक्षा, संस्कृति, ग्राम विकास और युवा शक्ति के माध्यम से भारत को पुनः विश्वगुरु बनाने का संकल्प।');
+
+  const heroBtn1Text = heroSettings?.btn1_text
+    ? heroSettings.btn1_text
+    : (lang === 'en' ? 'Explore News' : 'समाचार देखें');
+  const heroBtn1Link = heroSettings?.btn1_link || 'News';
+
+  const heroBtn2Text = heroSettings?.btn2_text
+    ? heroSettings.btn2_text
+    : (lang === 'en' ? 'Watch Videos' : 'वीडियो देखें');
+  const heroBtn2Link = heroSettings?.btn2_link || 'Videos';
 
   useEffect(() => {
     const root = document.documentElement;
@@ -435,25 +476,56 @@ export default function App() {
 
       {activeTab === 'Home' && (
         <>
-          {/* Hero Section */}
-          <section className="banner-section">
-            <div 
-              className="banner-slide" 
-              style={{ backgroundImage: `url(${bannerBgs[currentSlide]})` }}
-            >
-              <div className="banner-overlay"></div>
-              <div className="section-container banner-content">
-                <span className="banner-tag">{t.slides[currentSlide].tag}</span>
-                <h2 className="banner-title">{t.slides[currentSlide].title}</h2>
-                <p className="banner-desc">{t.slides[currentSlide].desc}</p>
-                <button className="btn-primary" onClick={() => setActiveTab('News')}>
-                  {t.slides[currentSlide].btn} <ChevronRight size={18} />
+          {/* Dynamic Hero Video Banner Section */}
+          <section className="banner-section" style={{ position: 'relative', overflow: 'hidden', minHeight: '540px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              key={heroVideoSrc}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 0
+              }}
+              src={heroVideoSrc}
+            />
+            <div className="banner-overlay" style={{ background: 'linear-gradient(180deg, rgba(11, 43, 74, 0.75) 0%, rgba(11, 43, 74, 0.88) 100%)', zIndex: 1 }}></div>
+
+            <div className="section-container banner-content" style={{ position: 'relative', zIndex: 2, padding: '60px 20px', textAlign: 'center', maxWidth: '920px', margin: '0 auto', color: '#FFF' }}>
+              <span className="banner-tag" style={{ background: 'rgba(255, 153, 51, 0.25)', color: '#FF9933', border: '1px solid rgba(255, 153, 51, 0.5)', padding: '6px 20px', borderRadius: '30px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-block', marginBottom: '18px' }}>
+                {heroBadge}
+              </span>
+              <h2 className="banner-title" style={{ fontSize: '2.5rem', fontWeight: 800, lineHeight: 1.25, marginBottom: '18px', textShadow: '0 4px 20px rgba(0,0,0,0.5)', color: '#FFFFFF' }}>
+                {heroTitle}
+              </h2>
+              <p className="banner-desc" style={{ fontSize: '1.1rem', color: '#E2E8F0', maxWidth: '780px', margin: '0 auto 30px', lineHeight: 1.6 }}>
+                {heroSubtitle}
+              </p>
+              <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <button 
+                  className="btn-primary" 
+                  onClick={() => setActiveTab(heroBtn1Link)}
+                  style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', border: 'none', padding: '14px 34px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(255, 153, 51, 0.4)' }}
+                >
+                  {heroBtn1Text} <ChevronRight size={18} />
                 </button>
+
+                {heroBtn2Text && (
+                  <button 
+                    onClick={() => setActiveTab(heroBtn2Link)}
+                    style={{ background: 'rgba(255, 255, 255, 0.15)', color: '#FFF', border: '1px solid rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(10px)', padding: '14px 32px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                  >
+                    <Play size={18} /> {heroBtn2Text}
+                  </button>
+                )}
               </div>
-            </div>
-            <div className="slider-controls">
-              <button className="control-btn" onClick={prevSlide}><ChevronLeft size={20} /></button>
-              <button className="control-btn" onClick={nextSlide}><ChevronRight size={20} /></button>
             </div>
           </section>  
 

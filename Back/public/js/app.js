@@ -14,6 +14,7 @@ const rolePermissions = {
         "galleryTab",
         "blogsTab",
         "enquiriesTab",
+        "heroTab",
         "profileTab",
         "settingsTab"
     ],
@@ -499,6 +500,9 @@ function switchTab(tabId, element) {
                 break;
             case 'enquiriesTab':
                 loadEnquiries();
+                break;
+            case 'heroTab':
+                loadHeroSettings();
                 break;
             case 'profileTab':
                 loadMyProfile();
@@ -2894,3 +2898,130 @@ document.getElementById('forgotForm2')?.addEventListener('submit', async functio
 
 window.showForgotStep = showForgotStep;
 window.showLoginCard = showLoginCard;
+
+// ─── HERO VIDEO BANNER MANAGEMENT ───────────────────────────────────────────
+async function loadHeroSettings() {
+  try {
+    const res = await fetch(`${API_URL}/hero`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.hero) {
+        const h = data.hero;
+        if (document.getElementById('heroVideoUrl')) document.getElementById('heroVideoUrl').value = h.video_url || '';
+        if (document.getElementById('heroTitle')) document.getElementById('heroTitle').value = h.title || '';
+        if (document.getElementById('heroTitleHi')) document.getElementById('heroTitleHi').value = h.title_hi || '';
+        if (document.getElementById('heroSubtitle')) document.getElementById('heroSubtitle').value = h.subtitle || '';
+        if (document.getElementById('heroSubtitleHi')) document.getElementById('heroSubtitleHi').value = h.subtitle_hi || '';
+        if (document.getElementById('heroBadgeText')) document.getElementById('heroBadgeText').value = h.badge_text || '';
+        if (document.getElementById('heroBadgeTextHi')) document.getElementById('heroBadgeTextHi').value = h.badge_text_hi || '';
+        if (document.getElementById('heroBtn1Text')) document.getElementById('heroBtn1Text').value = h.btn1_text || '';
+        if (document.getElementById('heroBtn1Link')) document.getElementById('heroBtn1Link').value = h.btn1_link || '';
+        if (document.getElementById('heroBtn2Text')) document.getElementById('heroBtn2Text').value = h.btn2_text || '';
+        if (document.getElementById('heroBtn2Link')) document.getElementById('heroBtn2Link').value = h.btn2_link || '';
+      }
+    }
+  } catch (e) {
+    console.error('Error loading hero settings:', e);
+  }
+}
+
+async function uploadHeroVideo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const alertEl = document.getElementById('heroAlert');
+  if (alertEl) {
+    alertEl.style.display = 'block';
+    alertEl.style.background = '#EFF6FF';
+    alertEl.style.color = '#2563EB';
+    alertEl.textContent = 'Uploading video file, please wait...';
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('proof_file', file);
+    const res = await fetch(`${API_URL}/upload/proof`, {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (res.ok && data.url) {
+      if (document.getElementById('heroVideoUrl')) {
+        document.getElementById('heroVideoUrl').value = data.url;
+      }
+      if (alertEl) {
+        alertEl.style.background = '#F0FDF4';
+        alertEl.style.color = '#16A34A';
+        alertEl.textContent = 'Video uploaded successfully! Click Save & Publish below to finish.';
+      }
+    } else {
+      if (alertEl) {
+        alertEl.style.background = '#FFF5F5';
+        alertEl.style.color = '#B13E44';
+        alertEl.textContent = data.error || 'Video upload failed';
+      }
+    }
+  } catch (err) {
+    if (alertEl) {
+      alertEl.style.background = '#FFF5F5';
+      alertEl.style.color = '#B13E44';
+      alertEl.textContent = 'Error uploading video';
+    }
+  }
+}
+
+async function saveHeroSettings(e) {
+  if (e) e.preventDefault();
+  const alertEl = document.getElementById('heroAlert');
+  const payload = {
+    video_url: document.getElementById('heroVideoUrl')?.value || '',
+    title: document.getElementById('heroTitle')?.value || '',
+    title_hi: document.getElementById('heroTitleHi')?.value || '',
+    subtitle: document.getElementById('heroSubtitle')?.value || '',
+    subtitle_hi: document.getElementById('heroSubtitleHi')?.value || '',
+    badge_text: document.getElementById('heroBadgeText')?.value || '',
+    badge_text_hi: document.getElementById('heroBadgeTextHi')?.value || '',
+    btn1_text: document.getElementById('heroBtn1Text')?.value || '',
+    btn1_link: document.getElementById('heroBtn1Link')?.value || '',
+    btn2_text: document.getElementById('heroBtn2Text')?.value || '',
+    btn2_link: document.getElementById('heroBtn2Link')?.value || ''
+  };
+
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API_URL}/hero`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok) {
+      if (alertEl) {
+        alertEl.style.display = 'block';
+        alertEl.style.background = '#F0FDF4';
+        alertEl.style.color = '#16A34A';
+        alertEl.textContent = 'Hero Video Banner settings saved & published successfully!';
+      }
+    } else {
+      if (alertEl) {
+        alertEl.style.display = 'block';
+        alertEl.style.background = '#FFF5F5';
+        alertEl.style.color = '#B13E44';
+        alertEl.textContent = data.error || 'Failed to save settings';
+      }
+    }
+  } catch (err) {
+    if (alertEl) {
+      alertEl.style.display = 'block';
+      alertEl.style.background = '#FFF5F5';
+      alertEl.style.color = '#B13E44';
+      alertEl.textContent = 'Network error saving settings';
+    }
+  }
+}
+
+window.loadHeroSettings = loadHeroSettings;
+window.uploadHeroVideo = uploadHeroVideo;
+window.saveHeroSettings = saveHeroSettings;

@@ -17,6 +17,7 @@ const tasksRoutes = require('./routes/tasks');
 const taskAssignmentsRoutes = require('./routes/taskAssignments');
 const walletRoutes = require('./routes/wallet');
 const partnersRoutes = require('./routes/partners');
+const heroRoutes = require('./routes/hero');
 const app = express();
 
 // Middleware
@@ -43,6 +44,7 @@ app.use('/api/enquiries', enquiriesRoutes);
 app.use('/api/blogs', blogsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/partners', partnersRoutes);
+app.use('/api/hero', heroRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
