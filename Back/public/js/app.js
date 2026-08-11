@@ -1270,11 +1270,37 @@ function getRoleBadgeColor(roleName) {
     }
 }
 
+function populateTreeUserSelect() {
+    const select = document.getElementById('treeFocusUserSelect');
+    if (!select || !cachedUsers) return;
+
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">🌳 All System Accounts</option>' +
+        cachedUsers.map(u => `
+            <option value="${u.id}" ${Number(currentVal) === Number(u.id) ? 'selected' : ''}>
+                ${u.name} (${u.role_name}) ${u.referral_code ? '[' + u.referral_code + ']' : ''}
+            </option>
+        `).join('');
+}
+
+function focusUserFromSelect(userId) {
+    if (userId) {
+        currentTreeRootId = Number(userId);
+        selectedTreeUserId = Number(userId);
+    } else {
+        currentTreeRootId = null;
+        selectedTreeUserId = null;
+    }
+    renderAccountsTree();
+}
+
 function renderAccountsTree(usersList = null) {
     const treeContent = document.getElementById('treeContent');
     if (!treeContent) return;
 
     const list = usersList || cachedUsers || [];
+    populateTreeUserSelect();
+
     if (list.length === 0) {
         treeContent.innerHTML = '<div style="color:var(--text-secondary);padding:3rem;text-align:center;">No accounts available to render tree diagram.</div>';
         return;
@@ -1304,7 +1330,18 @@ function buildUserTreeStructure(allUsers, rootId = null) {
     let rootNodes = [];
     if (rootId) {
         const found = allUsers.find(u => Number(u.id) === Number(rootId));
-        if (found) rootNodes = [found];
+        if (found) {
+            // Include target's parent if present so hierarchy context is preserved!
+            const parent = allUsers.find(u => 
+                (u.id && Number(u.id) === Number(found.created_by)) || 
+                (u.id && Number(u.id) === Number(found.referred_by))
+            );
+            if (parent) {
+                rootNodes = [parent];
+            } else {
+                rootNodes = [found];
+            }
+        }
     }
 
     if (rootNodes.length === 0) {
@@ -1334,27 +1371,33 @@ function renderTreeNodeHTML(node, isRoot = false) {
     const roleColor = getRoleBadgeColor(node.role_name);
     const initials = (node.name || 'U').substring(0, 2).toUpperCase();
     const hasChildren = node.children && node.children.length > 0;
+    const accountCode = node.referral_code || `ACC${node.id}`;
 
     return `
         <div class="tree-node-wrapper">
-            <div class="tree-node-card ${isSelected ? 'selected' : ''}" 
-                 onclick="selectTreeNode(${node.id}, event)"
-                 style="border-color: ${roleColor};">
-                
-                <div class="tree-avatar-wrap" style="box-shadow: 0 0 0 3px ${roleColor}33;">
+            <div class="tree-node-card-container">
+                <div class="tree-node-avatar-card ${isSelected ? 'active-selected' : ''}" 
+                     onclick="selectTreeNode(${node.id}, event)"
+                     style="border-color: ${roleColor};"
+                     title="Click to view details of ${node.name}">
+                    
                     ${node.profile_image 
-                        ? `<img src="${node.profile_image}" alt="${node.name}" />`
+                        ? `<img src="${node.profile_image}" class="tree-avatar-img" alt="${node.name}" />`
                         : `<div class="tree-avatar-initials" style="background: ${roleColor};">${initials}</div>`
                     }
-                    ${isSelected ? `<span class="tree-rank-ribbon" title="Active Selected">🎗️</span>` : ''}
                 </div>
 
-                <div class="tree-node-name">${node.name || 'User'}</div>
-                <div class="tree-node-role" style="background: ${roleColor}18; color: ${roleColor}; border: 1px solid ${roleColor}40;">
-                    ${node.role_name || 'User'}
-                </div>
-                ${node.referral_code ? `<div class="tree-node-code">ID: ${node.referral_code}</div>` : ''}
-                ${hasChildren ? `<div class="tree-downline-tag">👥 ${node.children.length} Downlines</div>` : ''}
+                ${(isSelected || isRoot || hasChildren) ? `
+                    <div class="tree-node-side-badge" onclick="selectTreeNode(${node.id}, event)" style="cursor:pointer;">
+                        <span class="tree-badge-id" style="color: ${roleColor};">${accountCode}</span>
+                        <span class="tree-badge-name">${node.name || 'User'}</span>
+                        <span class="tree-badge-medal">🎗️</span>
+                    </div>
+                ` : `
+                    <div style="margin-left: 10px; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); cursor: pointer;" onclick="selectTreeNode(${node.id}, event)">
+                        ${node.name}
+                    </div>
+                `}
             </div>
 
             ${hasChildren ? `

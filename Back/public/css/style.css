@@ -823,114 +823,114 @@ body.dark-mode .tree-viewport {
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding: 0 14px;
+  padding: 0 16px;
 }
 
-.tree-node-card {
-  background: var(--bg-card, #ffffff);
-  border: 2.5px solid var(--border, #e2e8f0);
-  border-radius: 24px;
-  padding: 14px 20px;
+.tree-node-card-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  min-width: 170px;
-  max-width: 220px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   position: relative;
   z-index: 2;
 }
 
-.tree-node-card:hover {
-  transform: translateY(-6px) scale(1.04);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
-}
-
-.tree-node-card.selected {
-  transform: scale(1.06);
-  box-shadow: 0 18px 44px rgba(255, 153, 51, 0.3);
-  border-color: #FF9933 !important;
-}
-
-.tree-avatar-wrap {
-  width: 64px;
-  height: 64px;
+/* Circular Avatar Node Card */
+.tree-node-avatar-card {
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
-  position: relative;
-  margin-bottom: 10px;
-  overflow: hidden;
-  background: #f1f5f9;
+  background: #ffffff;
+  border: 3.5px solid #1e293b;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  position: relative;
+  z-index: 3;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.tree-avatar-wrap img {
+.tree-node-avatar-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.2);
+}
+
+.tree-node-avatar-card.active-selected {
+  border-color: #FF9933 !important;
+  box-shadow: 0 0 0 4px rgba(255, 153, 51, 0.35), 0 14px 32px rgba(0,0,0,0.18) !important;
+}
+
+.tree-avatar-img {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   object-fit: cover;
 }
 
 .tree-avatar-initials {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   color: #ffffff;
 }
 
-.tree-rank-ribbon {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  font-size: 1.3rem;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+/* Horizontal Info Badge attached to node card (matching screenshot) */
+.tree-node-side-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1.5px solid rgba(226, 232, 240, 0.95);
+  padding: 8px 20px 8px 48px;
+  border-radius: 40px;
+  margin-left: -38px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.09);
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+  transition: all 0.25s ease;
+  animation: badgeSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.tree-node-name {
+@keyframes badgeSlideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+body.dark-theme .tree-node-side-badge,
+body.dark-mode .tree-node-side-badge {
+  background: #1c2333;
+  border-color: rgba(255,255,255,0.15);
+  color: #ffffff;
+}
+
+.tree-badge-id {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 170px;
-}
-
-.tree-node-role {
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 3px 12px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
-}
-
-.tree-node-code {
-  font-size: 0.72rem;
-  color: var(--text-secondary);
+  color: #2563eb;
   font-family: monospace;
-  font-weight: 700;
 }
 
-.tree-downline-tag {
-  font-size: 0.72rem;
-  color: #FF9933;
+.tree-badge-name {
+  font-size: 0.92rem;
   font-weight: 700;
-  margin-top: 6px;
-  background: rgba(255, 153, 51, 0.12);
-  padding: 3px 10px;
-  border-radius: 12px;
+  color: #0f172a;
+}
+
+body.dark-theme .tree-badge-name,
+body.dark-mode .tree-badge-name {
+  color: #f8fafc;
+}
+
+.tree-badge-medal {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 /* Connectors for Tree Hierarchy */
@@ -942,16 +942,16 @@ body.dark-mode .tree-viewport {
 }
 
 .tree-connector-line-v {
-  width: 2.5px;
-  height: 28px;
-  background: #334155;
+  width: 3px;
+  height: 32px;
+  background: #1e293b;
   border-radius: 2px;
 }
 
 .tree-children-row {
   display: flex;
   position: relative;
-  padding-top: 28px;
+  padding-top: 32px;
 }
 
 .tree-children-row::before {
@@ -960,20 +960,21 @@ body.dark-mode .tree-viewport {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  height: 28px;
-  width: 2.5px;
-  background: #334155;
+  height: 32px;
+  width: 3px;
+  background: #1e293b;
   border-radius: 2px;
 }
 
 .tree-node-wrapper::before {
   content: '';
   position: absolute;
-  top: -28px;
+  top: -32px;
   left: 0;
   right: 0;
-  height: 2.5px;
-  background: #334155;
+  height: 3px;
+  background: #1e293b;
+  border-radius: 2px;
 }
 
 .tree-node-wrapper:first-child::before {
@@ -985,5 +986,7 @@ body.dark-mode .tree-viewport {
 }
 
 .tree-node-wrapper:only-child::before {
-  display: none;
+  left: 50%;
+  right: 50%;
+  width: 0;
 }
