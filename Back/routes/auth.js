@@ -362,7 +362,7 @@ router.get('/me', verifyToken, async (req, res) => {
     const [rows] = await db.query(`
       SELECT u.id, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
              u.bank_name, u.account_no, u.ifsc_code, u.upi_id, u.referral_code, u.referral_link,
-             u.referred_by, u.profile_image, u.created_at, r.name as role_name
+             u.referred_by, u.profile_image, u.cover_image, u.created_at, r.name as role_name
       FROM users u
       JOIN roles r ON u.role_id = r.id
       WHERE u.id = ?
@@ -377,14 +377,16 @@ router.get('/me', verifyToken, async (req, res) => {
 
 // PUT update logged-in user profile
 router.put('/profile', verifyToken, async (req, res) => {
-  const { name, phone, dob, address, city, state, pincode, bank_name, account_no, ifsc_code, upi_id } = req.body;
+  const { name, phone, dob, address, city, state, pincode, bank_name, account_no, ifsc_code, upi_id, profile_image, cover_image } = req.body;
   try {
     await db.query(`
       UPDATE users SET
         name = ?, phone = ?, dob = ?, address = ?, city = ?, state = ?, pincode = ?,
-        bank_name = ?, account_no = ?, ifsc_code = ?, upi_id = ?
+        bank_name = ?, account_no = ?, ifsc_code = ?, upi_id = ?,
+        profile_image = COALESCE(?, profile_image),
+        cover_image = COALESCE(?, cover_image)
       WHERE id = ?
-    `, [name, phone, dob, address, city, state, pincode, bank_name, account_no, ifsc_code, upi_id, req.userId]);
+    `, [name, phone, dob, address, city, state, pincode, bank_name, account_no, ifsc_code, upi_id, profile_image, cover_image, req.userId]);
 
     res.json({ message: 'Profile updated successfully' });
   } catch (error) {

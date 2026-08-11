@@ -82,7 +82,9 @@ async function setupDatabase() {
       "upi_id VARCHAR(100) NULL",
       "referral_code VARCHAR(100) NULL UNIQUE",
       "referral_link VARCHAR(255) NULL",
-      "referred_by INT NULL"
+      "referred_by INT NULL",
+      "profile_image VARCHAR(255) NULL",
+      "cover_image VARCHAR(255) NULL"
     ];
 
     for (const col of alterColumns) {

@@ -1,15 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import './css/ProfilePage.css'; // For custom styles
+import './css/ProfilePage.css';
 import { API_URL, getMediaUrl } from '../config';
 
 const ProfilePage = ({ partner, setActiveTab }) => {
+  const [currentPartner, setCurrentPartner] = useState(partner);
   const [activeTabMenu, setActiveTabMenu] = useState('images');
   const [activeMediaTab, setActiveMediaTab] = useState('self');
   const [details, setDetails] = useState({ taskCount: 0, usersCount: 0, membersCount: 0, media: [] });
   const [loadingDetails, setLoadingDetails] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [msg, setMsg] = useState({ text: '', type: '' });
+
+  const [editForm, setEditForm] = useState({
+    name: partner?.name || '',
+    phone: partner?.phone || '',
+    city: partner?.city || '',
+    state: partner?.state || '',
+    address: partner?.address || ''
+  });
 
   useEffect(() => {
     if (!partner) return;
+    setCurrentPartner(partner);
+    setEditForm({
+      name: partner.name || '',
+      phone: partner.phone || '',
+      city: partner.city || '',
+      state: partner.state || '',
+      address: partner.address || ''
+    });
+
     setLoadingDetails(true);
     fetch(`${API_URL}/partners/${partner.id}/details`)
       .then(r => r.json())
@@ -19,10 +39,111 @@ const ProfilePage = ({ partner, setActiveTab }) => {
 
   if (!partner) return null;
 
-  const displayName = partner.organization_name || partner.name;
-  const displayImage = partner.profile_image ? getMediaUrl(partner.profile_image) : null; 
-  const roleName = partner.role_name || 'User';
+  const targetPartner = currentPartner || partner;
+  const displayName = targetPartner.organization_name || targetPartner.name;
+  const displayImage = targetPartner.profile_image ? getMediaUrl(targetPartner.profile_image) : null; 
+  const roleName = targetPartner.role_name || 'User';
   const initials = displayName.substring(0, 2).toUpperCase();
+
+  const defaultCover = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200';
+  const coverUrl = targetPartner.cover_image ? getMediaUrl(targetPartner.cover_image) : defaultCover;
+
+  const handleCoverUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const token = localStorage.getItem('userToken');
+    setMsg({ text: 'Uploading cover photo...', type: 'info' });
+
+    try {
+      const imgData = new FormData();
+      imgData.append('image', file);
+      const uploadRes = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        body: imgData
+      });
+      const uploadData = await uploadRes.json();
+      if (uploadRes.ok && uploadData.url) {
+        const updateRes = await fetch(`${API_URL}/auth/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ ...editForm, cover_image: uploadData.url })
+        });
+        if (updateRes.ok) {
+          setCurrentPartner(prev => ({ ...prev, cover_image: uploadData.url }));
+          setMsg({ text: 'Cover photo updated successfully!', type: 'success' });
+        }
+      }
+    } catch (err) {
+      setMsg({ text: 'Error uploading cover photo', type: 'error' });
+    } finally {
+      setTimeout(() => setMsg({ text: '', type: '' }), 3000);
+    }
+  };
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const token = localStorage.getItem('userToken');
+    setMsg({ text: 'Uploading profile photo...', type: 'info' });
+
+    try {
+      const imgData = new FormData();
+      imgData.append('image', file);
+      const uploadRes = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        body: imgData
+      });
+      const uploadData = await uploadRes.json();
+      if (uploadRes.ok && uploadData.url) {
+        const updateRes = await fetch(`${API_URL}/auth/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ ...editForm, profile_image: uploadData.url })
+        });
+        if (updateRes.ok) {
+          setCurrentPartner(prev => ({ ...prev, profile_image: uploadData.url }));
+          setMsg({ text: 'Profile picture updated successfully!', type: 'success' });
+        }
+      }
+    } catch (err) {
+      setMsg({ text: 'Error uploading profile picture', type: 'error' });
+    } finally {
+      setTimeout(() => setMsg({ text: '', type: '' }), 3000);
+    }
+  };
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('userToken');
+    setMsg({ text: 'Saving profile details...', type: 'info' });
+    try {
+      const res = await fetch(`${API_URL}/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editForm)
+      });
+      if (res.ok) {
+        setCurrentPartner(prev => ({ ...prev, ...editForm }));
+        setMsg({ text: 'Profile details saved successfully!', type: 'success' });
+        setShowEditModal(false);
+      } else {
+        setMsg({ text: 'Failed to update profile', type: 'error' });
+      }
+    } catch (err) {
+      setMsg({ text: 'Error saving profile', type: 'error' });
+    } finally {
+      setTimeout(() => setMsg({ text: '', type: '' }), 3000);
+    }
+  };
 
   // Grid items data based on activeMediaTab (self vs company)
   const currentMediaList = activeMediaTab === 'company' 
@@ -96,31 +217,49 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         </button>
       </header>
 
-      
-
       <main style={{
         flexGrow: 1,
         width: '100%',
         paddingTop: '64px',
         paddingBottom: '80px'
       }} className="md:pl-280 md:pr-320 md:max-w-1440 md:mx-auto md:pt-24 md:pb-8">
+
+        {/* Global Alert Notification */}
+        {msg.text && (
+          <div style={{
+            position: 'fixed',
+            top: '80px',
+            right: '24px',
+            zIndex: 9999,
+            padding: '12px 20px',
+            borderRadius: '12px',
+            background: msg.type === 'error' ? '#FEE2E2' : msg.type === 'success' ? '#DCFCE7' : '#DBEAFE',
+            color: msg.type === 'error' ? '#DC2626' : msg.type === 'success' ? '#16A34A' : '#2563EB',
+            fontWeight: 600,
+            boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+            border: `1px solid ${msg.type === 'error' ? '#FCA5A5' : msg.type === 'success' ? '#86EFAC' : '#93C5FD'}`
+          }}>
+            {msg.text}
+          </div>
+        )}
+
         {/* Profile Header Section */}
         <section style={{
           position: 'relative',
           width: '100%',
           backgroundColor: '#f9f9f9'
         }}>
-          {/* Cover Image */}
+          {/* Cover Image Container */}
           <div style={{
             width: '100%',
-            height: '192px',
+            height: '220px',
             backgroundColor: '#e2e2e2',
             position: 'relative',
             overflow: 'hidden'
           }} className="md:h-64">
             <div 
               style={{
-                backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBmJwMVc4eFd3OEDQdoSRwKYB6KPSQJ3AYM_8zoogXAxQazdxE_C9zowsPDO_wuYsQS00yTBs9AzhW3PKVhLOoENaN5eISPnwKJGwOvzzFZCAHQGyoVZ6FXOn3zYwOSsbzzj5sj9FhFm0cCXBnydmFG76diDxcm-w0Zl32Hhx2himcoP_hmnN0eXz18_0_ulBOe4DzCC44y2ZqL5xgSNwcYGnUN_5uKqU3UODBuwgNan6YqoPADT91v")',
+                backgroundImage: `url("${coverUrl}")`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 width: '100%',
@@ -136,8 +275,33 @@ const ProfilePage = ({ partner, setActiveTab }) => {
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.3), transparent)'
+              background: 'linear-gradient(to top, rgba(0,0,0,0.35), transparent)'
             }}></div>
+
+            {/* Edit Cover Photo Badge */}
+            <label style={{
+              position: 'absolute',
+              bottom: '16px',
+              right: '24px',
+              backgroundColor: 'rgba(0, 0, 0, 0.65)',
+              color: '#ffffff',
+              padding: '8px 18px',
+              borderRadius: '30px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '13px',
+              fontWeight: 600,
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              backdropFilter: 'blur(4px)',
+              transition: 'all 0.2s ease',
+              zIndex: 10
+            }} title="Upload Cover Image">
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>photo_camera</span>
+              <span>Edit Cover Photo</span>
+              <input type="file" accept="image/*" onChange={handleCoverUpload} style={{ display: 'none' }} />
+            </label>
           </div>
 
           {/* Profile Info Container */}
@@ -155,7 +319,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
               alignItems: 'flex-end',
               marginBottom: '16px'
             }}>
-              {/* Avatar */}
+              {/* Avatar with Camera Badge */}
               <div style={{
                 position: 'relative',
                 width: '128px',
@@ -165,7 +329,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 backgroundColor: '#e2e2e2',
                 overflow: 'hidden',
                 zIndex: 10,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.12)'
+                boxShadow: '0 4px 15px rgba(0,0,0,0.12)'
               }} className="md:w-40 md:h-40">
                 {displayImage ? (
                   <img 
@@ -183,10 +347,43 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                     {initials}
                   </div>
                 )}
+
+                <label style={{
+                  position: 'absolute', bottom: '6px', right: '6px',
+                  background: '#FF9933', color: '#FFF', width: '34px', height: '34px',
+                  borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', zIndex: 12,
+                  border: '2px solid #FFF'
+                }} title="Change Profile Picture">
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>camera_alt</span>
+                  <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ display: 'none' }} />
+                </label>
               </div>
 
-              {/* Desktop Actions */}
-               
+              {/* Edit Profile Action Button */}
+              <div style={{ zIndex: 10 }}>
+                <button 
+                  onClick={() => setShowEditModal(true)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 22px',
+                    borderRadius: '30px',
+                    background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                    color: '#FFFFFF',
+                    fontWeight: 700,
+                    fontSize: '14px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 14px rgba(255, 153, 51, 0.3)',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>edit</span>
+                  <span>Edit Profile</span>
+                </button>
+              </div>
             </div>
 
             {/* Text Details */}
@@ -217,32 +414,30 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 maxWidth: '672px',
                 lineHeight: '1.625'
               }}>
-                {partner.address || partner.city ? (
+                {targetPartner.address || targetPartner.city ? (
                   <>
                     <span className="material-symbols-outlined" style={{ fontSize: '16px', verticalAlign: 'middle', marginRight: '4px' }}>location_on</span>
-                    {[partner.address, partner.city, partner.state].filter(Boolean).join(', ')}
+                    {[targetPartner.address, targetPartner.city, targetPartner.state].filter(Boolean).join(', ')}
                   </>
                 ) : (
                   'No bio or address provided.'
                 )}
               </p>
-                <a style={{
+              <a style={{
                 fontWeight: 600,
                 fontSize: '12px',
                 color: '#000666',
                 marginTop: '8px',
-                display: partner.email ? 'inline-flex' : 'none',
+                display: targetPartner.email ? 'inline-flex' : 'none',
                 alignItems: 'center',
                 gap: '4px',
                 textDecoration: 'none'
-              }} href={`mailto:${partner.email}`}>
-                <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>mail</span> {partner.email}
+              }} href={`mailto:${targetPartner.email}`}>
+                <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>mail</span> {targetPartner.email}
               </a>
             </div>
           </div>
         </section>
-
-        
 
         {/* Stats Section - Dynamic from API */}
         <section style={{
@@ -452,105 +647,21 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 style={{
                   aspectRatio: '1',
                   position: 'relative',
-                  cursor: 'pointer',
                   overflow: 'hidden',
-                  backgroundColor: '#e2e2e2',
-                  borderRadius: '4px'
-                }} className="md:rounded-xl"
-              >
-                {item.placeholder ? (
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: '#e8e8e8',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <span className="material-symbols-outlined" style={{
-                      fontSize: '36px',
-                      color: '#454652'
-                    }}>image</span>
-                  </div>
+                  backgroundColor: '#e2e2e2'
+                }} className="md:rounded-xl">
+                {item.type === 'video' ? (
+                  <video 
+                    src={getMediaUrl(item.image)} 
+                    controls 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                 ) : (
-                  <>
-                    {item.type === 'video' ? (
-                      <video 
-                        src={getMediaUrl(item.image)}
-                        controls
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                    ) : (
-                      <div 
-                        style={{
-                          backgroundImage: `url("${getMediaUrl(item.image)}")`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          width: '100%',
-                          height: '100%' 
-                        }}
-                      />
-                    )}
-                    {item.type === 'video' && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        color: 'white',
-                        textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                      }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>movie</span>
-                      </div>
-                    )}
-                    {item.type === 'carousel' && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        color: 'white',
-                        textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                      }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>dynamic_feed</span>
-                      </div>
-                    )}
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      backgroundColor: 'rgba(0,0,0,0.4)',
-                      opacity: 0,
-                      transition: 'opacity 0.2s',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '16px'
-                    }} className="group-hover:opacity-100">
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        color: 'white',
-                        gap: '4px',
-                        fontWeight: 600,
-                        fontSize: '12px'
-                      }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>favorite</span> {item.likes}
-                      </div>
-                      {item.comments && (
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          color: 'white',
-                          gap: '4px',
-                          fontWeight: 600,
-                          fontSize: '12px'
-                        }}>
-                          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>chat_bubble</span> {item.comments}
-                        </div>
-                      )}
-                    </div>
-                  </>
+                  <img 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    src={getMediaUrl(item.image)}
+                    alt={item.title}
+                  />
                 )}
               </div>
             ))}
@@ -558,84 +669,101 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         </section>
       </main>
 
-      {/* Bottom Nav Bar (Mobile Only) */}
-      <nav style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        width: '100%',
-        zIndex: 50,
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        height: '64px',
-        padding: '0 16px',
-        backgroundColor: '#f9f9f9',
-        borderTop: '1px solid #c6c5d4'
-      }} className="md:hidden">
-        <a style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#454652',
-          textDecoration: 'none',
-          flex: 1,
-          height: '100%'
-        }} href="#">
-          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>home</span>
-        </a>
-        <a style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#454652',
-          textDecoration: 'none',
-          flex: 1,
-          height: '100%'
-        }} href="#">
-          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>search</span>
-        </a>
-        <a style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#454652',
-          textDecoration: 'none',
-          flex: 1,
-          height: '100%'
-        }} href="#">
-          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>add_box</span>
-        </a>
-        <a style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#454652',
-          textDecoration: 'none',
-          flex: 1,
-          height: '100%'
-        }} href="#">
-          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>movie</span>
-        </a>
-        <a style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#000666',
-          textDecoration: 'none',
-          flex: 1,
-          height: '100%'
-        }} href="#">
-          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>person</span>
-        </a>
-      </nav>
+      {/* ── EDIT PROFILE MODAL ──────────────────────────────────────────────── */}
+      {showEditModal && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(6px)',
+          zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '20px'
+        }}>
+          <div style={{
+            background: '#FFFFFF', borderRadius: '24px', width: '100%', maxWidth: '540px',
+            padding: '28px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', position: 'relative'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, fontSize: '1.4rem', color: '#1E293B', fontWeight: 800 }}>Edit Profile Details</h3>
+              <button 
+                onClick={() => setShowEditModal(false)}
+                style={{ background: '#F1F5F9', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', fontSize: '1.2rem', color: '#64748B' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveProfile} style={{ display: 'grid', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>Full Name</label>
+                <input 
+                  type="text" 
+                  value={editForm.name} 
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>Phone Number</label>
+                <input 
+                  type="text" 
+                  value={editForm.phone} 
+                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                  style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>City</label>
+                  <input 
+                    type="text" 
+                    value={editForm.city} 
+                    onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
+                    style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>State</label>
+                  <input 
+                    type="text" 
+                    value={editForm.state} 
+                    onChange={(e) => setEditForm({ ...editForm, state: e.target.value })}
+                    style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>Address / Location Bio</label>
+                <textarea 
+                  rows="3"
+                  value={editForm.address} 
+                  onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+                  style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none', resize: 'vertical' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
+                <button 
+                  type="button" 
+                  onClick={() => setShowEditModal(false)}
+                  style={{ flex: 1, padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#64748B', fontWeight: 700, cursor: 'pointer' }}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  style={{ flex: 2, padding: '12px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(255, 153, 51, 0.3)' }}
+                >
+                  Save Profile Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default ProfilePage; 
+export default ProfilePage;

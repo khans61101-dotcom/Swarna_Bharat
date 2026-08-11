@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const [rows] = await db.query(`
-      SELECT u.id, u.name, u.email, u.phone, u.address, r.name as role_name, u.city, u.state, u.profile_image,
+      SELECT u.id, u.name, u.email, u.phone, u.address, r.name as role_name, u.city, u.state, u.profile_image, u.cover_image,
              o.organization_name, o.logo
       FROM users u
       JOIN roles r ON u.role_id = r.id
