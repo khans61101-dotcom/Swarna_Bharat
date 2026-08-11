@@ -1217,11 +1217,253 @@ async function sendPost(url, body, form, reloadFn, errorId) {
 
 // ==============================
 // LOAD FUNCTIONS
+let accountsViewMode = 'tree'; // 'tree' or 'table'
+let currentTreeRootId = null;
+let selectedTreeUserId = null;
+
+function switchAccountsView(mode) {
+    accountsViewMode = mode;
+    const treeContainer = document.getElementById('accountsTreeContainer');
+    const tableContainer = document.getElementById('accountsTableContainer');
+    const btnTree = document.getElementById('btnViewTree');
+    const btnTable = document.getElementById('btnViewTable');
+
+    if (mode === 'tree') {
+        if (treeContainer) treeContainer.style.display = 'block';
+        if (tableContainer) tableContainer.style.display = 'none';
+        if (btnTree) {
+            btnTree.style.background = 'var(--accent, #FF9933)';
+            btnTree.style.color = '#FFFFFF';
+            btnTree.style.fontWeight = '700';
+        }
+        if (btnTable) {
+            btnTable.style.background = 'transparent';
+            btnTable.style.color = 'var(--text-secondary, #64748B)';
+            btnTable.style.fontWeight = '600';
+        }
+        renderAccountsTree();
+    } else {
+        if (treeContainer) treeContainer.style.display = 'none';
+        if (tableContainer) tableContainer.style.display = 'block';
+        if (btnTable) {
+            btnTable.style.background = 'var(--accent, #FF9933)';
+            btnTable.style.color = '#FFFFFF';
+            btnTable.style.fontWeight = '700';
+        }
+        if (btnTree) {
+            btnTree.style.background = 'transparent';
+            btnTree.style.color = 'var(--text-secondary, #64748B)';
+            btnTree.style.fontWeight = '600';
+        }
+    }
+}
+
+function getRoleBadgeColor(roleName) {
+    switch (roleName) {
+        case 'Admin':  return '#FF9933';
+        case 'Agency': return '#EA580C';
+        case 'NGO':    return '#DB2777';
+        case 'Agent':  return '#0284C7';
+        case 'Member': return '#7C3AED';
+        case 'User':   return '#2563EB';
+        default:       return '#475569';
+    }
+}
+
+function renderAccountsTree(usersList = null) {
+    const treeContent = document.getElementById('treeContent');
+    if (!treeContent) return;
+
+    const list = usersList || cachedUsers || [];
+    if (list.length === 0) {
+        treeContent.innerHTML = '<div style="color:var(--text-secondary);padding:3rem;text-align:center;">No accounts available to render tree diagram.</div>';
+        return;
+    }
+
+    // Role filter
+    const roleFilter = document.getElementById('treeRoleFilter') ? document.getElementById('treeRoleFilter').value : 'All';
+    let filteredList = list;
+    if (roleFilter && roleFilter !== 'All') {
+        filteredList = list.filter(u => u.role_name === roleFilter);
+    }
+
+    // Build hierarchy tree
+    const treeData = buildUserTreeStructure(filteredList, currentTreeRootId);
+
+    if (treeData.length === 0) {
+        treeContent.innerHTML = '<div style="color:var(--text-secondary);padding:3rem;text-align:center;">No accounts match the current filter or search criteria.</div>';
+        return;
+    }
+
+    treeContent.innerHTML = treeData.map(rootNode => renderTreeNodeHTML(rootNode, true)).join('');
+}
+
+function buildUserTreeStructure(allUsers, rootId = null) {
+    if (!allUsers || allUsers.length === 0) return [];
+
+    let rootNodes = [];
+    if (rootId) {
+        const found = allUsers.find(u => Number(u.id) === Number(rootId));
+        if (found) rootNodes = [found];
+    }
+
+    if (rootNodes.length === 0) {
+        const userIds = new Set(allUsers.map(u => Number(u.id)));
+        rootNodes = allUsers.filter(u => !u.created_by || !userIds.has(Number(u.created_by)));
+        if (rootNodes.length === 0) {
+            rootNodes = [allUsers[0]];
+        }
+    }
+
+    function getNode(user) {
+        const children = allUsers.filter(u => 
+            (u.created_by && Number(u.created_by) === Number(user.id)) || 
+            (u.referred_by && Number(u.referred_by) === Number(user.id))
+        );
+        return {
+            ...user,
+            children: children.map(c => getNode(c))
+        };
+    }
+
+    return rootNodes.map(r => getNode(r));
+}
+
+function renderTreeNodeHTML(node, isRoot = false) {
+    const isSelected = selectedTreeUserId && Number(selectedTreeUserId) === Number(node.id);
+    const roleColor = getRoleBadgeColor(node.role_name);
+    const initials = (node.name || 'U').substring(0, 2).toUpperCase();
+    const hasChildren = node.children && node.children.length > 0;
+
+    return `
+        <div class="tree-node-wrapper">
+            <div class="tree-node-card ${isSelected ? 'selected' : ''}" 
+                 onclick="selectTreeNode(${node.id}, event)"
+                 style="border-color: ${roleColor};">
+                
+                <div class="tree-avatar-wrap" style="box-shadow: 0 0 0 3px ${roleColor}33;">
+                    ${node.profile_image 
+                        ? `<img src="${node.profile_image}" alt="${node.name}" />`
+                        : `<div class="tree-avatar-initials" style="background: ${roleColor};">${initials}</div>`
+                    }
+                    ${isSelected ? `<span class="tree-rank-ribbon" title="Active Selected">🎗️</span>` : ''}
+                </div>
+
+                <div class="tree-node-name">${node.name || 'User'}</div>
+                <div class="tree-node-role" style="background: ${roleColor}18; color: ${roleColor}; border: 1px solid ${roleColor}40;">
+                    ${node.role_name || 'User'}
+                </div>
+                ${node.referral_code ? `<div class="tree-node-code">ID: ${node.referral_code}</div>` : ''}
+                ${hasChildren ? `<div class="tree-downline-tag">👥 ${node.children.length} Downlines</div>` : ''}
+            </div>
+
+            ${hasChildren ? `
+                <div class="tree-children-container">
+                    <div class="tree-connector-line-v"></div>
+                    <div class="tree-children-row">
+                        ${node.children.map(child => renderTreeNodeHTML(child, false)).join('')}
+                    </div>
+                </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function selectTreeNode(userId, event) {
+    if (event) event.stopPropagation();
+    selectedTreeUserId = userId;
+
+    const user = (cachedUsers || []).find(u => Number(u.id) === Number(userId));
+    if (!user) return;
+
+    const avatarEl = document.getElementById('modalUserAvatar');
+    const nameEl = document.getElementById('modalUserName');
+    const roleEl = document.getElementById('modalUserRole');
+    const codeEl = document.getElementById('modalUserCode');
+    const countEl = document.getElementById('modalUserDownlineCount');
+    const emailEl = document.getElementById('modalUserEmail');
+    const phoneEl = document.getElementById('modalUserPhone');
+    const createdByEl = document.getElementById('modalUserCreatedBy');
+    const joinedEl = document.getElementById('modalUserJoined');
+
+    const roleColor = getRoleBadgeColor(user.role_name);
+    const initials = (user.name || 'U').substring(0, 2).toUpperCase();
+
+    if (avatarEl) {
+        if (user.profile_image) {
+            avatarEl.innerHTML = `<img src="${user.profile_image}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`;
+        } else {
+            avatarEl.style.background = roleColor;
+            avatarEl.style.color = '#ffffff';
+            avatarEl.textContent = initials;
+        }
+    }
+
+    if (nameEl) nameEl.textContent = user.name || 'User';
+    if (roleEl) {
+        roleEl.textContent = user.role_name || 'User';
+    }
+    if (codeEl) codeEl.textContent = user.referral_code || 'N/A';
+    if (countEl) countEl.textContent = `${user.downline_count || 0} Direct Members`;
+    if (emailEl) emailEl.textContent = user.email || 'N/A';
+    if (phoneEl) phoneEl.textContent = user.phone || 'N/A';
+    if (createdByEl) createdByEl.textContent = user.created_by_name || 'System / Admin';
+    if (joinedEl) joinedEl.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A';
+
+    const modal = document.getElementById('accountTreeModal');
+    if (modal) modal.style.display = 'flex';
+
+    renderAccountsTree();
+}
+
+function closeAccountTreeModal() {
+    const modal = document.getElementById('accountTreeModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function focusSelectedUserTree() {
+    if (selectedTreeUserId) {
+        currentTreeRootId = selectedTreeUserId;
+        closeAccountTreeModal();
+        renderAccountsTree();
+    }
+}
+
+function resetTreeRoot() {
+    currentTreeRootId = null;
+    selectedTreeUserId = null;
+    const searchInput = document.getElementById('treeSearchInput');
+    const roleSelect = document.getElementById('treeRoleFilter');
+    if (searchInput) searchInput.value = '';
+    if (roleSelect) roleSelect.value = 'All';
+    renderAccountsTree();
+}
+
+function filterAccountsTree(query = '') {
+    const searchInput = document.getElementById('treeSearchInput');
+    const q = (query || (searchInput ? searchInput.value : '')).toLowerCase().trim();
+
+    if (!q) {
+        renderAccountsTree();
+        return;
+    }
+
+    const filtered = (cachedUsers || []).filter(u => 
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        (u.referral_code && u.referral_code.toLowerCase().includes(q)) ||
+        (u.role_name && u.role_name.toLowerCase().includes(q))
+    );
+
+    renderAccountsTree(filtered);
+}
+
+// ==============================
+// LOAD USERS (Table & Tree Diagram)
 // ==============================
 async function loadUsers() {
     try {
         const tbody = document.querySelector('#usersTable tbody');
-        if (!tbody) return;
         
         const res = await fetch(`${API_URL}/users`, { 
             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } 
@@ -1231,39 +1473,43 @@ async function loadUsers() {
         
         const data = await res.json();
         cachedUsers = data;
-        
-        if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748B;padding:2rem;">No users found</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = data.map(u => {
-            let badgeBg = '#0369A1';
-            if (u.role_name === 'Admin') badgeBg = '#2563EB';
-            else if (u.role_name === 'Agency') badgeBg = '#0284C7';
-            else if (u.role_name === 'NGO') badgeBg = '#16A34A';
-            else if (u.role_name === 'Agent') badgeBg = '#EA580C';
-            else if (u.role_name === 'Member') badgeBg = '#7C3AED';
 
-            return `
-                <tr>
-                    <td><strong>${u.name || 'N/A'}</strong><br><small class="text-muted">${u.email || 'N/A'}</small></td>
-                    <td><span class="role-badge" style="background:${badgeBg};color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;">${u.role_name || 'User'}</span></td>
-                    <td>${u.phone || '-'}</td>
-                    <td>${u.created_by_name || 'System / Admin'}</td>
-                    <td>
-                        <button class="btn-sm btn-info" onclick="openDownlineModal(${u.id}, '${(u.name || '').replace(/'/g, "\\'")}')" style="background:#0F172A;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
-                            ${u.downline_count || 0} Members 🔍
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn-sm btn-info" onclick="openProfileModal(${u.id})" style="background:#2563EB;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
-                            📋 Details
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        // Render Tree Diagram
+        renderAccountsTree(data);
+        
+        if (tbody) {
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748B;padding:2rem;">No users found</td></tr>';
+            } else {
+                tbody.innerHTML = data.map(u => {
+                    let badgeBg = '#0369A1';
+                    if (u.role_name === 'Admin') badgeBg = '#2563EB';
+                    else if (u.role_name === 'Agency') badgeBg = '#0284C7';
+                    else if (u.role_name === 'NGO') badgeBg = '#16A34A';
+                    else if (u.role_name === 'Agent') badgeBg = '#EA580C';
+                    else if (u.role_name === 'Member') badgeBg = '#7C3AED';
+
+                    return `
+                        <tr>
+                            <td><strong>${u.name || 'N/A'}</strong><br><small class="text-muted">${u.email || 'N/A'}</small></td>
+                            <td><span class="role-badge" style="background:${badgeBg};color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;">${u.role_name || 'User'}</span></td>
+                            <td>${u.phone || '-'}</td>
+                            <td>${u.created_by_name || 'System / Admin'}</td>
+                            <td>
+                                <button class="btn-sm btn-info" onclick="selectTreeNode(${u.id}, event)" style="background:#0F172A;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
+                                    ${u.downline_count || 0} Members 🌳
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn-sm btn-info" onclick="selectTreeNode(${u.id}, event)" style="background:#2563EB;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
+                                    📋 Details
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
     } catch (error) {
         console.error('Error loading users:', error);
         const tbody = document.querySelector('#usersTable tbody');

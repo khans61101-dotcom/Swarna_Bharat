@@ -788,3 +788,202 @@ input[type="file"]::file-selector-button:hover {
   color: var(--text-muted);
   margin-bottom: 1rem;
 }
+
+/* ===== HIERARCHY TREE DIAGRAM STYLES ===== */
+.tree-viewport {
+  width: 100%;
+  overflow: auto;
+  padding: 3rem 2rem;
+  background: radial-gradient(circle, rgba(0,0,0,0.06) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  min-height: 560px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.03);
+}
+
+body.dark-theme .tree-viewport,
+body.dark-mode .tree-viewport {
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+.tree-root-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tree-node-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 0 14px;
+}
+
+.tree-node-card {
+  background: var(--bg-card, #ffffff);
+  border: 2.5px solid var(--border, #e2e8f0);
+  border-radius: 24px;
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 170px;
+  max-width: 220px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 2;
+}
+
+.tree-node-card:hover {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+.tree-node-card.selected {
+  transform: scale(1.06);
+  box-shadow: 0 18px 44px rgba(255, 153, 51, 0.3);
+  border-color: #FF9933 !important;
+}
+
+.tree-avatar-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  position: relative;
+  margin-bottom: 10px;
+  overflow: hidden;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.tree-avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tree-avatar-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: #ffffff;
+}
+
+.tree-rank-ribbon {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 1.3rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+}
+
+.tree-node-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.tree-node-role {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.tree-node-code {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-family: monospace;
+  font-weight: 700;
+}
+
+.tree-downline-tag {
+  font-size: 0.72rem;
+  color: #FF9933;
+  font-weight: 700;
+  margin-top: 6px;
+  background: rgba(255, 153, 51, 0.12);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+/* Connectors for Tree Hierarchy */
+.tree-children-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.tree-connector-line-v {
+  width: 2.5px;
+  height: 28px;
+  background: #334155;
+  border-radius: 2px;
+}
+
+.tree-children-row {
+  display: flex;
+  position: relative;
+  padding-top: 28px;
+}
+
+.tree-children-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 28px;
+  width: 2.5px;
+  background: #334155;
+  border-radius: 2px;
+}
+
+.tree-node-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -28px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: #334155;
+}
+
+.tree-node-wrapper:first-child::before {
+  left: 50%;
+}
+
+.tree-node-wrapper:last-child::before {
+  right: 50%;
+}
+
+.tree-node-wrapper:only-child::before {
+  display: none;
+}
