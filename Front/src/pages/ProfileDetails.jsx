@@ -24,9 +24,13 @@ const ProfilePage = ({ partner, setActiveTab }) => {
   const roleName = partner.role_name || 'User';
   const initials = displayName.substring(0, 2).toUpperCase();
 
-  // Grid items data come from API now
-  const gridItems = details.media && details.media.length > 0
-    ? details.media.map(m => {
+  // Grid items data based on activeMediaTab (self vs company)
+  const currentMediaList = activeMediaTab === 'company' 
+    ? (details.companyMedia || []) 
+    : (details.selfMedia || details.media || []);
+
+  const gridItems = currentMediaList.length > 0
+    ? currentMediaList.map(m => {
         const src = m.src || m.image || '';
         const isVideo = m.type === 'video' || src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov');
         return {
@@ -272,7 +276,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <span style={{ fontSize: '20px', fontWeight: 600, color: '#1a1c1c' }}>
-                {loadingDetails ? '...' : details.media.length}
+                {loadingDetails ? '...' : (details.selfMedia ? details.selfMedia.length : (details.media ? details.media.length : 0))}
               </span>
               <span style={{ fontSize: '10px', fontWeight: 500, color: '#454652', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Media</span>
             </div>

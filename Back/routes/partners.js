@@ -46,14 +46,29 @@ router.get('/:id/details', async (req, res) => {
     const usersCount = downlines.filter(d => d.role_name === 'User').length;
     const membersCount = downlines.filter(d => d.role_name === 'Member').length;
 
-    // 3. Media (Gallery)
-    const [media] = await db.query('SELECT * FROM gallery WHERE user_id = ? OR created_by = ? ORDER BY created_at DESC', [partnerId, partnerId]);
+    // 3. Self Media (Gallery items created by this partner)
+    const [selfMedia] = await db.query(
+      'SELECT * FROM gallery WHERE user_id = ? OR created_by = ? ORDER BY created_at DESC', 
+      [partnerId, partnerId]
+    );
+
+    // 4. Company Media (Gallery items created by Admin or Global CMS items)
+    const [companyMedia] = await db.query(`
+      SELECT g.*, u.name AS creator_name, r.name AS creator_role
+      FROM gallery g
+      LEFT JOIN users u ON (g.created_by = u.id OR g.user_id = u.id)
+      LEFT JOIN roles r ON u.role_id = r.id
+      WHERE g.created_by IS NULL OR r.name = 'Admin'
+      ORDER BY g.created_at DESC
+    `);
 
     res.json({
       taskCount,
       usersCount,
       membersCount,
-      media
+      media: selfMedia,
+      selfMedia,
+      companyMedia
     });
   } catch (error) {
     console.error('Error fetching partner details:', error);
