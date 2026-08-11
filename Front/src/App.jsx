@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Play, 
-  ChevronRight, 
-  ChevronLeft, 
+import {
+  Play,
+  ChevronRight,
+  ChevronLeft,
   ChevronDown,
-  Calendar, 
-  Clock, 
-  Video, 
-  Newspaper, 
+  Calendar,
+  Clock,
+  Video,
+  Newspaper,
   Search,
   ExternalLink,
   User,
@@ -173,7 +173,7 @@ const storyImages = [
 
 export default function App() {
   const { lang, toggleLang, t } = useLang();
-
+  const [openDropdown, setOpenDropdown] = useState(null);
   const [activeTab, setActiveTab] = useState('Home');
   const [selectedPartner, setSelectedPartner] = useState(null);
   const [selectedSector, setSelectedSector] = useState('rural');
@@ -291,7 +291,7 @@ export default function App() {
   return (
     <div className="app-main">
       {/* Top utility bar */}
-      <div className="top-bar">
+      <div className="top-bar section-bg-white" style={{ background: '#FFF' }}> 
         <div>{t.topBar}</div>
         <div className="top-bar-links">
           <span>{t.skipContent}</span> |
@@ -306,9 +306,9 @@ export default function App() {
       <header className="main-header">
         <div className="header-container">
           <div className="logo-section" onClick={() => setActiveTab('Home')} style={{ cursor: 'pointer' }}>
-            <img 
-              src={logoImg} 
-              alt="Swarna India Logo" 
+            <img
+              src={logoImg}
+              alt="Swarna India Logo"
               style={{
                 width: '52px',
                 height: '52px',
@@ -316,21 +316,21 @@ export default function App() {
                 objectFit: 'cover',
                 boxShadow: '0 4px 12px rgba(255, 153, 51, 0.4)',
                 border: '2px solid #FF9933'
-              }} 
+              }}
             />
             <div className="logo-title">
-              <h1>Swarna Bharat</h1> 
+              <h1>Swarna Bharat</h1>
               {/* <span>{lang === 'en' ? 'Welcome to Swarna Bharat' : 'सुवार्ड इंडिया में आपका स्वागत है'}</span> */}
             </div>
-          </div> 
+          </div>
 
           <nav>
             <ul className="nav-menu">
               {[
-                { key: 'Home',        label: t.nav.home },
-                { key: 'About',       label: t.nav.about },
-                { key: 'News',        label: t.nav.news },
-                { key: 'Events',      label: t.nav.events },
+                { key: 'Home', label: t.nav.home },
+                { key: 'About', label: t.nav.about },
+                { key: 'News', label: t.nav.news },
+                { key: 'Events', label: t.nav.events },
               ].map(({ key, label }) => (
                 <li
                   key={key}
@@ -341,118 +341,211 @@ export default function App() {
                 </li>
               ))}
 
-              {/* SECTORS DROPDOWN */}
-              <li
-                className={`nav-link ${activeTab === 'SectorDetails' ? 'active' : ''}`}
-                style={{ position: 'relative' }}
-                onMouseEnter={(e) => { const dd = e.currentTarget.querySelector('.sectors-dropdown'); if (dd) dd.style.display = 'block'; }}
-                onMouseLeave={(e) => { const dd = e.currentTarget.querySelector('.sectors-dropdown'); if (dd) dd.style.display = 'none'; }}
-              >
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                  {lang === 'en' ? 'Sectors' : 'क्षेत्र'} <ChevronDown size={14} />
-                </span>
-                <div className="sectors-dropdown" style={{
-                  display: 'none',
-                  position: 'absolute',
-                  top: '100%',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'var(--card-bg)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-                  minWidth: '220px',
-                  padding: '8px 0',
-                  zIndex: 1001,
-                  marginTop: '8px'
-                }}>
-                  {sectorDataList.map((sec) => (
-                    <div
-                      key={sec.id}
-                      onClick={() => {
-                        setSelectedSector(sec.id);
-                        setActiveTab('SectorDetails');
-                      }}
-                      style={{
-                        padding: '10px 18px',
-                        cursor: 'pointer',
-                        fontSize: '0.88rem',
-                        fontWeight: selectedSector === sec.id && activeTab === 'SectorDetails' ? 700 : 500,
-                        color: selectedSector === sec.id && activeTab === 'SectorDetails' ? sec.borderColor : 'var(--text-dark)',
-                        transition: 'background 0.2s'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-alt)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                    >
-                      {lang === 'en' ? sec.name : sec.nameHi}
-                    </div>
-                  ))}
-                </div>
-              </li>
+              
 
-              {/* MEDIA DROPDOWN: Videos + Gallery */}
-              <li
-                className={`nav-link ${activeTab === 'Videos' || activeTab === 'Gallery' ? 'active' : ''}`}
-                style={{ position: 'relative' }}
-                onMouseEnter={(e) => { const dd = e.currentTarget.querySelector('.media-dropdown'); if (dd) dd.style.display = 'block'; }}
-                onMouseLeave={(e) => { const dd = e.currentTarget.querySelector('.media-dropdown'); if (dd) dd.style.display = 'none'; }}
-              >
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                  {lang === 'en' ? 'Media' : 'मीडिया'} <ChevronDown size={14} />
-                </span>
-                <div className="media-dropdown" style={{
-                  display: 'none',
-                  position: 'absolute',
-                  top: '100%',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: 'var(--card-bg)',
-                  border: '1px solid var(--card-border)',
-                  borderRadius: '10px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
-                  minWidth: '190px',
-                  padding: '8px 0',
-                  zIndex: 1001,
-                  marginTop: '8px'
-                }}>
-                  <div
-                    onClick={() => setActiveTab('Videos')}
-                    style={{
-                      padding: '10px 20px',
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      cursor: 'pointer',
-                      color: activeTab === 'Videos' ? '#FF9933' : 'var(--text-dark)',
-                      fontWeight: activeTab === 'Videos' ? 700 : 500,
-                      fontSize: '0.9rem',
-                      transition: 'background 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-alt)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <Video size={16} /> {t.nav.videos}
-                  </div>
-                  <div
-                    onClick={() => setActiveTab('Gallery')}
-                    style={{
-                      padding: '10px 20px',
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      cursor: 'pointer',
-                      color: activeTab === 'Gallery' ? '#FF9933' : 'var(--text-dark)',
-                      fontWeight: activeTab === 'Gallery' ? 700 : 500,
-                      fontSize: '0.9rem',
-                      transition: 'background 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-alt)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <Image size={16} /> {lang === 'en' ? 'Gallery' : 'गैलरी'}
-                  </div>
-                </div>
-              </li>
+              {/* SECTORS DROPDOWN */}
+<li
+  className={`nav-link ${activeTab === 'SectorDetails' ? 'active' : ''}`}
+  style={{ position: 'relative' }}
+>
+  <span
+    onClick={() =>
+      setOpenDropdown(
+        openDropdown === 'sectors' ? null : 'sectors'
+      )
+    }
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px',
+      cursor: 'pointer'
+    }}
+  >
+    {lang === 'en' ? 'Sectors' : 'क्षेत्र'}
+    <ChevronDown
+      size={14}
+      style={{
+        transform:
+          openDropdown === 'sectors'
+            ? 'rotate(180deg)'
+            : 'rotate(0deg)',
+        transition: 'transform 0.2s'
+      }}
+    />
+  </span>
+
+  {openDropdown === 'sectors' && (
+    <div
+      className="sectors-dropdown"
+      style={{
+        position: 'absolute',
+        top: '100%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: 'var(--card-bg)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '12px',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
+        minWidth: '220px',
+        padding: '8px 0',
+        zIndex: 1001,
+        marginTop: '8px'
+      }}
+    >
+      {sectorDataList.map((sec) => (
+        <div
+          key={sec.id}
+          onClick={() => {
+            setSelectedSector(sec.id);
+            setActiveTab('SectorDetails');
+          }}
+          style={{
+            padding: '10px 18px',
+            cursor: 'pointer',
+            fontSize: '0.88rem',
+            fontWeight:
+              selectedSector === sec.id &&
+              activeTab === 'SectorDetails'
+                ? 700
+                : 500,
+            color:
+              selectedSector === sec.id &&
+              activeTab === 'SectorDetails'
+                ? sec.borderColor
+                : 'var(--text-dark)',
+            transition: 'background 0.2s'
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = 'var(--bg-alt)')
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = 'transparent')
+          }
+        >
+          {lang === 'en' ? sec.name : sec.nameHi}
+        </div>
+      ))}
+    </div>
+  )}
+</li>
+
+
+{/* MEDIA DROPDOWN */}
+<li
+  className={`nav-link ${
+    activeTab === 'Videos' || activeTab === 'Gallery'
+      ? 'active'
+      : ''
+  }`}
+  style={{ position: 'relative' }}
+>
+  <span
+    onClick={() =>
+      setOpenDropdown(
+        openDropdown === 'media' ? null : 'media'
+      )
+    }
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px',
+      cursor: 'pointer'
+    }}
+  >
+    {lang === 'en' ? 'Media' : 'मीडिया'}
+
+    <ChevronDown
+      size={14}
+      style={{
+        transform:
+          openDropdown === 'media'
+            ? 'rotate(180deg)'
+            : 'rotate(0deg)',
+        transition: 'transform 0.2s'
+      }}
+    />
+  </span>
+
+  {openDropdown === 'media' && (
+    <div
+      className="media-dropdown"
+      style={{
+        position: 'absolute',
+        top: '100%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: 'var(--card-bg)',
+        border: '1px solid var(--card-border)',
+        borderRadius: '10px',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
+        minWidth: '190px',
+        padding: '8px 0',
+        zIndex: 1001,
+        marginTop: '8px'
+      }}
+    >
+      <div
+        onClick={() => setActiveTab('Videos')}
+        style={{
+          padding: '10px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          cursor: 'pointer',
+          color:
+            activeTab === 'Videos'
+              ? '#FF9933'
+              : 'var(--text-dark)',
+          fontWeight:
+            activeTab === 'Videos' ? 700 : 500,
+          fontSize: '0.9rem',
+          transition: 'background 0.2s'
+        }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.background = 'var(--bg-alt)')
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.background = 'transparent')
+        }
+      >
+        <Video size={16} />
+        {t.nav.videos}
+      </div>
+
+      <div
+        onClick={() => setActiveTab('Gallery')}
+        style={{
+          padding: '10px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          cursor: 'pointer',
+          color:
+            activeTab === 'Gallery'
+              ? '#FF9933'
+              : 'var(--text-dark)',
+          fontWeight:
+            activeTab === 'Gallery' ? 700 : 500,
+          fontSize: '0.9rem',
+          transition: 'background 0.2s'
+        }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.background = 'var(--bg-alt)')
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.background = 'transparent')
+        }
+      >
+        <Image size={16} />
+        {lang === 'en' ? 'Gallery' : 'गैलरी'}
+      </div>
+    </div>
+  )}
+</li>  
 
               {[
-                { key: 'Enquiry',     label: t.nav.enquiry },
-                { key: 'Partners',    label: t.nav.partners || 'Partners' },
+                { key: 'Enquiry', label: t.nav.enquiry },
+                { key: 'Partners', label: t.nav.partners || 'Partners' },
                 { key: 'DownloadApp', label: t.nav.downloadApp },
                 { key: userState || localStorage.getItem('userToken') ? 'Dashboard' : 'Auth', label: userState || localStorage.getItem('userToken') ? 'Dashboard' : t.nav.loginRegister },
               ].map(({ key, label }) => (
@@ -467,11 +560,11 @@ export default function App() {
             </ul>
           </nav>
 
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}> 
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             {/* <Search size={20} style={{ cursor: 'pointer', color: 'var(--nav-text)' }} /> */}
 
             {/* Language Toggle Button */}
-               
+
 
             {/* Dark Mode Toggle Button */}
             <button
@@ -479,7 +572,7 @@ export default function App() {
               onClick={toggleDarkMode}
               title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               aria-label="Toggle dark mode"
-              >
+            >
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
           </div>
@@ -487,58 +580,58 @@ export default function App() {
       </header>
 
       {/* Main Dynamic View Content */}
-      {activeTab === 'About'       && <AboutPage />}
-      {activeTab === 'News'        && <NewsPage />}
-      {activeTab === 'Events'      && <EventsPage />}
-      {activeTab === 'Videos'      && <VideosPage />}
-      {activeTab === 'Gallery'     && <GalleryPage />}
-      {activeTab === 'Enquiry'     && <EnquiryPage />}
+      {activeTab === 'About' && <AboutPage />}
+      {activeTab === 'News' && <NewsPage />}
+      {activeTab === 'Events' && <EventsPage />}
+      {activeTab === 'Videos' && <VideosPage />}
+      {activeTab === 'Gallery' && <GalleryPage />}
+      {activeTab === 'Enquiry' && <EnquiryPage />}
       {activeTab === "Partners" && (
-  <PartnersPage
-    setActiveTab={setActiveTab}
-    setSelectedPartner={setSelectedPartner}
-  />
-)}  
-{activeTab === "PartnerDetails" && (
-  <ProfileDetails
-    partner={selectedPartner}
-    setActiveTab={setActiveTab}
-  />
-)}
-{activeTab === "SectorDetails" && (
-  <SectorPage
-    initialSectorId={selectedSector}
-    setActiveTab={setActiveTab}
-  />
-)}
+        <PartnersPage
+          setActiveTab={setActiveTab}
+          setSelectedPartner={setSelectedPartner}
+        />
+      )}
+      {activeTab === "PartnerDetails" && (
+        <ProfileDetails
+          partner={selectedPartner}
+          setActiveTab={setActiveTab}
+        />
+      )}
+      {activeTab === "SectorDetails" && (
+        <SectorPage
+          initialSectorId={selectedSector}
+          setActiveTab={setActiveTab}
+        />
+      )}
 
       {activeTab === 'DownloadApp' && <DownloadAppPage />}
-      {activeTab === 'Auth'        && <AuthPage initialMode={authMode} onAuthSuccess={(name) => { setUserState(name); setActiveTab('Dashboard'); }} />}
-      {activeTab === 'Dashboard'   && <Dashboard setActiveTab={setActiveTab} setUserState={setUserState} />}
+      {activeTab === 'Auth' && <AuthPage initialMode={authMode} onAuthSuccess={(name) => { setUserState(name); setActiveTab('Dashboard'); }} />}
+      {activeTab === 'Dashboard' && <Dashboard setActiveTab={setActiveTab} setUserState={setUserState} />}
 
       {activeTab === 'Home' && (
         <>
           {/* Dynamic Hero Video Banner Section */}
           <section className="banner-section" style={{ position: 'relative', overflow: 'hidden', minHeight: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-           <video
-  autoPlay
-  loop
-  muted
-  playsInline
-  key={heroVideoSrc}
-  style={{
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    transform: 'translate(-50%, -50%)',
-    filter: 'brightness(1.4)', 
-    zIndex: 0
-  }}
-  src={heroVideoSrc}
-/>  
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              key={heroVideoSrc}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: 'translate(-50%, -50%)',
+                filter: 'brightness(1.4)',
+                zIndex: 0
+              }}
+              src={heroVideoSrc}
+            />
             <div className="banner-overlay" style={{ background: 'linear-gradient(180deg, rgba(11, 43, 74, 0.75) 0%, rgba(11, 43, 74, 0.88) 100%)', zIndex: 1 }}></div>
 
             <div className="section-container banner-content" style={{ position: 'relative', zIndex: 2, padding: '60px 20px', textAlign: 'center', maxWidth: '920px', margin: '0 auto', color: '#FFF' }}>
@@ -552,8 +645,8 @@ export default function App() {
                 {heroSubtitle}
               </p>
               <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button 
-                  className="btn-primary" 
+                <button
+                  className="btn-primary"
                   onClick={() => setActiveTab(heroBtn1Link)}
                   style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', border: 'none', padding: '14px 34px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(255, 153, 51, 0.4)' }}
                 >
@@ -561,7 +654,7 @@ export default function App() {
                 </button>
 
                 {heroBtn2Text && (
-                  <button 
+                  <button
                     onClick={() => setActiveTab(heroBtn2Link)}
                     style={{ background: 'rgba(255, 255, 255, 0.15)', color: '#FFF', border: '1px solid rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(10px)', padding: '14px 32px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                   >
@@ -574,7 +667,7 @@ export default function App() {
             {/* Slider Manual Navigation Arrows & Dots */}
             {activeBanners.length > 1 && (
               <>
-                <button 
+                <button
                   onClick={prevSlide}
                   style={{ position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', color: '#FFF', width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', transition: 'all 0.2s ease' }}
                   title="Previous Banner"
@@ -582,7 +675,7 @@ export default function App() {
                   <ChevronLeft size={24} />
                 </button>
 
-                <button 
+                <button
                   onClick={nextSlide}
                   style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', color: '#FFF', width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', transition: 'all 0.2s ease' }}
                   title="Next Banner"
@@ -611,13 +704,13 @@ export default function App() {
                 </div>
               </>
             )}
-          </section>  
+          </section>
 
           <section className="marquee-section overflow-hidden w-full py-3" style={{ borderTop: '1px solid var(--card-border)', borderBottom: '1px solid var(--card-border)' }}>
-  <div className="animate-marquee whitespace-nowrap" style={{ fontWeight: 600 }}>
-    Hello 👋 Welcome to Swarna Bharat • Youth Power & Cultural Revival • Education • Digital Empowerment 🚀
-  </div>
-</section> 
+            <div className="animate-marquee whitespace-nowrap" style={{ fontWeight: 600 }}>
+              Hello 👋 Welcome to Swarna Bharat • Youth Power & Cultural Revival • Education • Digital Empowerment 🚀
+            </div>
+          </section>
 
 
 
@@ -625,7 +718,7 @@ export default function App() {
           <section className="section-bg-faf7f2" style={{ background: '#FAF7F2', padding: '40px 20px', borderBottom: '1px solid #E5E0D8' }}>
             <div style={{ maxWidth: '1350px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '25px 35px' }}>
               {t.pillars.map((title, index) => (
-                <div 
+                <div
                   key={index}
                   onClick={() => {
                     setSelectedSector(sectorIds[index] || 'rural');
@@ -698,7 +791,7 @@ export default function App() {
                 {/* Right Side Stacked Event Cards */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                   {[1, 2].map((i) => (
-                    <div 
+                    <div
                       key={i}
                       className="dark-card"
                       style={{ background: '#FFF', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: '1.2fr 1fr', transition: 'transform 0.3s ease', cursor: 'pointer' }}
@@ -734,7 +827,7 @@ export default function App() {
           </section>
 
           {/* Impact Counter Bar */}
-          <section className="impact-counter-bar">
+          <section className="impact-counter-bar section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
             <div className="impact-counter-grid">
               {t.metrics.map((item, index) => (
                 <div key={index} className="impact-counter-item">
@@ -780,7 +873,7 @@ export default function App() {
           </section>
 
           {/* Video Section */}
-          <section className="video-section-bg">
+          <section className="video-section-bg section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
             <div className="section-container">
               <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
                 <div className="section-title-wrap">
@@ -789,9 +882,9 @@ export default function App() {
                   </h2>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                  <a 
+                  <a
                     href="https://www.youtube.com/@%E0%A4%B5%E0%A4%BF%E0%A4%B6%E0%A5%8D%E0%A4%B5%E0%A4%97%E0%A5%81%E0%A4%B0%E0%A5%81%E0%A4%AD%E0%A4%BE%E0%A4%B0%E0%A4%A4%E0%A4%85%E0%A4%AD%E0%A4%BF%E0%A4%AF%E0%A4%BE%E0%A4%A8"
-                    target="_blank" 
+                    target="_blank"
                     rel="noopener noreferrer"
                     style={{
                       background: '#FF0000',
@@ -862,14 +955,14 @@ export default function App() {
               <h3 style={{ fontSize: '1.2rem', margin: '30px 0 15px', color: '#CBD5E1' }}>{t.moreVideos}</h3>
               <div className="video-grid">
                 {homeVideosList.map((vid) => (
-                  <div 
-                    key={vid.id} 
+                  <div
+                    key={vid.id}
                     className="video-card"
                     onClick={() => { setSelectedVideo(vid); setIsPlaying(true); window.scrollTo({ top: 450, behavior: 'smooth' }); }}
                   >
                     <div className="video-card-thumb">
-                      <img 
-                        src={vid.thumb} 
+                      <img
+                        src={vid.thumb}
                         alt={vid.title}
                         onError={(e) => {
                           e.target.onerror = null;
@@ -927,7 +1020,7 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <footer>
+      <footer className="section-bg-f1f5f9" style={{ background: '#F1F5F9' }}>
         <div className="footer-container">
           <div className="footer-col">
             <h3>{t.footer.quickLinks}</h3>

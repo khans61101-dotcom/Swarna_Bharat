@@ -321,10 +321,16 @@ function setupDashboard(user) {
     const userNameEl = document.getElementById('userName');
     const userRoleEl = document.getElementById('userRole');
     const headerUserEl = document.getElementById('headerUser');
+    const sidebarUserName = document.getElementById('sidebarUserName');
+    const sidebarUserRole = document.getElementById('sidebarUserRole');
+    const sidebarAvatar = document.getElementById('sidebarAvatar');
     
     if (userNameEl) userNameEl.textContent = user.name || 'User';
     if (userRoleEl) userRoleEl.textContent = user.role || 'User';
     if (headerUserEl) headerUserEl.textContent = `👋 ${user.name || 'User'}  ·  ${user.role || 'User'}`;
+    if (sidebarUserName) sidebarUserName.textContent = user.name || 'Admin';
+    if (sidebarUserRole) sidebarUserRole.textContent = user.role || 'Administrator';
+    if (sidebarAvatar) sidebarAvatar.textContent = (user.name || 'AD').substring(0, 2).toUpperCase();
 
     // Setup role select
     const targetRoleSelect = document.getElementById('targetRole');

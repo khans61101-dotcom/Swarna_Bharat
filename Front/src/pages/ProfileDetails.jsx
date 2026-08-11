@@ -267,7 +267,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
           position: 'relative',
           width: '100%',
           backgroundColor: 'var(--bg-light)'
-        }}>
+         }}>
           {/* Cover Image Container */}
           <div style={{
             width: '100%',
@@ -332,7 +332,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
             marginTop: '-64px',
             paddingBottom: '24px',
             borderBottom: '1px solid #e2e2e2'
-          }} className="md:-mt-24">
+           }} className="md:-mt-24">
             {/* Avatar & Action Buttons Row */}
             <div style={{
               display: 'flex',
@@ -351,7 +351,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 overflow: 'hidden',
                 zIndex: 10,
                 boxShadow: '0 4px 15px rgba(0,0,0,0.12)'
-              }} className="md:w-40 md:h-40">
+               }} className="md:w-40 md:h-40">
                 {displayImage ? (
                   <img 
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -427,7 +427,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px'
-              }}>
+               }}>
                 {roleName}
                 <span className="material-symbols-outlined" style={{
                   color: '#fec330',
@@ -439,7 +439,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 color: '#1a1c1c',
                 maxWidth: '672px',
                 lineHeight: '1.625'
-              }}>
+               }}>
                 {targetPartner.address || targetPartner.city ? (
                   <>
                     <span className="material-symbols-outlined" style={{ fontSize: '16px', verticalAlign: 'middle', marginRight: '4px' }}>location_on</span>

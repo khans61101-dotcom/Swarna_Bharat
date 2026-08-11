@@ -169,95 +169,216 @@
       transform: translateY(-1px);
     }
 
-    /* ----- LAYOUT CONTAINER ----- */
-    .layout-container {
+    /* ----- APP LAYOUT WRAPPER ----- */
+    .app-layout {
       display: flex;
-      gap: 0;
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 1.5rem 2rem 2.5rem;
-      min-height: calc(100vh - 80px);
+      min-height: 100vh;
+      width: 100%;
+      background: #f4f7fa;
+      position: relative;
     }
 
-    /* ----- SIDEBAR — premium glass with micro-interactions ----- */
+    /* ----- SIDEBAR — fixed full height modern sidebar ----- */
     .sidebar {
-      width: 248px;
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.65);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      border-radius: 32px;
-      padding: 1.6rem 1.2rem;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      box-shadow: 0 16px 40px -16px rgba(0, 20, 40, 0.06);
-      margin-right: 2rem;
-      height: fit-content;
-      position: sticky;
-      top: 100px;
-      transition: box-shadow 0.2s;
+      width: 270px;
+      min-width: 270px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      padding: 1.2rem 0.9rem;
+      overflow-y: auto;
+      box-shadow: 4px 0 25px rgba(0, 20, 40, 0.03);
+      transition: all 0.25s ease;
     }
-    .sidebar:hover {
-      box-shadow: 0 20px 48px -20px rgba(0, 20, 40, 0.1);
+
+    /* Sidebar Brand Header */
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.4rem 0.6rem 1.2rem;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 0.8rem;
+    }
+    .brand-logo-emblem {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #FF9933, #FF6B00);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 16px rgba(255, 153, 51, 0.35);
+      flex-shrink: 0;
+    }
+    .brand-text h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #0b2b4a;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+    .brand-text h2 span {
+      background: #1a4b6d;
+      color: white;
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .brand-text small {
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 500;
+      display: block;
+      margin-top: 2px;
     }
 
     .sidebar-section-label {
-      font-size: 0.6rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 0.9px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       color: #94a3b8;
-      padding: 0.9rem 0.5rem 0.4rem;
+      padding: 0.9rem 0.8rem 0.3rem;
     }
 
     .sidebar-divider {
       height: 1px;
-      background: linear-gradient(to right, #e2e8f0, transparent);
-      margin: 0.6rem 0;
+      background: #f1f5f9;
+      margin: 0.4rem 0;
     }
 
     .sidebar-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 0.7rem 1rem;
-      border-radius: 18px;
+      gap: 12px;
+      padding: 0.72rem 1rem;
+      border-radius: 14px;
       font-weight: 500;
-      font-size: 0.9rem;
-      color: #334155;
+      font-size: 0.92rem;
+      color: #475569;
       cursor: pointer;
-      transition: all 0.18s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       margin: 2px 0;
       position: relative;
     }
     .sidebar-item .icon {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       width: 1.8rem;
       text-align: center;
-      opacity: 0.8;
-      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
     }
     .sidebar-item:hover {
-      background: rgba(241, 246, 252, 0.7);
-      color: #0b2b4a;
-      transform: translateX(3px);
+      background: rgba(255, 153, 51, 0.09);
+      color: #e67e00;
+      transform: translateX(4px);
     }
     .sidebar-item:hover .icon {
-      opacity: 1;
+      transform: scale(1.15);
     }
     .sidebar-item.active {
-      background: #0b2b4a;
-      color: white;
-      box-shadow: 0 6px 20px rgba(11, 43, 74, 0.18);
+      background: linear-gradient(135deg, #FF9933 0%, #FF6B00 100%) !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      box-shadow: 0 6px 18px rgba(255, 153, 51, 0.32) !important;
       transform: translateX(0);
     }
     .sidebar-item.active .icon {
-      opacity: 1;
-      filter: brightness(0) invert(1);
+      filter: none;
     }
 
-    /* ----- MAIN CONTENT ----- */
+    /* Sidebar Bottom Admin User Profile Card */
+    .sidebar-user-card {
+      margin-top: auto;
+      padding: 10px 14px;
+      background: rgba(248, 250, 252, 0.9);
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 1.2rem;
+    }
+    .sidebar-user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0b2b4a, #1a4b6d);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(11,43,74,0.2);
+    }
+    .sidebar-user-info {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .sidebar-user-name {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #0b2b4a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-user-role {
+      display: block;
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* ----- MAIN WRAPPER & HEADER ----- */
+    .main-wrapper {
+      margin-left: 270px;
+      width: calc(100% - 270px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f4f7fa;
+    }
+
+    .header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+
+    /* ----- MAIN CONTENT AREA ----- */
     .main-content {
       flex: 1;
+      padding: 2rem 2.2rem 3rem;
+      min-width: 0;
+    }
       min-width: 0;
     }
 
@@ -599,22 +720,23 @@
       transform: rotate(90deg) scale(1.1);
     }
 
-    /* ----- RESPONSIVE — flawless on all devices ----- */
+    /* ----- RESPONSIVE ----- */
     @media screen and (max-width: 1024px) {
-      .layout-container { flex-direction: column; gap: 1.8rem; }
+      .app-layout { flex-direction: column; }
       .sidebar {
         width: 100%;
+        height: auto;
         position: static;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.2rem;
-        padding: 1rem 1.2rem;
-        backdrop-filter: none;
-        background: rgba(255,255,255,0.8);
-        border-radius: 28px;
+        padding: 1rem;
+        box-shadow: none;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
       }
-      .sidebar-section-label, .sidebar-divider { display: none; }
-      .sidebar-item { flex: 0 0 auto; padding: 0.45rem 1.2rem; }
+      .main-wrapper {
+        margin-left: 0;
+        width: 100%;
+      }
+      .sidebar-brand { margin-bottom: 0.4rem; }
       .grid-2 { grid-template-columns: 1fr; }
       .form-grid-2 { grid-template-columns: 1fr; }
     }
@@ -815,114 +937,136 @@
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>SwarnaIndia CMS</h1>
-    <div class="header-right">
-      <span id="headerUser" style="color:#8D96A0; font-size:0.9rem;">Loading...</span>
-      <label class="theme-label" title="Toggle Light/Dark Mode">
-        🌙
-        <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-          <div class="theme-toggle-thumb" id="themeThumb">🌙</div>
+  <div class="app-layout">
+    <!-- Fixed Left Sidebar -->
+    <aside class="sidebar">
+      <!-- Brand Logo Header -->
+      <div class="sidebar-brand">
+        <div class="brand-logo-emblem">⚡</div>
+        <div class="brand-text">
+          <h2>SwarnaIndia <span>CMS</span></h2>
+          <small>Government Portal v2</small>
         </div>
-        ☀️
-      </label>
-      <button class="logout-btn" onclick="logout()">🚪 Logout</button>
-    </div>
-  </div>
+      </div>
 
-  <div class="layout-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
+      <!-- Navigation Section Items -->
+      <div class="sidebar-section-label">HOME</div>
+      <div class="sidebar-item active"
+           data-tab="overviewTab"
+           onclick="switchTab('overviewTab', this)">
+          <span class="icon">📊</span> <span>Dashboard</span>
+      </div>
 
-    <div class="sidebar-section-label">Main</div>
-    <div class="sidebar-item"
-         data-tab="overviewTab"
-         onclick="switchTab('overviewTab', this)">
-        <span class="icon">📊</span> Dashboard
-    </div>
+      <div class="sidebar-divider"></div>
 
-    <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">MANAGEMENT</div>
 
-    <div class="sidebar-section-label">Management</div>
+      <div class="sidebar-item"
+           data-tab="usersTab"
+           onclick="switchTab('usersTab', this)">
+          <span class="icon">👥</span> <span>Accounts</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="usersTab"
-         onclick="switchTab('usersTab', this)">
-        <span class="icon">👥</span> Accounts
-    </div>
+      <div class="sidebar-item" id="sidebarTasksItem"
+           data-tab="tasksTab"
+           onclick="switchTab('tasksTab', this)">
+          <span class="icon">✅</span> <span>Tasks</span>
+      </div>
 
-    <div class="sidebar-item" id="sidebarTasksItem"
-         data-tab="tasksTab"
-         onclick="switchTab('tasksTab', this)">
-        <span class="icon">✅</span> Tasks
-    </div>
+      <div class="sidebar-item" id="sidebarMyTasksItem" style="display: none;"
+           data-tab="myTasksTab"
+           onclick="switchTab('myTasksTab', this)">
+          <span class="icon">🎯</span> <span>My Tasks</span>
+      </div>
 
-    <div class="sidebar-item" id="sidebarMyTasksItem" style="display: none;"
-         data-tab="myTasksTab"
-         onclick="switchTab('myTasksTab', this)">
-        <span class="icon">🎯</span> My Tasks
-    </div>
+      <div class="sidebar-divider"></div>
 
-    <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">CMS CONTENT</div>
 
-    <div class="sidebar-section-label">Content (CMS)</div>
+      <div class="sidebar-item"
+           data-tab="newsTab"
+           onclick="switchTab('newsTab', this)">
+          <span class="icon">📰</span> <span>News Articles</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="newsTab"
-         onclick="switchTab('newsTab', this)">
-        <span class="icon">📰</span> News
-    </div>
+      <div class="sidebar-item"
+           data-tab="eventsTab"
+           onclick="switchTab('eventsTab', this)">
+          <span class="icon">📅</span> <span>Events Calendar</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="eventsTab"
-         onclick="switchTab('eventsTab', this)">
-        <span class="icon">📅</span> Events
-    </div>
+      <div class="sidebar-item"
+           data-tab="galleryTab"
+           onclick="switchTab('galleryTab', this)">
+          <span class="icon">🖼️</span> <span>Photo Gallery</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="galleryTab"
-         onclick="switchTab('galleryTab', this)">
-        <span class="icon">🖼️</span> Gallery
-    </div>
+      <div class="sidebar-item"
+           data-tab="blogsTab"
+           onclick="switchTab('blogsTab', this)">
+          <span class="icon">✍️</span> <span>Blogs & Posts</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="blogsTab"
-         onclick="switchTab('blogsTab', this)">
-        <span class="icon">✍️</span> Blogs
-    </div>
+      <div class="sidebar-item"
+           data-tab="enquiriesTab"
+           onclick="switchTab('enquiriesTab', this)">
+          <span class="icon">📩</span> <span>User Enquiries</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="enquiriesTab"
-         onclick="switchTab('enquiriesTab', this)">
-        <span class="icon">📩</span> Enquiries
-    </div>
+      <div class="sidebar-item"
+           data-tab="heroTab"
+           onclick="switchTab('heroTab', this)">
+          <span class="icon">🎬</span> <span>Hero Video Banner</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="heroTab"
-         onclick="switchTab('heroTab', this)">
-        <span class="icon">🎬</span> Hero Banner Video
-    </div>
+      <div class="sidebar-divider"></div>
 
-    <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">MY ACCOUNT</div>
 
-    <div class="sidebar-section-label">Account</div>
+      <div class="sidebar-item"
+           data-tab="profileTab"
+           onclick="switchTab('profileTab', this)">
+          <span class="icon">👤</span> <span>My Profile</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="profileTab"
-         onclick="switchTab('profileTab', this)">
-        <span class="icon">👤</span> My Profile
-    </div>
+      <div class="sidebar-item"
+           data-tab="settingsTab"
+           onclick="switchTab('settingsTab', this)">
+          <span class="icon">⚙️</span> <span>CMS Settings</span>
+      </div>
 
-    <div class="sidebar-item"
-         data-tab="settingsTab"
-         onclick="switchTab('settingsTab', this)">
-        <span class="icon">⚙️</span> Settings
-    </div>
+      <!-- Bottom Admin Profile Widget -->
+      <div class="sidebar-user-card">
+        <div class="sidebar-user-avatar" id="sidebarAvatar">AD</div>
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name" id="sidebarUserName">Admin User</span>
+          <span class="sidebar-user-role" id="sidebarUserRole">Administrator</span>
+        </div>
+        <button onclick="logout()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; color:#f87171;" title="Logout">🚪</button>
+      </div>
+    </aside>
 
-</div>
+    <!-- Main Wrapper (Header + Content) -->
+    <div class="main-wrapper">
+      <header class="header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="background:rgba(255,153,51,0.15); color:#FF9933; font-weight:700; font-size:0.8rem; padding:4px 14px; border-radius:30px; display:inline-flex; align-items:center; gap:6px;">⚡ SwarnaIndia CMS Dashboard</span>
+        </div>
+        <div class="header-right">
+          <span id="headerUser" style="color:#8D96A0; font-size:0.9rem;">Loading...</span>
+          <label class="theme-label" title="Toggle Light/Dark Mode">
+            🌙
+            <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+              <div class="theme-toggle-thumb" id="themeThumb">🌙</div>
+            </div>
+            ☀️
+          </label>
+          <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        </div>
+      </header>
 
-    <!-- Main Content Area -->
-    <div class="main-content">
+      <!-- Main Content Area -->
+      <div class="main-content">
       <div class="dashboard-header">
         <div>
           <h2>Welcome, <span id="userName">User</span> <span id="userRole" class="role-badge">Role</span></h2>
@@ -1734,7 +1878,9 @@
         <!-- Dynamic content filled via JS -->
       </div>
     </div>
-  </div>
+      </div> <!-- /.main-content -->
+    </div> <!-- /.main-wrapper -->
+  </div> <!-- /.app-layout -->
 
   <!-- Assign Task Modal -->
   <div id="assignTaskModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
