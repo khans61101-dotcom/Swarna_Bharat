@@ -1,0 +1,87 @@
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const router = express.Router();
+
+// ── Ensure upload directories exist ────────────────────────────────────────
+const uploadDir      = path.join(__dirname, '../public/uploads');
+const proofUploadDir = path.join(__dirname, '../public/uploads/proofs');
+
+[uploadDir, proofUploadDir].forEach(dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+});
+
+// ── Generic image upload (existing) ────────────────────────────────────────
+const imageStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, 'img-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const imageUpload = multer({
+  storage: imageStorage,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50 MB
+});
+
+// ── Proof upload (image / PDF) ──────────────────────────────────────────────
+const proofStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, proofUploadDir),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, 'proof-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf', 'video/mp4', 'video/webm', 'video/quicktime'];
+
+const proofUpload = multer({
+  storage: proofStorage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB for media/proofs
+  fileFilter: (req, file, cb) => {
+    if (ALLOWED_MIME.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only images, PDFs, and videos (MP4/WebM/MOV) are allowed.'), false);
+    }
+  }
+});
+
+const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+
+// ── POST /api/upload  ── generic image upload ──────────────────────────────
+router.post('/', imageUpload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  const fileUrl = `/uploads/${req.file.filename}`;
+  res.json({ imageUrl: `${baseUrl}${fileUrl}`, url: fileUrl });
+});
+
+// ── POST /api/upload/proof  ── task proof upload (image or PDF) ────────────
+router.post('/proof', (req, res, next) => {
+  proofUpload.single('proof_file')(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: `Upload error: ${err.message}` });
+    } else if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    next();
+  });
+}, (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+  const fileUrl   = `/uploads/proofs/${req.file.filename}`;
+  const publicUrl = `${baseUrl}${fileUrl}`;
+  const isImage   = req.file.mimetype.startsWith('image/');
+
+  res.json({
+    url:       fileUrl,
+    publicUrl,
+    filename:  req.file.filename,
+    mimetype:  req.file.mimetype,
+    size:      req.file.size,
+    type:      isImage ? 'image' : 'pdf'
+  });
+});
+
+module.exports = router;

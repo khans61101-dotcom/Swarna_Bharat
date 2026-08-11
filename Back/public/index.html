@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login – SwarnaIndia Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Apply saved theme immediately to prevent flash -->
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('light-mode-pre');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="header" style="justify-content: space-between;">
+    <h1>⚡ SwarnaIndia CMS</h1>
+    <label class="theme-label" title="Toggle Light/Dark Mode">
+      🌙
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <div class="theme-toggle-thumb" id="themeThumb">🌙</div>
+      </div>
+      ☀️
+    </label>
+  </div>
+
+  <div class="login-wrapper">
+    <!-- View 1: Login Card -->
+    <div class="login-card" id="loginCard">
+      <div class="profile-avatar" style="width:64px;height:64px;font-size:1.6rem;margin-bottom:1rem;">🔐</div>
+      <h2>Welcome Back</h2>
+      <p class="login-subtitle">Sign in to the CMS Control Panel</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" required placeholder="admin@swarnaindia.in">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" required placeholder="••••••••">
+        </div>
+        <div style="text-align: right; margin-top: -6px; margin-bottom: 1.2rem;">
+          <a href="#" onclick="showForgotStep(1); return false;" style="color: #3b82f6; font-size: 0.85rem; font-weight: 600; text-decoration: none;">Forgot Password?</a>
+        </div>
+        <button type="submit" class="btn">Sign In Securely</button>
+        <div id="loginError" class="error-msg"></div>
+      </form>
+    </div>
+
+    <!-- View 2: Forgot Password Card (Step 1 & Step 2) -->
+    <div class="login-card" id="forgotCard" style="display: none;">
+      <!-- Forgot Step 1: Email Input Page -->
+      <div id="forgotStep1">
+        <div class="profile-avatar" style="width:64px;height:64px;font-size:1.6rem;margin-bottom:1rem;">🔑</div>
+        <h2>Reset Password</h2>
+        <p class="login-subtitle">Enter your registered email to receive a verification OTP</p>
+        <form id="forgotForm1">
+          <div class="form-group">
+            <label>Registered Email Address</label>
+            <input type="email" id="forgotEmail" required placeholder="admin@swarnaindia.in">
+          </div>
+          <button type="submit" class="btn" id="sendOtpBtn">Send Verification OTP</button>
+          <div id="forgotMsg1" class="error-msg"></div>
+          <div style="margin-top: 1.2rem; text-align: center;">
+            <a href="#" onclick="showLoginCard(); return false;" style="color: #64748b; font-size: 0.85rem; font-weight: 500; text-decoration: none;">← Back to Login</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Forgot Step 2: OTP + New Password & Confirm Password Page -->
+      <div id="forgotStep2" style="display: none;">
+        <div class="profile-avatar" style="width:64px;height:64px;font-size:1.6rem;margin-bottom:1rem;">🛡️</div>
+        <h2>Set New Password</h2>
+        <p class="login-subtitle" style="margin-bottom: 0.5rem;">Enter OTP sent to <strong id="sentEmailBadge"></strong></p>
+        <div id="devOtpBanner" style="display:none; background: #eff6ff; border: 1px dashed #3b82f6; color: #1e40af; padding: 8px; border-radius: 8px; font-size: 0.82rem; margin-bottom: 1rem; text-align: center; font-weight: 600;"></div>
+        <form id="forgotForm2">
+          <div class="form-group">
+            <label>6-Digit Email OTP</label>
+            <input type="text" id="forgotOtp" required placeholder="123456" style="letter-spacing: 3px; font-weight: 800; text-align: center;">
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="newPassword" required placeholder="Enter new strong password">
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="confirmNewPassword" required placeholder="Re-enter new password">
+          </div>
+          <button type="submit" class="btn" id="resetPassBtn">Save & Reset Password</button>
+          <div id="forgotMsg2" class="error-msg"></div>
+          <div style="margin-top: 1.2rem; text-align: center;">
+            <a href="#" onclick="showForgotStep(1); return false;" style="color: #64748b; font-size: 0.85rem; font-weight: 500; text-decoration: none;">← Change Email</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

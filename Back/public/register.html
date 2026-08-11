@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – SwarnaIndia Portal</title>
+  <meta name="description" content="Create your account on SwarnaIndia Portal. Use your referral link to join.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('light-mode-pre');
+      }
+    })();
+  </script>
+  <style>
+    .register-banner {
+      background: linear-gradient(135deg, rgba(255,153,51,0.15), rgba(79,142,247,0.1));
+      border: 1px solid rgba(255,153,51,0.3);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+    }
+    .register-banner .ref-badge {
+      background: var(--accent);
+      color: #0D1117;
+      padding: 2px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+    .register-banner .ref-text {
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .register-banner .ref-text strong {
+      color: var(--text-primary);
+      display: block;
+      font-weight: 600;
+    }
+    .divider-link {
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+    .divider-link a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .divider-link a:hover {
+      text-decoration: underline;
+    }
+    #refCodeHidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header" style="justify-content: space-between;">
+    <h1>⚡ SwarnaIndia CMS</h1>
+    <label class="theme-label" title="Toggle Light/Dark Mode">
+      🌙
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <div class="theme-toggle-thumb" id="themeThumb">🌙</div>
+      </div>
+      ☀️
+    </label>
+  </div>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="profile-avatar" style="width:64px;height:64px;font-size:1.6rem;margin-bottom:1rem;">📋</div>
+      <h2>Create Account</h2>
+      <p class="login-subtitle">Register to join the SwarnaIndia network</p>
+
+      <!-- Referral Banner (shown only if ref param exists) -->
+      <div id="refBanner" class="register-banner" style="display:none;">
+        <span class="ref-badge">🔗 Referral</span>
+        <div class="ref-text">
+          <strong id="refBannerCode">—</strong>
+          You're joining via a referral link. Your account will be connected automatically.
+        </div>
+      </div>
+
+      <form id="registerForm">
+        <input type="hidden" id="refCodeHidden" name="referral_code" value="">
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regName" required placeholder="e.g. Aditya Kumar Sharma">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" required placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="regPhone" placeholder="+91 98765 43210">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="regPassword" required placeholder="Create a strong password">
+        </div>
+        <div class="form-group">
+          <label>Referral Code <span style="color:var(--text-muted);font-size:0.8rem;">(optional)</span></label>
+          <input type="text" id="regRefCode" placeholder="REF-XXXX-XXXXX" autocomplete="off">
+        </div>
+
+        <button type="submit" class="btn" id="registerBtn">Create Account</button>
+        <div id="registerError" class="error-msg"></div>
+        <div id="registerSuccess" style="display:none;background:rgba(61,214,140,0.12);border:1px solid rgba(61,214,140,0.3);color:#3DD68C;padding:0.75rem 1rem;border-radius:8px;margin-top:0.75rem;font-size:0.9rem;line-height:1.5;"></div>
+      </form>
+
+      <div class="divider-link">
+        Already have an account? <a href="index.html">Sign In</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = window.API_BASE_URL ? window.API_BASE_URL + '/api' : (window.location.origin + '/api');
+
+    // ── Read ?ref= from URL and pre-fill ──────────────────────────────────────
+    async function initReferral() {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref');
+      if (ref) {
+        const hiddenInput = document.getElementById('refCodeHidden');
+        const visibleInput = document.getElementById('regRefCode');
+        const banner = document.getElementById('refBanner');
+        const codeLabel = document.getElementById('refBannerCode');
+
+        hiddenInput.value = ref;
+        visibleInput.value = ref;
+        visibleInput.readOnly = true;
+        visibleInput.style.opacity = '0.6';
+
+        codeLabel.textContent = ref;
+        banner.style.display = 'flex';
+
+        // Try to look up who owns this ref code
+        try {
+          const res = await fetch(`${API_URL}/referrals/lookup/${encodeURIComponent(ref)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.owner_name) {
+              codeLabel.textContent = `${ref} · Referred by ${data.owner_name} (${data.owner_role})`;
+            }
+          }
+        } catch (e) {
+          // silently ignore lookup errors — banner already shown with code
+        }
+      }
+    }
+    initReferral();
+
+    // ── Registration form submit ──────────────────────────────────────────────
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name     = document.getElementById('regName').value.trim();
+      const email    = document.getElementById('regEmail').value.trim();
+      const phone    = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const refCode  = document.getElementById('regRefCode').value.trim()
+                    || document.getElementById('refCodeHidden').value.trim();
+
+      const errorEl   = document.getElementById('registerError');
+      const successEl = document.getElementById('registerSuccess');
+      const btn       = document.getElementById('registerBtn');
+
+      errorEl.textContent = '';
+      successEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Creating account…';
+
+      try {
+        const body = { name, email, password };
+        if (phone)   body.phone          = phone;
+        if (refCode) body.referral_code  = refCode;
+
+        const res  = await fetch(`${API_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          errorEl.textContent = data.error || 'Registration failed. Please try again.';
+          return;
+        }
+
+        // ── Success ──────────────────────────────────────────────────────────
+        successEl.innerHTML = `
+          ✅ <strong>Account created successfully!</strong><br>
+          Your referral code: <strong>${data.referral_code || '—'}</strong><br>
+          Share your link: <code style="word-break:break-all;font-size:0.8rem;">${data.referral_link || '—'}</code><br><br>
+          Redirecting to login…
+        `;
+        successEl.style.display = 'block';
+        document.getElementById('registerForm').reset();
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 3500);
+
+      } catch (err) {
+        errorEl.textContent = 'Network error. Please check your connection.';
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    });
+
+    // ── Theme toggle (reuse app.js pattern without importing whole file) ──────
+    function applyTheme(mode) {
+      document.body.classList.toggle('light-mode', mode === 'light');
+      const thumb = document.getElementById('themeThumb');
+      if (thumb) thumb.textContent = mode === 'light' ? '☀️' : '🌙';
+    }
+    function toggleTheme() {
+      const current = localStorage.getItem('theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    }
+    applyTheme(localStorage.getItem('theme') || 'dark');
+  </script>
+</body>
+</html>

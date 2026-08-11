@@ -1,0 +1,311 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Sovereign Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#eeeeee",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#4c56af",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#2c3039",
+                        "surface": "#f9f9f9",
+                        "on-primary-container": "#8690ee",
+                        "on-tertiary-fixed": "#181b24",
+                        "on-primary-fixed-variant": "#343d96",
+                        "primary-fixed": "#e0e0ff",
+                        "secondary-fixed-dim": "#f8bd2a",
+                        "on-surface": "#1a1c1c",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f9f9f9",
+                        "background": "#f9f9f9",
+                        "secondary": "#795900",
+                        "on-surface-variant": "#454652",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "outline": "#767683",
+                        "tertiary": "#181b23",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#434750",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-container": "#fec330",
+                        "on-secondary-fixed": "#261a00",
+                        "outline-variant": "#c6c5d4",
+                        "on-primary-fixed": "#000767",
+                        "surface-container-low": "#f3f3f3",
+                        "secondary-fixed": "#ffdfa0",
+                        "inverse-surface": "#2f3131",
+                        "inverse-primary": "#bdc2ff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#e0e2ee",
+                        "inverse-on-surface": "#f1f1f1",
+                        "surface-variant": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#5c4300",
+                        "primary-container": "#1a237e",
+                        "primary": "#000666",
+                        "on-background": "#1a1c1c",
+                        "on-tertiary-container": "#9597a2",
+                        "tertiary-fixed-dim": "#c4c6d2",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-dim": "#dadada",
+                        "on-secondary-container": "#6f5100",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "component_padding": "1.25rem",
+                        "main_gutter": "24px",
+                        "sidebar_right_width": "320px",
+                        "sidebar_left_width": "280px",
+                        "stack_gap": "1rem",
+                        "container_max_width": "1440px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Montserrat"],
+                        "headline-sm": ["Montserrat"],
+                        "body-lg": ["Montserrat"],
+                        "label-md": ["Montserrat"],
+                        "label-lg": ["Montserrat"],
+                        "body-sm": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "headline-md": ["Montserrat"],
+                        "body-md": ["Montserrat"],
+                        "label-sm": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["10px", { "lineHeight": "14px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #f9f9f9; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased flex flex-col min-h-screen">
+<!-- Top App Bar (Mobile) -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-background flex justify-between items-center px-main_gutter h-16 md:hidden">
+<button aria-label="Go back" class="text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile font-bold text-on-surface dark:text-on-surface-variant">Profile</h1>
+<button aria-label="More options" class="text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</header>
+<!-- Top Navigation Cluster (Desktop) -->
+<header class="hidden md:flex fixed top-0 w-full z-50 bg-surface dark:bg-background justify-between items-center px-main_gutter h-16 border-b border-surface-variant">
+<div class="flex items-center gap-4">
+<span class="font-headline-md font-bold text-primary">Sovereign.</span>
+</div>
+<nav class="flex gap-6">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</nav>
+</header>
+<main class="flex-grow md:pl-sidebar_left_width md:pr-sidebar_right_width md:max-w-container_max_width md:mx-auto w-full pt-16 md:pt-24 pb-20 md:pb-8">
+<!-- Profile Header Section -->
+<section class="relative w-full bg-surface">
+<!-- Cover Image -->
+<div class="w-full h-48 md:h-64 bg-surface-variant relative overflow-hidden">
+<div class="bg-cover bg-center w-full h-full absolute inset-0" data-alt="A sweeping architectural shot of a modern, minimalist parliament or civic center building interior. The scene is bright and airy with a white and deep navy blue color palette. Soft, diffused daylight enters through large structural skylights, casting clean shadows on polished stone floors. Professional, serene, high-end corporate style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBmJwMVc4eFd3OEDQdoSRwKYB6KPSQJ3AYM_8zoogXAxQazdxE_C9zowsPDO_wuYsQS00yTBs9AzhW3PKVhLOoENaN5eISPnwKJGwOvzzFZCAHQGyoVZ6FXOn3zYwOSsbzzj5sj9FhFm0cCXBnydmFG76diDxcm-w0Zl32Hhx2himcoP_hmnN0eXz18_0_ulBOe4DzCC44y2ZqL5xgSNwcYGnUN_5uKqU3UODBuwgNan6YqoPADT91v')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+</div>
+<!-- Profile Info Container -->
+<div class="px-main_gutter relative -mt-16 md:-mt-24 pb-6 border-b border-surface-variant">
+<!-- Avatar & Action Buttons Row -->
+<div class="flex justify-between items-end mb-4">
+<!-- Avatar -->
+<div class="relative w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-surface bg-surface-variant overflow-hidden z-10 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a diverse civic leader standing in front of a subtly blurred, bright modern office background. They are wearing a well-tailored dark navy suit with a crisp white shirt. The lighting is flattering and high-key, conveying trustworthiness, authority, and modern professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7NUVHsGNbsSM-kv3F-l3qp2dBdYYA2DFuhwk74syQSdQB4fqyXwSmeMH_TCFBQSTHhN-BOxmek2-VbpQsS7tayK7Fvk_4yOC_87gIaHS0ACIF0XKnRHdwOyeacd7PPKdnU8l-NDC-BF08E38bM_pqCVmgGWpW2dy107vp85Wzj8eE6zXrHtKTNyF6rSXiUHt65xJ0uQt8wKf9HNOhWV3Y1afrqXCrIv0kGtDdaAoP9yG53uukw8tM">
+</div>
+<!-- Desktop Actions -->
+<div class="hidden md:flex gap-3 mb-2">
+<button class="bg-primary text-on-primary font-label-lg px-6 py-2 rounded-lg hover:opacity-90 transition-opacity">Connect</button>
+<button class="bg-surface-container text-on-surface font-label-lg px-6 py-2 rounded-lg hover:bg-surface-container-high transition-colors">Message</button>
+<button class="bg-surface-container text-on-surface p-2 rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Text Details -->
+<div class="mb-6">
+<h2 class="font-headline-lg font-bold text-on-surface mb-1">Alex Mercer</h2>
+<p class="font-body-lg text-on-surface-variant mb-3 flex items-center gap-2">
+                        Civic Leader &amp; Policy Strategist
+                        <span class="material-symbols-outlined text-secondary-container text-lg" data-icon="verified" data-weight="fill">verified</span>
+</p>
+<p class="font-body-md text-on-surface max-w-2xl leading-relaxed">
+                        Advocating for transparent governance and sovereign digital infrastructure. Managing direct democracy proposals and community treasury allocations. Let's build a better consensus.
+                    </p>
+<a class="font-label-md text-primary mt-2 inline-flex items-center gap-1 hover:underline" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="link">link</span> alexmercer.gov
+                    </a>
+</div>
+<!-- Social Stats & Action -->
+
+</div>
+</section>
+<!-- Media Toggle Buttons (Mobile primary, secondary on desktop) -->
+<section class="px-main_gutter py-4 bg-surface">
+<div class="flex gap-2 p-1 bg-surface-container rounded-lg">
+<button class="flex-1 py-2 font-label-lg text-on-surface bg-surface rounded shadow-sm transition-all text-center">
+                    Self Media
+                </button>
+<button class="flex-1 py-2 font-label-lg text-on-surface-variant hover:bg-surface-container-high rounded transition-all text-center">
+                    Company Media
+                </button>
+</div>
+</section><section class="px-main_gutter py-4 bg-surface border-t border-surface-variant">
+    <div class="flex justify-around items-center mb-4">
+        <div class="flex flex-col items-center">
+            <span class="font-headline-sm text-on-surface">1.2K</span>
+            <span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Reviews</span>
+        </div>
+        <div class="flex flex-col items-center">
+            <span class="font-headline-sm text-on-surface">45.8K</span>
+            <span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Followers</span>
+        </div>
+        <div class="flex flex-col items-center">
+            <span class="font-headline-sm text-on-surface">342</span>
+            <span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Following</span>
+        </div>
+    <div class="flex flex-col items-center">
+            <span class="font-headline-sm text-on-surface">842</span>
+            <span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Tasks</span>
+        </div></div>
+    <div class="flex gap-2">
+        <button class="flex-1 bg-surface-container text-on-surface font-label-lg py-2 rounded-lg hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-lg">share</span>
+            Share Profile
+        </button>
+    </div>
+</section>
+<!-- Content Grid (Instagram Style) -->
+<section class="bg-surface">
+<!-- Tab Headers -->
+<div class="flex border-b border-surface-variant">
+<button class="flex-1 py-4 flex justify-center items-center gap-2 border-b-2 border-primary text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="grid_on">grid_on</span>
+<span class="font-label-md hidden md:inline uppercase tracking-widest">Images</span>
+</button>
+<button class="flex-1 py-4 flex justify-center items-center gap-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+<span class="font-label-md hidden md:inline uppercase tracking-widest">Reels</span>
+</button>
+<button class="flex-1 py-4 flex justify-center items-center gap-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+<span class="font-label-md hidden md:inline uppercase tracking-widest">Videos</span>
+</button>
+</div>
+<!-- Grid Container -->
+<div class="grid grid-cols-3 gap-1 md:gap-4 p-1 md:p-main_gutter">
+<!-- Grid Item 1 -->
+<div class="aspect-square relative group cursor-pointer overflow-hidden bg-surface-variant rounded-sm md:rounded-xl">
+<div class="bg-cover bg-center w-full h-full" data-alt="A close up shot of a diverse group of hands gathered around a sleek, modern conference table, pointing at a digital blueprint tablet. White and navy color palette. High-end corporate governance meeting aesthetic. Bright, soft overhead lighting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB52p5gb-Vd2LWnf5K9hUwpIzAMTsLcqX4CdFFrAPpsqizHGFcLvUKhSdP8D3ATm3UK-xKWpUbUAVl9hX9wAu_fP7DZq-d78KiT-tVXZkdLwze_7nZfALBrQMnR_GuhT9sGuinjP3lEX19eM1sUlOOWWpXRCuJSEbPJfingEG3vdqIWfBmJwrT-aYn-f0QL6qiuEyOKLtyW6zdBNHc36QtiTA7xkCDv0XFDghyLpYdPaY1HupVLN1T6')"></div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+<div class="flex items-center text-white gap-1 font-label-md"><span class="material-symbols-outlined" data-icon="favorite" data-weight="fill">favorite</span> 1.2k</div>
+<div class="flex items-center text-white gap-1 font-label-md"><span class="material-symbols-outlined" data-icon="chat_bubble" data-weight="fill">chat_bubble</span> 84</div>
+</div>
+</div>
+<!-- Grid Item 2 -->
+<div class="aspect-square relative group cursor-pointer overflow-hidden bg-surface-variant rounded-sm md:rounded-xl">
+<div class="bg-cover bg-center w-full h-full" data-alt="A speaker on a stage at a governance conference. The stage is dimly lit with strong, focused white and navy spotlights on the speaker. The backdrop features abstract geometric digital patterns. High contrast, professional tech-policy event style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCoQCsJreImRimf3B7fxWmCilGaJuiHqHXqvFFK0CK4N9iika25jZ6kZmHY7ZL6f5AntTIn0XuMOFvH_y_55-WC-Jp4aYLo7pwPoEERH8UFiilNzAdv5cLIitw1i-OnUMJCe3GnCkTNFrgJRr9okiyye-_Kci25C-10guMIWJZuQy2RZeyDpQqlLS0xUQTLiBimnD0R7d-uZBrK7tIiFoO5T2xliMF1kX6vwIeDUJo92A8d-pvxw3xu')"></div>
+<div class="absolute top-2 right-2 text-white drop-shadow-md">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+</div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+<div class="flex items-center text-white gap-1 font-label-md"><span class="material-symbols-outlined" data-icon="favorite" data-weight="fill">favorite</span> 3.4k</div>
+</div>
+</div>
+<!-- Grid Item 3 -->
+<div class="aspect-square relative group cursor-pointer overflow-hidden bg-surface-variant rounded-sm md:rounded-xl">
+<div class="bg-cover bg-center w-full h-full" data-alt="An abstract visualization of digital voting or data nodes connecting. Glowing white and saffron yellow lines over a deep navy background. Clean, minimalist tech aesthetic representing transparent digital democracy." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB1nnqdX3y-b9zJBilvAi_DYyGY32AVyL7C0-cXOFbtzQm-61YNo6ezEGwkW84pvWcZ3x3mGA6UFntEg2qh-nLkKw2eKEyE5_HytvsoJeg4RNSzsafUatkCyCK-yVAqamqPXtccfiieu0gDWiU1KZjdVn2r4rcaveea_qNZOB9Na-eCVJqAej_3kMgFs4prgpvDTo7U_ApYby-Lpx1S9kDl3PfllaZlAnLM-InF81k6mSQ-r8j4MuBE')"></div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+<div class="flex items-center text-white gap-1 font-label-md"><span class="material-symbols-outlined" data-icon="favorite" data-weight="fill">favorite</span> 890</div>
+</div>
+</div>
+<!-- Grid Item 4 -->
+<div class="aspect-square relative group cursor-pointer overflow-hidden bg-surface-variant rounded-sm md:rounded-xl">
+<div class="bg-cover bg-center w-full h-full" data-alt="A neatly organized desk with a cup of coffee, a notebook, and a modern laptop showing data charts. Bright natural light streaming in from a nearby window. Clean white surfaces, conveying a productive, organized professional workspace." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA0kHAhCY-Ujjr7CXd03TESHBAjPL3IrQvKeUIOwuH1W4xmm1M3LxWdURoo7EPkPxisvcFZrpMQu_QG_ziBerKQhoi8oCXp0sR6TPN4OHCFyOd037aTjr8MVY_nm0forv-ka-25b9g1gF3O_EszhZjYgdl7ekmpjp6Pq8YqdyYACR6c3Ha7YGeMIzR3osqKinVQJqRXrVRGfeKFNl6giRtxbfWOIOxRSOCGZGIvdtFvsQBDiQE1uEXw')"></div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+<div class="flex items-center text-white gap-1 font-label-md"><span class="material-symbols-outlined" data-icon="favorite" data-weight="fill">favorite</span> 456</div>
+</div>
+</div>
+<!-- Grid Item 5 -->
+<div class="aspect-square relative group cursor-pointer overflow-hidden bg-surface-variant rounded-sm md:rounded-xl">
+<div class="bg-cover bg-center w-full h-full" data-alt="A wide shot of a modern city skyline at dusk, with the lights of office buildings starting to turn on. The sky is a deep navy blue. The image conveys scale, civic responsibility, and modern infrastructure." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBDTGLbqdzWChiipg75-SQ524XWkKSvkaTyFwfn8cyCqCcEwFyRr1D0cfWseesgj6bE5l-FvZQmrFnBcSur0G9zgbIndoAeZ9vw2vDtMH9byUzcfpKil_0jotgaMHpMEGab9lxJrOn5bT52b_lB-i8A4JscFugIsXYxp7w_DpkSOXaiG6DgDPs53lN_N_z0YCz7PoNkb32o1Oo5ouS3sZfH-zxO4GMKOxG6XmeytKM6RgbQhTUH-7gJ')"></div>
+<div class="absolute top-2 right-2 text-white drop-shadow-md">
+<span class="material-symbols-outlined" data-icon="dynamic_feed">dynamic_feed</span>
+</div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+<div class="flex items-center text-white gap-1 font-label-md"><span class="material-symbols-outlined" data-icon="favorite" data-weight="fill">favorite</span> 2.1k</div>
+</div>
+</div>
+<!-- Grid Item 6 -->
+<div class="aspect-square relative group cursor-pointer overflow-hidden bg-surface-variant rounded-sm md:rounded-xl bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant" data-icon="image">image</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-4 pb-safe bg-surface dark:bg-surface-container-highest md:hidden border-t border-outline-variant dark:border-outline">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-90 transition-transform flex-1 h-full" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-90 transition-transform flex-1 h-full" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-90 transition-transform flex-1 h-full" href="#">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-90 transition-transform flex-1 h-full" href="#">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-90 transition-transform flex-1 h-full" href="#">
+<span class="material-symbols-outlined" data-icon="person" data-weight="fill">person</span>
+</a>
+</nav>
+
+
+</body></html>

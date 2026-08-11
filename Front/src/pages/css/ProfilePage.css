@@ -1,0 +1,98 @@
+/* ProfilePage.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Material Symbols styling */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Responsive utilities */
+@media (min-width: 768px) {
+  .md\:hidden {
+    display: none !important;
+  }
+  .md\:flex {
+    display: flex !important;
+  }
+  .md\:pl-280 {
+    padding-left: 280px !important;
+  }
+  .md\:pr-320 {
+    padding-right: 320px !important;
+  }
+  .md\:max-w-1440 {
+    max-width: 1440px !important;
+  }
+  .md\:mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .md\:pt-24 {
+    padding-top: 96px !important;
+  }
+  .md\:pb-8 {
+    padding-bottom: 32px !important;
+  }
+  .md\:w-40 {
+    width: 160px !important;
+  }
+  .md\:h-40 {
+    height: 160px !important;
+  }
+  .md\:-mt-24 {
+    margin-top: -96px !important;
+  }
+  .md\:h-64 {
+    height: 256px !important;
+  }
+  .md\:gap-4 {
+    gap: 16px !important;
+  }
+  .md\:p-6 {
+    padding: 24px !important;
+  }
+  .md\:rounded-xl {
+    border-radius: 12px !important;
+  }
+  .md\:inline {
+    display: inline !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .hidden {
+    display: none !important;
+  }
+}
+
+/* Hover effects that can't be done inline */
+.group-hover\:opacity-100:hover > div {
+  opacity: 1 !important;
+}
+
+/* Additional hover states */
+button:hover {
+  opacity: 0.9;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}  
