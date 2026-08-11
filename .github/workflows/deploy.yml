@@ -44,7 +44,7 @@ jobs:
             set ftp:passive-mode true;
             set net:connection-limit 1;
             open -u '${{ secrets.FTP_USERNAME }}','${{ secrets.FTP_PASSWORD }}' '${{ secrets.FTP_SERVER }}';
-            mirror --reverse --verbose --exclude node_modules/ --exclude .git/ --exclude .env --exclude tmp/ ./Back/ ./swarnaback.hopeharbor.co.in/;
+            mirror --reverse --verbose --exclude node_modules/ --exclude .git/ --exclude .env --exclude .htaccess --exclude tmp/ ./Back/ ./swarnaback.hopeharbor.co.in/;
             mkdir -p ./swarnaback.hopeharbor.co.in/tmp;
             put /dev/null -o ./swarnaback.hopeharbor.co.in/tmp/restart.txt;
           "
