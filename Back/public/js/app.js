@@ -2899,29 +2899,129 @@ document.getElementById('forgotForm2')?.addEventListener('submit', async functio
 window.showForgotStep = showForgotStep;
 window.showLoginCard = showLoginCard;
 
-// ─── HERO VIDEO BANNER MANAGEMENT ───────────────────────────────────────────
+// ─── HERO VIDEO BANNER MANAGEMENT (MAX 6 BANNERS) ─────────────────────────────
+let cachedHeroBanners = [];
+
 async function loadHeroSettings() {
+  const tbody = document.getElementById('heroBannersTbody');
   try {
     const res = await fetch(`${API_URL}/hero`);
     if (res.ok) {
       const data = await res.json();
-      if (data && data.hero) {
-        const h = data.hero;
-        if (document.getElementById('heroVideoUrl')) document.getElementById('heroVideoUrl').value = h.video_url || '';
-        if (document.getElementById('heroTitle')) document.getElementById('heroTitle').value = h.title || '';
-        if (document.getElementById('heroTitleHi')) document.getElementById('heroTitleHi').value = h.title_hi || '';
-        if (document.getElementById('heroSubtitle')) document.getElementById('heroSubtitle').value = h.subtitle || '';
-        if (document.getElementById('heroSubtitleHi')) document.getElementById('heroSubtitleHi').value = h.subtitle_hi || '';
-        if (document.getElementById('heroBadgeText')) document.getElementById('heroBadgeText').value = h.badge_text || '';
-        if (document.getElementById('heroBadgeTextHi')) document.getElementById('heroBadgeTextHi').value = h.badge_text_hi || '';
-        if (document.getElementById('heroBtn1Text')) document.getElementById('heroBtn1Text').value = h.btn1_text || '';
-        if (document.getElementById('heroBtn1Link')) document.getElementById('heroBtn1Link').value = h.btn1_link || '';
-        if (document.getElementById('heroBtn2Text')) document.getElementById('heroBtn2Text').value = h.btn2_text || '';
-        if (document.getElementById('heroBtn2Link')) document.getElementById('heroBtn2Link').value = h.btn2_link || '';
-      }
+      cachedHeroBanners = data.heroes || [];
+      renderHeroBannersTable(cachedHeroBanners);
     }
   } catch (e) {
     console.error('Error loading hero settings:', e);
+    if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #EF4444; padding: 2rem;">Error loading Hero Banners</td></tr>`;
+  }
+}
+
+function renderHeroBannersTable(banners) {
+  const tbody = document.getElementById('heroBannersTbody');
+  if (!tbody) return;
+
+  if (!banners || banners.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #94A3B8; padding: 2rem;">No Hero Banners created yet. Fill the form below to create banner #1 (Max 6 Banners).</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = banners.map((b, index) => `
+    <tr>
+      <td><strong>${index + 1}</strong></td>
+      <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        <span style="background: #EFF6FF; color: #2563EB; font-weight: 700; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem;">VIDEO</span>
+        <a href="${b.video_url || '#'}" target="_blank" style="font-size: 0.8rem; color: #0284C7; margin-left: 4px;">Link</a>
+      </td>
+      <td>
+        <div style="font-weight: 700; color: #1E293B;">${b.badge_text || '🚩 Vishwaguru Bharat'}</div>
+        <div style="font-size: 0.85rem; color: #475569; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${b.title || 'Untitled Banner'}</div>
+      </td>
+      <td>
+        <span style="background: #F1F5F9; color: #334155; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">
+          ${b.btn1_text || 'Action'} → ${b.btn1_link || 'Page'}
+        </span>
+      </td>
+      <td>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-sm" onclick="editHeroBanner(${b.id})" style="background: #3B82F6; color: white; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer;">Edit</button>
+          <button class="btn-sm" onclick="deleteHeroBanner(${b.id})" style="background: #EF4444; color: white; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer;">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function resetHeroForm() {
+  if (document.getElementById('heroEditingId')) document.getElementById('heroEditingId').value = '';
+  if (document.getElementById('heroFormTitle')) document.getElementById('heroFormTitle').textContent = `➕ Add New Hero Video Banner (Total: ${cachedHeroBanners.length}/6)`;
+  if (document.getElementById('heroVideoFile')) document.getElementById('heroVideoFile').value = '';
+  if (document.getElementById('heroVideoUrl')) document.getElementById('heroVideoUrl').value = '';
+  if (document.getElementById('heroBadgeText')) document.getElementById('heroBadgeText').value = '';
+  if (document.getElementById('heroBadgeTextHi')) document.getElementById('heroBadgeTextHi').value = '';
+  if (document.getElementById('heroTitle')) document.getElementById('heroTitle').value = '';
+  if (document.getElementById('heroTitleHi')) document.getElementById('heroTitleHi').value = '';
+  if (document.getElementById('heroSubtitle')) document.getElementById('heroSubtitle').value = '';
+  if (document.getElementById('heroSubtitleHi')) document.getElementById('heroSubtitleHi').value = '';
+  if (document.getElementById('heroBtn1Text')) document.getElementById('heroBtn1Text').value = '';
+  if (document.getElementById('heroBtn1Link')) document.getElementById('heroBtn1Link').value = '';
+  if (document.getElementById('heroBtn2Text')) document.getElementById('heroBtn2Text').value = '';
+  if (document.getElementById('heroBtn2Link')) document.getElementById('heroBtn2Link').value = '';
+  const alertEl = document.getElementById('heroAlert');
+  if (alertEl) alertEl.style.display = 'none';
+}
+
+function editHeroBanner(id) {
+  const b = cachedHeroBanners.find(x => x.id === id);
+  if (!b) return;
+
+  if (document.getElementById('heroEditingId')) document.getElementById('heroEditingId').value = b.id;
+  if (document.getElementById('heroFormTitle')) document.getElementById('heroFormTitle').textContent = `✏️ Edit Hero Video Banner (#${id})`;
+
+  if (document.getElementById('heroVideoUrl')) document.getElementById('heroVideoUrl').value = b.video_url || '';
+  if (document.getElementById('heroBadgeText')) document.getElementById('heroBadgeText').value = b.badge_text || '';
+  if (document.getElementById('heroBadgeTextHi')) document.getElementById('heroBadgeTextHi').value = b.badge_text_hi || '';
+  if (document.getElementById('heroTitle')) document.getElementById('heroTitle').value = b.title || '';
+  if (document.getElementById('heroTitleHi')) document.getElementById('heroTitleHi').value = b.title_hi || '';
+  if (document.getElementById('heroSubtitle')) document.getElementById('heroSubtitle').value = b.subtitle || '';
+  if (document.getElementById('heroSubtitleHi')) document.getElementById('heroSubtitleHi').value = b.subtitle_hi || '';
+  if (document.getElementById('heroBtn1Text')) document.getElementById('heroBtn1Text').value = b.btn1_text || '';
+  if (document.getElementById('heroBtn1Link')) document.getElementById('heroBtn1Link').value = b.btn1_link || '';
+  if (document.getElementById('heroBtn2Text')) document.getElementById('heroBtn2Text').value = b.btn2_text || '';
+  if (document.getElementById('heroBtn2Link')) document.getElementById('heroBtn2Link').value = b.btn2_link || '';
+
+  const formSection = document.getElementById('heroForm');
+  if (formSection) formSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+async function deleteHeroBanner(id) {
+  if (!confirm('Are you sure you want to delete this Hero Video Banner?')) return;
+  const alertEl = document.getElementById('heroAlert');
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API_URL}/hero/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.ok) {
+      if (alertEl) {
+        alertEl.style.display = 'block';
+        alertEl.style.background = '#F0FDF4';
+        alertEl.style.color = '#16A34A';
+        alertEl.textContent = 'Hero Banner deleted successfully!';
+      }
+      resetHeroForm();
+      loadHeroSettings();
+    } else {
+      if (alertEl) {
+        alertEl.style.display = 'block';
+        alertEl.style.background = '#FFF5F5';
+        alertEl.style.color = '#B13E44';
+        alertEl.textContent = 'Failed to delete banner';
+      }
+    }
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -2972,6 +3072,8 @@ async function uploadHeroVideo(input) {
 async function saveHeroSettings(e) {
   if (e) e.preventDefault();
   const alertEl = document.getElementById('heroAlert');
+  const editingId = document.getElementById('heroEditingId')?.value;
+
   const payload = {
     video_url: document.getElementById('heroVideoUrl')?.value || '',
     title: document.getElementById('heroTitle')?.value || '',
@@ -2988,8 +3090,11 @@ async function saveHeroSettings(e) {
 
   try {
     const token = localStorage.getItem('token');
-    const res = await fetch(`${API_URL}/hero`, {
-      method: 'POST',
+    const url = editingId ? `${API_URL}/hero/${editingId}` : `${API_URL}/hero`;
+    const method = editingId ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method: method,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -3002,14 +3107,16 @@ async function saveHeroSettings(e) {
         alertEl.style.display = 'block';
         alertEl.style.background = '#F0FDF4';
         alertEl.style.color = '#16A34A';
-        alertEl.textContent = 'Hero Video Banner settings saved & published successfully!';
+        alertEl.textContent = editingId ? 'Hero Banner updated successfully!' : 'Hero Banner created & published successfully!';
       }
+      resetHeroForm();
+      loadHeroSettings();
     } else {
       if (alertEl) {
         alertEl.style.display = 'block';
         alertEl.style.background = '#FFF5F5';
         alertEl.style.color = '#B13E44';
-        alertEl.textContent = data.error || 'Failed to save settings';
+        alertEl.textContent = data.error || 'Failed to save banner';
       }
     }
   } catch (err) {
@@ -3017,7 +3124,7 @@ async function saveHeroSettings(e) {
       alertEl.style.display = 'block';
       alertEl.style.background = '#FFF5F5';
       alertEl.style.color = '#B13E44';
-      alertEl.textContent = 'Network error saving settings';
+      alertEl.textContent = 'Network error saving banner';
     }
   }
 }
@@ -3025,3 +3132,6 @@ async function saveHeroSettings(e) {
 window.loadHeroSettings = loadHeroSettings;
 window.uploadHeroVideo = uploadHeroVideo;
 window.saveHeroSettings = saveHeroSettings;
+window.editHeroBanner = editHeroBanner;
+window.deleteHeroBanner = deleteHeroBanner;
+window.resetHeroForm = resetHeroForm;

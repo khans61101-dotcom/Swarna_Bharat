@@ -1356,84 +1356,119 @@
         </div>
       </div>
 
-      <!-- TAB HERO: HERO VIDEO BANNER SETTINGS -->
+      <!-- TAB HERO: HERO VIDEO BANNER SETTINGS (MAX 6) -->
       <div id="heroTab" class="tab-content">
-        <div class="card" style="max-width: 840px; margin: 0 auto; padding: 2rem;">
-          <h3 style="margin-bottom: 0.4rem; font-size: 1.5rem; color: #0b2b4a;">🎬 Hero Video Banner Settings</h3>
-          <p style="color: #64748B; font-size: 0.9rem; margin-bottom: 1.8rem; border-bottom: 1px solid #E2E8F0; padding-bottom: 1rem;">
-            Upload background video and customize homepage hero titles, Hindi translations, badge, and CTA action buttons.
-          </p>
+        <div class="card" style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h3 style="margin-bottom: 0.2rem; font-size: 1.5rem; color: #0b2b4a;">🎬 Hero Video Banners (Max 6 Banners)</h3>
+              <p style="color: #64748B; font-size: 0.88rem; margin: 0;">
+                Manage up to 6 animated video banners for main homepage hero slider. Edit or delete existing banners below.
+              </p>
+            </div>
+            <button class="btn" onclick="resetHeroForm()" style="background: #10B981; border-radius: 30px; font-weight: 700;">
+              + Create New Banner
+            </button>
+          </div>
 
           <div id="heroAlert" style="display: none; padding: 0.9rem 1.4rem; border-radius: 14px; margin-bottom: 1.5rem; font-weight: 600; font-size: 0.9rem;"></div>
 
-          <form id="heroForm" onsubmit="saveHeroSettings(event)">
-            <div class="form-group" style="background: #F8FAFC; padding: 1.2rem; border-radius: 16px; border: 1px dashed #CBD5E1; margin-bottom: 1.5rem;">
-              <label style="font-weight: 700; color: #1E293B;">Upload Background Video (MP4 / WebM / MOV)</label>
-              <input type="file" id="heroVideoFile" accept="video/*" onchange="uploadHeroVideo(this)" style="margin-top: 8px;">
-              <div style="font-size: 0.8rem; color: #64748B; margin-top: 8px;">Or paste direct Video URL:</div>
-              <input type="text" id="heroVideoUrl" placeholder="Upload file above or paste video URL" style="margin-top: 4px; padding: 0.65rem 1rem; border-radius: 10px; border: 1px solid #CBD5E1; width: 100%;">
-            </div>
+          <!-- BANNERS LIST TABLE -->
+          <div class="table-wrap" style="margin-bottom: 2.2rem;">
+            <table id="heroBannersTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Video Preview</th>
+                  <th>Badge & Title</th>
+                  <th>CTA Button 1</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="heroBannersTbody">
+                <tr><td colspan="5" style="text-align: center; color: #94A3B8; padding: 2rem;">Loading Hero Banners...</td></tr>
+              </tbody>
+            </table>
+          </div>
 
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label>Badge Tag (English)</label>
-                <input type="text" id="heroBadgeText" placeholder="e.g. 🚩 Vishwaguru Bharat Abhiyan">
-              </div>
-              <div class="form-group">
-                <label>Badge Tag (Hindi)</label>
-                <input type="text" id="heroBadgeTextHi" placeholder="e.g. 🚩 विश्वगुरु भारत अभियान">
-              </div>
-            </div>
+          <!-- BANNER ADD / EDIT FORM -->
+          <div style="background: #F8FAFC; border-radius: 20px; padding: 2rem; border: 1px solid #E2E8F0;">
+            <h4 id="heroFormTitle" style="margin-bottom: 1.2rem; font-size: 1.2rem; color: #1E293B;">➕ Add New Hero Video Banner</h4>
+            
+            <form id="heroForm" onsubmit="saveHeroSettings(event)">
+              <input type="hidden" id="heroEditingId" value="">
 
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label>Main Title (English)</label>
-                <input type="text" id="heroTitle" placeholder="e.g. Rebuilding Golden Bharat with Youth Power">
+              <div class="form-group" style="background: #FFFFFF; padding: 1.2rem; border-radius: 16px; border: 1px dashed #CBD5E1; margin-bottom: 1.5rem;">
+                <label style="font-weight: 700; color: #1E293B;">Upload Background Video (MP4 / WebM / MOV)</label>
+                <input type="file" id="heroVideoFile" accept="video/*" onchange="uploadHeroVideo(this)" style="margin-top: 8px;">
+                <div style="font-size: 0.8rem; color: #64748B; margin-top: 8px;">Or paste direct Video URL:</div>
+                <input type="text" id="heroVideoUrl" placeholder="Upload file above or paste video URL" style="margin-top: 4px; padding: 0.65rem 1rem; border-radius: 10px; border: 1px solid #CBD5E1; width: 100%;">
               </div>
-              <div class="form-group">
-                <label>Main Title (Hindi)</label>
-                <input type="text" id="heroTitleHi" placeholder="e.g. राष्ट्र निर्माण और युवा जागृति का महाअभियान 🚩">
-              </div>
-            </div>
 
-            <div class="form-group">
-              <label>Description / Subtitle (English)</label>
-              <textarea id="heroSubtitle" rows="2" placeholder="Enter hero description in English..." style="width:100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #CBD5E1;"></textarea>
-            </div>
-
-            <div class="form-group">
-              <label>Description / Subtitle (Hindi)</label>
-              <textarea id="heroSubtitleHi" rows="2" placeholder="हिंदी में विवरण दर्ज करें..." style="width:100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #CBD5E1;"></textarea>
-            </div>
-
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label>Button 1 Text (EN / HI)</label>
-                <input type="text" id="heroBtn1Text" placeholder="e.g. Explore News / समाचार देखें">
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label>Badge Tag (English)</label>
+                  <input type="text" id="heroBadgeText" placeholder="e.g. 🚩 Vishwaguru Bharat Abhiyan">
+                </div>
+                <div class="form-group">
+                  <label>Badge Tag (Hindi)</label>
+                  <input type="text" id="heroBadgeTextHi" placeholder="e.g. 🚩 विश्वगुरु भारत अभियान">
+                </div>
               </div>
-              <div class="form-group">
-                <label>Button 1 Target Page</label>
-                <input type="text" id="heroBtn1Link" placeholder="e.g. News, Events, Auth">
-              </div>
-            </div>
 
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label>Button 2 Text (Optional)</label>
-                <input type="text" id="heroBtn2Text" placeholder="e.g. Watch Videos / वीडियो देखें">
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label>Main Title (English)</label>
+                  <input type="text" id="heroTitle" placeholder="e.g. Rebuilding Golden Bharat with Youth Power">
+                </div>
+                <div class="form-group">
+                  <label>Main Title (Hindi)</label>
+                  <input type="text" id="heroTitleHi" placeholder="e.g. राष्ट्र निर्माण और युवा जागृति का महाअभियान 🚩">
+                </div>
               </div>
-              <div class="form-group">
-                <label>Button 2 Target Page</label>
-                <input type="text" id="heroBtn2Link" placeholder="e.g. Videos, DownloadApp">
-              </div>
-            </div>
 
-            <div style="margin-top: 1.8rem; display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn" style="background: linear-gradient(135deg, #FF9933, #FF6B00); padding: 0.8rem 2.8rem; font-weight: 700; border-radius: 40px; color: white;">
-                🎬 Save & Publish Hero Video Banner
-              </button>
-            </div>
-          </form>
+              <div class="form-group">
+                <label>Description / Subtitle (English)</label>
+                <textarea id="heroSubtitle" rows="2" placeholder="Enter hero description in English..." style="width:100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #CBD5E1;"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Description / Subtitle (Hindi)</label>
+                <textarea id="heroSubtitleHi" rows="2" placeholder="हिंदी में विवरण दर्ज करें..." style="width:100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #CBD5E1;"></textarea>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label>Button 1 Text</label>
+                  <input type="text" id="heroBtn1Text" placeholder="e.g. Explore News / समाचार देखें">
+                </div>
+                <div class="form-group">
+                  <label>Button 1 Target Page</label>
+                  <input type="text" id="heroBtn1Link" placeholder="e.g. News, Events, Auth">
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label>Button 2 Text (Optional)</label>
+                  <input type="text" id="heroBtn2Text" placeholder="e.g. Watch Videos / वीडियो देखें">
+                </div>
+                <div class="form-group">
+                  <label>Button 2 Target Page</label>
+                  <input type="text" id="heroBtn2Link" placeholder="e.g. Videos, DownloadApp">
+                </div>
+              </div>
+
+              <div style="margin-top: 1.8rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" class="btn" onclick="resetHeroForm()" style="background: #E2E8F0; color: #475569; border-radius: 40px;">
+                  Cancel / Reset Form
+                </button>
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #FF9933, #FF6B00); padding: 0.8rem 2.8rem; font-weight: 700; border-radius: 40px; color: white;">
+                  💾 Save & Publish Hero Banner
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 

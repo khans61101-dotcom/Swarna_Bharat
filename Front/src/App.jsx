@@ -189,45 +189,89 @@ export default function App() {
     return localStorage.getItem('theme') === 'dark';
   });
 
-  const [heroSettings, setHeroSettings] = useState(null);
+  const [heroList, setHeroList] = useState([]);
 
   useEffect(() => {
     fetch(`${API_URL}/hero`)
       .then(r => r.ok ? r.json() : null)
       .then(d => {
-        if (d && d.hero) {
-          setHeroSettings(d.hero);
+        if (d && d.heroes && d.heroes.length > 0) {
+          setHeroList(d.heroes);
         }
       })
       .catch(e => console.error('Error fetching hero settings:', e));
   }, []);
 
-  const demoVideo = 'https://assets.mixkit.co/videos/preview/mixkit-flag-of-india-waving-in-the-wind-41551-large.mp4';
-  const heroVideoSrc = heroSettings && heroSettings.video_url
-    ? (heroSettings.video_url.startsWith('http') ? heroSettings.video_url : getMediaUrl(heroSettings.video_url))
-    : demoVideo;
+  const demoBanners = [
+    {
+      id: 'demo1',
+      video_url: 'https://assets.mixkit.co/videos/preview/mixkit-flag-of-india-waving-in-the-wind-41551-large.mp4',
+      badge_text: '🚩 Vishwaguru Bharat Abhiyan',
+      badge_text_hi: '🚩 विश्वगुरु भारत अभियान',
+      title: 'Rebuilding Golden Bharat with Youth Power & Cultural Revival',
+      title_hi: 'विश्वगुरु भारत अभियान - राष्ट्र निर्माण और युवा जागृति का महाअभियान 🚩',
+      subtitle: 'Empowerment through education, heritage, wellness, and national development across all sectors.',
+      subtitle_hi: 'शिक्षा, संस्कृति, ग्राम विकास और युवा शक्ति के माध्यम से भारत को पुनः विश्वगुरु बनाने का संकल्प।',
+      btn1_text: 'Explore News',
+      btn1_link: 'News',
+      btn2_text: 'Watch Videos',
+      btn2_link: 'Videos'
+    },
+    {
+      id: 'demo2',
+      video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+      badge_text: '🏛️ National Leadership Conclave',
+      badge_text_hi: '🏛️ राष्ट्रीय नेतृत्व महासम्मेलन',
+      title: 'Inspiring Innovation, Entrepreneurship & Rural Development',
+      title_hi: 'नवाचार, उद्यमिता एवं ग्रामीण विकास की नई दिशा 🚀',
+      subtitle: 'Connecting thousands of agencies, NGOs, and members for nationwide positive impact.',
+      subtitle_hi: 'हजारों एजेंसियों, एनजीओ और सदस्यों को जोड़कर देशव्यापी बदलाव का संकल्प।',
+      btn1_text: 'Our Events',
+      btn1_link: 'Events',
+      btn2_text: 'Join Movement',
+      btn2_link: 'Auth'
+    }
+  ];
+
+  const activeBanners = heroList.length > 0 ? heroList : demoBanners;
+  const currentBanner = activeBanners[currentSlide % activeBanners.length] || activeBanners[0];
+
+  useEffect(() => {
+    if (activeTab !== 'Home') return;
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % activeBanners.length);
+    }, 7000);
+    return () => clearInterval(timer);
+  }, [activeBanners.length, activeTab]);
+
+  const nextSlide = () => setCurrentSlide(prev => (prev + 1) % activeBanners.length);
+  const prevSlide = () => setCurrentSlide(prev => (prev - 1 + activeBanners.length) % activeBanners.length);
+
+  const heroVideoSrc = currentBanner && currentBanner.video_url
+    ? (currentBanner.video_url.startsWith('http') ? currentBanner.video_url : getMediaUrl(currentBanner.video_url))
+    : demoBanners[0].video_url;
 
   const heroBadge = lang === 'en'
-    ? (heroSettings?.badge_text || '🚩 Vishwaguru Bharat Abhiyan')
-    : (heroSettings?.badge_text_hi || heroSettings?.badge_text || '🚩 विश्वगुरु भारत अभियान');
+    ? (currentBanner?.badge_text || '🚩 Vishwaguru Bharat Abhiyan')
+    : (currentBanner?.badge_text_hi || currentBanner?.badge_text || '🚩 विश्वगुरु भारत अभियान');
 
   const heroTitle = lang === 'en'
-    ? (heroSettings?.title || 'Rebuilding Golden Bharat with Youth Power & Cultural Revival')
-    : (heroSettings?.title_hi || heroSettings?.title || 'विश्वगुरु भारत अभियान - राष्ट्र निर्माण और युवा जागृति का महाअभियान 🚩');
+    ? (currentBanner?.title || 'Rebuilding Golden Bharat with Youth Power & Cultural Revival')
+    : (currentBanner?.title_hi || currentBanner?.title || 'विश्वगुरु भारत अभियान - राष्ट्र निर्माण और युवा जागृति का महाअभियान 🚩');
 
   const heroSubtitle = lang === 'en'
-    ? (heroSettings?.subtitle || 'Empowerment through education, heritage, wellness, and national development across all sectors.')
-    : (heroSettings?.subtitle_hi || heroSettings?.subtitle || 'शिक्षा, संस्कृति, ग्राम विकास और युवा शक्ति के माध्यम से भारत को पुनः विश्वगुरु बनाने का संकल्प।');
+    ? (currentBanner?.subtitle || 'Empowerment through education, heritage, wellness, and national development across all sectors.')
+    : (currentBanner?.subtitle_hi || currentBanner?.subtitle || 'शिक्षा, संस्कृति, ग्राम विकास और युवा शक्ति के माध्यम से भारत को पुनः विश्वगुरु बनाने का संकल्प।');
 
-  const heroBtn1Text = heroSettings?.btn1_text
-    ? heroSettings.btn1_text
+  const heroBtn1Text = currentBanner?.btn1_text
+    ? currentBanner.btn1_text
     : (lang === 'en' ? 'Explore News' : 'समाचार देखें');
-  const heroBtn1Link = heroSettings?.btn1_link || 'News';
+  const heroBtn1Link = currentBanner?.btn1_link || 'News';
 
-  const heroBtn2Text = heroSettings?.btn2_text
-    ? heroSettings.btn2_text
+  const heroBtn2Text = currentBanner?.btn2_text
+    ? currentBanner.btn2_text
     : (lang === 'en' ? 'Watch Videos' : 'वीडियो देखें');
-  const heroBtn2Link = heroSettings?.btn2_link || 'Videos';
+  const heroBtn2Link = currentBanner?.btn2_link || 'Videos';
 
   useEffect(() => {
     const root = document.documentElement;
@@ -241,8 +285,6 @@ export default function App() {
   }, [darkMode]);
 
   const toggleDarkMode = () => setDarkMode(prev => !prev);
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % t.slides.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + t.slides.length) % t.slides.length);
 
   const pillarIcons = getPillarIcons();
 
@@ -477,7 +519,7 @@ export default function App() {
       {activeTab === 'Home' && (
         <>
           {/* Dynamic Hero Video Banner Section */}
-          <section className="banner-section" style={{ position: 'relative', overflow: 'hidden', minHeight: '540px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <section className="banner-section" style={{ position: 'relative', overflow: 'hidden', minHeight: '580px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <video 
               autoPlay 
               loop 
@@ -491,7 +533,7 @@ export default function App() {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                transform: 'translate(-50%, -50%)',
+                transform: 'translate(-50%, -50%)', 
                 zIndex: 0
               }}
               src={heroVideoSrc}
@@ -527,6 +569,47 @@ export default function App() {
                 )}
               </div>
             </div>
+
+            {/* Slider Manual Navigation Arrows & Dots */}
+            {activeBanners.length > 1 && (
+              <>
+                <button 
+                  onClick={prevSlide}
+                  style={{ position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', color: '#FFF', width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', transition: 'all 0.2s ease' }}
+                  title="Previous Banner"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+
+                <button 
+                  onClick={nextSlide}
+                  style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', color: '#FFF', width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', transition: 'all 0.2s ease' }}
+                  title="Next Banner"
+                >
+                  <ChevronRight size={24} />
+                </button>
+
+                {/* Dots Indicator Pills */}
+                <div style={{ position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', gap: '10px', background: 'rgba(0,0,0,0.45)', padding: '8px 18px', borderRadius: '30px', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+                  {activeBanners.map((b, idx) => (
+                    <button
+                      key={b.id || idx}
+                      onClick={() => setCurrentSlide(idx)}
+                      style={{
+                        width: (currentSlide % activeBanners.length) === idx ? '32px' : '10px',
+                        height: '10px',
+                        borderRadius: '5px',
+                        border: 'none',
+                        background: (currentSlide % activeBanners.length) === idx ? '#FF9933' : 'rgba(255,255,255,0.5)',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                      }}
+                      title={`Go to Banner ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </section>  
 
          <section className="overflow-hidden w-full bg-gray-100 py-3">
