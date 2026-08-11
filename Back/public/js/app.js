@@ -1533,22 +1533,70 @@ async function loadUsers() {
                     else if (u.role_name === 'Member') badgeBg = '#7C3AED';
 
                     return `
-                        <tr>
-                            <td><strong>${u.name || 'N/A'}</strong><br><small class="text-muted">${u.email || 'N/A'}</small></td>
-                            <td><span class="role-badge" style="background:${badgeBg};color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;">${u.role_name || 'User'}</span></td>
-                            <td>${u.phone || '-'}</td>
-                            <td>${u.created_by_name || 'System / Admin'}</td>
-                            <td>
-                                <button class="btn-sm btn-info" onclick="selectTreeNode(${u.id}, event)" style="background:#0F172A;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
-                                    ${u.downline_count || 0} Members 🌳
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn-sm btn-info" onclick="selectTreeNode(${u.id}, event)" style="background:#2563EB;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
-                                    📋 Details
-                                </button>
-                            </td>
-                        </tr>
+                       <tr style="background:white; border-radius:12px; transition:all 0.25s ease; box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+  
+  <!-- Name + Email -->
+  <td style="padding:14px 10px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <!-- Avatar Circle -->
+      <div style="width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg, #FF9933, #FF6B00); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0; box-shadow:0 3px 10px rgba(255,107,0,0.2); overflow:hidden;">
+        ${u.profile_image 
+          ? `<img src="${u.profile_image}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="${u.name}" />`
+          : (u.name ? u.name.charAt(0).toUpperCase() : 'U')
+        }
+      </div>
+      <div>
+        <strong style="color:#0b1a33; font-size:0.95rem; display:block; font-weight:700;">${u.name || 'N/A'}</strong>
+        <span style="color:#64748b; font-size:0.78rem; display:flex; align-items:center; gap:4px;">
+          <span style="font-size:0.7rem;">✉️</span> ${u.email || 'N/A'}
+        </span>
+      </div>
+    </div>
+  </td>
+
+  <!-- Role Badge (Premium) -->
+  <td style="padding:14px 10px;">
+    <span style="background:${badgeBg}; color:white; padding:5px 16px; border-radius:50px; font-size:0.72rem; font-weight:700; display:inline-flex; align-items:center; gap:5px; letter-spacing:0.4px; text-transform:uppercase; box-shadow:0 3px 10px ${badgeBg}40; border:1px solid rgba(255,255,255,0.15);">
+      <span style="width:6px; height:6px; background:rgba(255,255,255,0.6); border-radius:50%; display:inline-block;"></span>
+      ${u.role_name || 'User'}
+    </span>
+  </td>
+
+  <!-- Phone -->
+  <td style="padding:14px 10px;">
+    <div style="display:flex; align-items:center; gap:6px; color:#1e293b; font-size:0.88rem; font-weight:500;">
+      <span style="font-size:0.8rem; opacity:0.5;">📱</span>
+      ${u.phone || '-'}
+    </div>
+  </td>
+
+  <!-- Created By -->
+  <td style="padding:14px 10px;">
+    <div style="display:flex; align-items:center; gap:5px; color:#475569; font-size:0.85rem;">
+      <span style="font-size:0.7rem; opacity:0.5;">👤</span>
+      ${u.created_by_name || 'System / Admin'}
+    </div>
+  </td>
+
+  <!-- Members Button (Premium) -->
+  <td style="padding:14px 10px;">
+    <button onclick="selectTreeNode(${u.id}, event)" style="background:linear-gradient(135deg, #1e293b, #0f172a); color:white; border:none; padding:8px 18px; border-radius:50px; font-size:0.78rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(15,23,42,0.25); transition:all 0.2s ease; letter-spacing:0.2px; border:1px solid rgba(255,255,255,0.08);">
+      <span style="font-size:0.9rem;">🌳</span>
+      <span>${u.downline_count || 0}</span>
+      <span style="font-weight:400; opacity:0.7; font-size:0.7rem;">Members</span>
+    </button>
+  </td>
+
+  <!-- Details Button (Premium) -->
+  <td style="padding:14px 10px;">
+    <button onclick="selectTreeNode(${u.id}, event)" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; border:none; padding:8px 18px; border-radius:50px; font-size:0.78rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(37,99,235,0.3); transition:all 0.2s ease; letter-spacing:0.2px; border:1px solid rgba(255,255,255,0.12);">
+      <span style="font-size:0.9rem;">📋</span>
+      <span>Details</span>
+      <span style="font-size:0.6rem; opacity:0.6;">→</span>
+    </button>
+  </td>
+
+</tr>  
                     `;
                 }).join('');
             }

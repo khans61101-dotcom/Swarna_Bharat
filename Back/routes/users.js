@@ -15,7 +15,7 @@ router.get('/', verifyToken, async (req, res) => {
       query = `
         SELECT u.id, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
                u.bank_name, u.account_no, u.ifsc_code, u.upi_id, u.referral_code, u.referral_link,
-               u.referred_by, u.created_at,
+               u.referred_by, u.profile_image, u.created_at,
                r.name as role_name, creator.name as created_by_name,
                (SELECT COUNT(*) FROM users d WHERE d.created_by = u.id) as downline_count
         FROM users u
@@ -28,7 +28,7 @@ router.get('/', verifyToken, async (req, res) => {
       query = `
         SELECT u.id, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
                u.bank_name, u.account_no, u.ifsc_code, u.upi_id, u.referral_code, u.referral_link,
-               u.referred_by, u.created_at,
+               u.referred_by, u.profile_image, u.created_at,
                r.name as role_name, creator.name as created_by_name,
                (SELECT COUNT(*) FROM users d WHERE d.created_by = u.id) as downline_count
         FROM users u
@@ -43,7 +43,7 @@ router.get('/', verifyToken, async (req, res) => {
       query = `
         SELECT u.id, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
                u.bank_name, u.account_no, u.ifsc_code, u.upi_id, u.referral_code, u.referral_link,
-               u.referred_by, u.created_at,
+               u.referred_by, u.profile_image, u.created_at,
                r.name as role_name, creator.name as created_by_name,
                (SELECT COUNT(*) FROM users d WHERE d.created_by = u.id) as downline_count
         FROM users u
