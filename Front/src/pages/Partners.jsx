@@ -66,7 +66,8 @@ export default function PartnersPage({
     <div className="partners-container" style={{ 
       padding: '60px 20px 80px', 
       minHeight: '80vh',
-      background: 'linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%)'
+      background: 'var(--bg-light)',
+      color: 'var(--text-dark)'
     }}>
       {/* Header Section */}
       <div style={{ 
@@ -91,13 +92,13 @@ export default function PartnersPage({
           display: 'inline-flex',
           alignItems: 'center',
           gap: '12px',
-          background: 'linear-gradient(135deg, #FFF7ED, #FFEDD5)',
+          background: 'rgba(255, 153, 51, 0.15)',
           padding: '8px 20px',
           borderRadius: '50px',
           marginBottom: '20px'
         }}>
-          <Globe size={20} color="#EA580C" />
-          <span style={{ color: '#EA580C', fontWeight: 600, fontSize: '0.9rem' }}>
+          <Globe size={20} color="#FF9933" />
+          <span style={{ color: '#FF9933', fontWeight: 600, fontSize: '0.9rem' }}>
             {lang === 'en' ? 'Global Network' : 'वैश्विक नेटवर्क'}
           </span>
         </div>
@@ -105,9 +106,7 @@ export default function PartnersPage({
         <h2 style={{ 
           fontSize: 'clamp(2rem, 4vw, 3rem)', 
           fontWeight: 800, 
-          background: 'linear-gradient(135deg, #1E293B, #334155)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
+          color: 'var(--text-dark)',
           marginBottom: '12px',
           letterSpacing: '-0.02em'
         }}>
@@ -115,7 +114,7 @@ export default function PartnersPage({
         </h2>
         
         <p style={{ 
-          color: '#64748B', 
+          color: 'var(--text-muted)', 
           maxWidth: '640px', 
           margin: '0 auto', 
           fontSize: '1.1rem',
@@ -147,11 +146,11 @@ export default function PartnersPage({
               style={{
                 padding: '10px 24px',
                 borderRadius: '50px',
-                border: isActive ? 'none' : '2px solid #E2E8F0',
+                border: isActive ? 'none' : '1px solid var(--card-border)',
                 background: isActive 
                   ? `linear-gradient(135deg, ${colors.color}, ${colors.color}dd)` 
-                  : '#FFFFFF',
-                color: isActive ? '#FFFFFF' : '#64748B',
+                  : 'var(--card-bg)',
+                color: isActive ? '#FFFFFF' : 'var(--text-dark)',
                 fontWeight: 600,
                 fontSize: '0.9rem',
                 cursor: 'pointer',
@@ -174,20 +173,20 @@ export default function PartnersPage({
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.borderColor = '#E2E8F0';
-                  e.currentTarget.style.color = '#64748B';
+                  e.currentTarget.style.borderColor = 'var(--card-border)';
+                  e.currentTarget.style.color = 'var(--text-dark)';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }
               }}
             >
               {role === 'All' ? (lang === 'en' ? 'All' : 'सभी') : role}
               <span style={{
-                background: isActive ? 'rgba(255,255,255,0.2)' : '#F1F5F9',
+                background: isActive ? 'rgba(255,255,255,0.2)' : 'var(--bg-alt)',
                 padding: '2px 10px',
                 borderRadius: '20px',
                 fontSize: '0.75rem',
                 fontWeight: 700,
-                color: isActive ? 'inherit' : '#94A3B8'
+                color: isActive ? 'inherit' : 'var(--text-muted)'
               }}>
                 {stats[role] || 0}
               </span>
@@ -210,11 +209,11 @@ export default function PartnersPage({
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            border: '4px solid #E2E8F0',
+            border: '4px solid var(--card-border)',
             borderTopColor: '#FF9933',
             animation: 'spin 0.8s linear infinite'
           }} />
-          <p style={{ color: '#94A3B8', fontSize: '1.1rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
             {lang === 'en' ? 'Loading network...' : 'नेटवर्क लोड हो रहा है...'}
           </p>
         </div>
@@ -222,13 +221,12 @@ export default function PartnersPage({
         // Partners Grid
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-          gap: '30px',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '0 20px'
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+          gap: '28px',
+          maxWidth: '1280px',
+          margin: '0 auto'
         }}>
-          {filteredPartners.map((partner, index) => {
+          {filteredPartners.map((partner) => {
             const colors = getRoleColor(partner.role_name);
             const displayName = partner.organization_name || partner.name;
             const initials = displayName.substring(0, 2).toUpperCase();
@@ -244,10 +242,10 @@ export default function PartnersPage({
                 onMouseEnter={() => setHoveredPartner(partner.id)}
                 onMouseLeave={() => setHoveredPartner(null)}
                 style={{
-                  background: '#FFFFFF',
+                  background: 'var(--card-bg)',
                   borderRadius: '20px',
                   padding: '30px 25px',
-                  border: '1px solid #E2E8F0',
+                  border: '1px solid var(--card-border)',
                   boxShadow: isHovered 
                     ? '0 20px 40px rgba(0,0,0,0.08)' 
                     : '0 4px 15px rgba(0,0,0,0.03)',
@@ -327,7 +325,7 @@ export default function PartnersPage({
                 <h3 style={{ 
                   fontSize: '1.2rem', 
                   fontWeight: 700, 
-                  color: '#1E293B', 
+                  color: 'var(--text-dark)', 
                   marginBottom: '8px',
                   transition: 'color 0.3s'
                 }}>
@@ -341,7 +339,7 @@ export default function PartnersPage({
                   gap: '6px',
                   padding: '6px 16px',
                   borderRadius: '50px',
-                  background: colors.bg,
+                  background: 'var(--bg-alt)',
                   color: colors.color,
                   border: `1px solid ${colors.border}`,
                   fontSize: '0.8rem',
@@ -359,11 +357,11 @@ export default function PartnersPage({
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: '6px', 
-                    color: '#64748B', 
+                    color: 'var(--text-muted)', 
                     fontSize: '0.85rem',
                     marginBottom: '16px'
                   }}>
-                    <MapPin size={16} color="#94A3B8" />
+                    <MapPin size={16} color="var(--text-muted)" />
                     {[partner.city, partner.state].filter(Boolean).join(', ')}
                   </div>
                 )}

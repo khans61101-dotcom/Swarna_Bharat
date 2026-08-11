@@ -468,8 +468,8 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         {/* Stats Section - Dynamic from API */}
         <section style={{
           padding: '16px 24px',
-          backgroundColor: '#f9f9f9',
-          borderTop: '1px solid #e2e2e2'
+          backgroundColor: 'var(--bg-light)',
+          borderTop: '1px solid var(--card-border)'
          }}>
           <div style={{
             display: 'flex',
@@ -478,41 +478,41 @@ const ProfilePage = ({ partner, setActiveTab }) => {
             marginBottom: '16px'
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontSize: '20px', fontWeight: 600, color: '#1a1c1c' }}>
+              <span style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-dark)' }}>
                 {loadingDetails ? '...' : details.usersCount}
               </span>
-              <span style={{ fontSize: '10px', fontWeight: 500, color: '#454652', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Users</span>
+              <span style={{ fontSize: '10px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Users</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontSize: '20px', fontWeight: 600, color: '#1a1c1c' }}>
+              <span style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-dark)' }}>
                 {loadingDetails ? '...' : details.membersCount}
               </span>
-              <span style={{ fontSize: '10px', fontWeight: 500, color: '#454652', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Members</span>
+              <span style={{ fontSize: '10px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Members</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontSize: '20px', fontWeight: 600, color: '#1a1c1c' }}>
+              <span style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-dark)' }}>
                 {loadingDetails ? '...' : details.taskCount}
               </span>
-              <span style={{ fontSize: '10px', fontWeight: 500, color: '#454652', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Tasks</span>
+              <span style={{ fontSize: '10px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Tasks</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ fontSize: '20px', fontWeight: 600, color: '#1a1c1c' }}>
+              <span style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-dark)' }}>
                 {loadingDetails ? '...' : (details.selfMedia ? details.selfMedia.length : (details.media ? details.media.length : 0))}
               </span>
-              <span style={{ fontSize: '10px', fontWeight: 500, color: '#454652', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Media</span>
+              <span style={{ fontSize: '10px', fontWeight: 500, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Media</span>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button style={{
               flex: 1,
-              backgroundColor: '#eeeeee',
-              color: '#1a1c1c',
+              backgroundColor: 'var(--card-bg)',
+              color: 'var(--text-dark)',
               fontWeight: 600,
               fontSize: '14px',
               letterSpacing: '0.05em',
               padding: '8px 0',
               borderRadius: '8px',
-              border: 'none',
+              border: '1px solid var(--card-border)',
               cursor: 'pointer',
               transition: 'background 0.2s',
               display: 'flex',
@@ -529,14 +529,15 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         {/* Media Toggle Buttons */}
         <section style={{
           padding: '16px 24px',
-          backgroundColor: '#f9f9f9'
+          backgroundColor: 'var(--bg-light)'
          }}>
           <div style={{
             display: 'flex',
             gap: '8px',
             padding: '4px',
-            backgroundColor: '#eeeeee',
-            borderRadius: '8px'
+            backgroundColor: 'var(--bg-alt)',
+            borderRadius: '8px',
+            border: '1px solid var(--card-border)'
           }}>
             <button 
               style={{
@@ -550,8 +551,8 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                backgroundColor: activeMediaTab === 'self' ? '#f9f9f9' : 'transparent',
-                color: activeMediaTab === 'self' ? '#1a1c1c' : '#454652',
+                backgroundColor: activeMediaTab === 'self' ? 'var(--card-bg)' : 'transparent',
+                color: activeMediaTab === 'self' ? 'var(--text-dark)' : 'var(--text-muted)',
                 boxShadow: activeMediaTab === 'self' ? '0 1px 3px rgba(0,0,0,0.12)' : 'none'
               }}
               onClick={() => setActiveMediaTab('self')}
@@ -570,8 +571,8 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                backgroundColor: activeMediaTab === 'company' ? '#f9f9f9' : 'transparent',
-                color: activeMediaTab === 'company' ? '#1a1c1c' : '#454652',
+                backgroundColor: activeMediaTab === 'company' ? 'var(--card-bg)' : 'transparent',
+                color: activeMediaTab === 'company' ? 'var(--text-dark)' : 'var(--text-muted)',
                 boxShadow: activeMediaTab === 'company' ? '0 1px 3px rgba(0,0,0,0.12)' : 'none'
               }}
               onClick={() => setActiveMediaTab('company')}
@@ -582,11 +583,11 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         </section> 
 
         {/* Content Grid */}
-        <section style={{ backgroundColor: '#f9f9f9' }}>
+        <section style={{ backgroundColor: 'var(--bg-light)' }}>
           {/* Tab Headers */}
           <div style={{
             display: 'flex',
-            borderBottom: '1px solid #e2e2e2'
+            borderBottom: '1px solid var(--card-border)'
           }}>
             <button 
               style={{
@@ -596,8 +597,8 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 gap: '8px',
-                borderBottom: `2px solid ${activeTabMenu === 'images' ? '#000666' : 'transparent'}`,
-                color: activeTabMenu === 'images' ? '#000666' : '#454652',
+                borderBottom: `2px solid ${activeTabMenu === 'images' ? '#FF9933' : 'transparent'}`,
+                color: activeTabMenu === 'images' ? '#FF9933' : 'var(--text-muted)',
                 background: 'none',
                 borderTop: 'none',
                 borderLeft: 'none',
@@ -624,8 +625,8 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 gap: '8px',
-                borderBottom: `2px solid ${activeTabMenu === 'videos' ? '#000666' : 'transparent'}`,
-                color: activeTabMenu === 'videos' ? '#000666' : '#454652',
+                borderBottom: `2px solid ${activeTabMenu === 'videos' ? '#FF9933' : 'transparent'}`,
+                color: activeTabMenu === 'videos' ? '#FF9933' : 'var(--text-muted)',
                 background: 'none',
                 borderTop: 'none',
                 borderLeft: 'none',
@@ -703,15 +704,16 @@ const ProfilePage = ({ partner, setActiveTab }) => {
           zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center',
           padding: '20px'
         }}>
-          <div style={{
-            background: '#FFFFFF', borderRadius: '24px', width: '100%', maxWidth: '540px',
-            padding: '28px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', position: 'relative'
+          <div className="profile-card" style={{
+            background: 'var(--card-bg)', borderRadius: '24px', width: '100%', maxWidth: '540px',
+            padding: '28px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', position: 'relative',
+            border: '1px solid var(--card-border)', color: 'var(--text-dark)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ margin: 0, fontSize: '1.4rem', color: '#1E293B', fontWeight: 800 }}>Edit Profile Details</h3>
+              <h3 style={{ margin: 0, fontSize: '1.4rem', color: 'var(--text-dark)', fontWeight: 800 }}>Edit Profile Details</h3>
               <button 
                 onClick={() => setShowEditModal(false)}
-                style={{ background: '#F1F5F9', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', fontSize: '1.2rem', color: '#64748B' }}
+                style={{ background: 'var(--bg-alt)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', fontSize: '1.2rem', color: 'var(--text-muted)' }}
               >
                 ✕
               </button>

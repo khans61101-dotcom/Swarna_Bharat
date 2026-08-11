@@ -967,6 +967,28 @@ body.dark-mode {
   border-top: 1px solid #161B22 !important;
 }
 
+/* Dark Mode Overrides for Partners & ProfileDetails */
+[data-theme="dark"] .partners-container {
+  background: #0D1117 !important;
+  color: #F0F6FC !important;
+}
+
+[data-theme="dark"] .partner-card {
+  background: #161B22 !important;
+  border-color: #30363D !important;
+  color: #F0F6FC !important;
+}
+
+[data-theme="dark"] .partner-card h3 {
+  color: #F0F6FC !important;
+}
+
+[data-theme="dark"] .profile-card,
+[data-theme="dark"] .profile-card section {
+  background-color: #0D1117 !important;
+  color: #F0F6FC !important;
+}
+
 /* ========================================================
    RESPONSIVE DESIGN (Mobile & Tablet)
 ======================================================== */
