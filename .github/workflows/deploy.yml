@@ -30,10 +30,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
           local-dir: ./Front/dist/
-          server-dir: swarna.hopeharbor.co.in/
-          security: loose
+          server-dir: ./swarna.hopeharbor.co.in/
 
       - name: 🚀 Deploy Backend (Node.js API) to swarnaback.hopeharbor.co.in
         uses: SamKirland/FTP-Deploy-Action@v4.3.4
@@ -41,10 +39,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
           local-dir: ./Back/
-          server-dir: swarnaback.hopeharbor.co.in/
-          security: loose
+          server-dir: ./swarnaback.hopeharbor.co.in/
           exclude: |
             **/node_modules/**
             **/.git/**
