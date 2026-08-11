@@ -1,4 +1,4 @@
-name: Deploy Swarna India to cPanel
+name: Deploy Swarna India to cPanel (Automated CI/CD)
 
 on:
   push:
