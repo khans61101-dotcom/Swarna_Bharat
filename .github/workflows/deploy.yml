@@ -21,11 +21,11 @@ jobs:
       - name: 📦 Install Frontend Dependencies & Build React App
         run: |
           cd Front
-          npm install
+          npm install --legacy-peer-deps
           npm run build
 
       - name: 🚀 Deploy Frontend (React Build) to swarna.hopeharbor.co.in
-        uses: SamKirland/FTP-Deploy-Action@v4.3.4
+        uses: SamKirland/FTP-Deploy-Action@v4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
@@ -34,7 +34,7 @@ jobs:
           server-dir: ./swarna.hopeharbor.co.in/
 
       - name: 🚀 Deploy Backend (Node.js API) to swarnaback.hopeharbor.co.in
-        uses: SamKirland/FTP-Deploy-Action@v4.3.4
+        uses: SamKirland/FTP-Deploy-Action@v4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
