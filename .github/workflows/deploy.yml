@@ -24,24 +24,23 @@ jobs:
           npm install --legacy-peer-deps
           npm run build
 
+      - name: 🛠️ Install LFTP
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
       - name: 🚀 Deploy Frontend (React Build) to swarna.hopeharbor.co.in
-        uses: SamKirland/FTP-Deploy-Action@v4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./Front/dist/
-          server-dir: ./swarna.hopeharbor.co.in/
+        run: |
+          lftp -c "
+            set ftp:ssl-allow no;
+            set ftp:passive-mode true;
+            open -u '${{ secrets.FTP_USERNAME }}','${{ secrets.FTP_PASSWORD }}' '${{ secrets.FTP_SERVER }}';
+            mirror --reverse --delete --verbose ./Front/dist/ ./swarna.hopeharbor.co.in/;
+          "
 
       - name: 🚀 Deploy Backend (Node.js API) to swarnaback.hopeharbor.co.in
-        uses: SamKirland/FTP-Deploy-Action@v4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./Back/
-          server-dir: ./swarnaback.hopeharbor.co.in/
-          exclude: |
-            **/node_modules/**
-            **/.git/**
-            **/.env
+        run: |
+          lftp -c "
+            set ftp:ssl-allow no;
+            set ftp:passive-mode true;
+            open -u '${{ secrets.FTP_USERNAME }}','${{ secrets.FTP_PASSWORD }}' '${{ secrets.FTP_SERVER }}';
+            mirror --reverse --delete --verbose --exclude node_modules/ --exclude .git/ --exclude .env ./Back/ ./swarnaback.hopeharbor.co.in/;
+          "
