@@ -574,6 +574,98 @@ export default function Dashboard({ setActiveTab, setUserState }) {
               </div>
             </div>
 
+            {/* Complete Personal Profile Details Card */}
+            <div style={{
+              background: '#FFF',
+              borderRadius: '24px',
+              padding: '28px',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+              marginBottom: '28px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+                <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#1E293B', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <User size={22} color="#FF9933" />
+                  {lang === 'en' ? 'Complete Personal & Account Profile' : 'संपूर्ण व्यक्तिगत एवं खाता प्रोफ़ाइल'}
+                </h3>
+                <button
+                  onClick={() => setActiveDashTab('profile')}
+                  style={{
+                    background: '#FFF7ED', color: '#EA580C', border: '1px solid #FFEDD5',
+                    padding: '6px 16px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer'
+                  }}
+                >
+                  ✏️ {lang === 'en' ? 'Edit Profile Info' : 'विवरण संपादित करें'}
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Full Name</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.name || 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Email Address</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.email || 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Mobile Phone</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.phone || 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>User Role</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#FF9933', marginTop: '3px' }}>{user.role_name || user.role || 'Member'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Date of Birth</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.dob ? new Date(user.dob).toLocaleDateString('en-IN') : 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Address</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.address || 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>City / State / Pincode</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>
+                    {user.city || user.state || user.pincode ? `${user.city || ''}, ${user.state || ''} ${user.pincode || ''}` : 'N/A'}
+                  </div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Bank Name</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.bank_name || 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Account Number</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.account_no || 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>IFSC Code</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.ifsc_code || 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>UPI ID</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.upi_id || 'N/A'}</div>
+                </div>
+
+                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Account Created On</span>
+                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>
+                    {user.created_at ? new Date(user.created_at).toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Quick Actions Shortcuts */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
               <div 

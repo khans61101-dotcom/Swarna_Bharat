@@ -15,16 +15,25 @@ export default function PartnersPage({
 
   useEffect(() => {
     fetch(`${API_URL}/partners`)
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : null)
       .then(data => {
-        setPartners(data);
+        if (data && Array.isArray(data.partners)) {
+          setPartners(data.partners);
+        } else if (Array.isArray(data)) {
+          setPartners(data);
+        } else {
+          setPartners([]);
+        }
         setLoading(false);
       })
       .catch(err => {
         console.error('Error fetching partners:', err);
+        setPartners([]);
         setLoading(false);
       });
   }, []);
+
+  const safePartners = Array.isArray(partners) ? partners : [];
 
   const getRoleIcon = (roleName) => {
     switch(roleName) {
@@ -45,17 +54,17 @@ export default function PartnersPage({
   };
 
   const getRoleStats = (roleName) => {
-    const filtered = partners.filter(p => p.role_name === roleName);
+    const filtered = safePartners.filter(p => p.role_name === roleName);
     return filtered.length;
   };
 
   const filteredPartners = filter === 'All' 
-    ? partners 
-    : partners.filter(p => p.role_name === filter);
+    ? safePartners 
+    : safePartners.filter(p => p.role_name === filter);
 
   // Stats for filter buttons
   const stats = {
-    All: partners.length,
+    All: safePartners.length,
     Agency: getRoleStats('Agency'),
     NGO: getRoleStats('NGO'),
     Member: getRoleStats('Member'),

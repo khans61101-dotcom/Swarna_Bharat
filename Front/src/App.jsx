@@ -25,7 +25,8 @@ import {
   Quote,
   MapPin,
   Languages,
-  Image
+  Image,
+  Globe
 } from 'lucide-react';
 
 import AboutPage from './pages/About';
@@ -147,8 +148,8 @@ const homeVideosList = [
 const homeNewsData = [
   {
     id: 1,
-    title: 'PM Modi welcomes record FDI inflows, attributes growth to policy stability & reforms',
-    titleHi: 'PM मोदी ने रिकॉर्ड FDI प्रवाह का स्वागत किया, विकास का श्रेय नीति स्थिरता और सुधारों को दिया',
+    title: 'welcomes record FDI inflows, attributes growth to policy stability & reforms',
+    titleHi: 'Swarna Bharatने रिकॉर्ड FDI प्रवाह का स्वागत किया, विकास का श्रेय नीति स्थिरता और सुधारों को दिया',
     date: 'JULY 25, 2026',
     snippet: 'India continues to emerge as a premier global manufacturing and technology hub driven by Ease of Doing Business initiatives.',
     snippetHi: 'भारत व्यापार सुगमता पहलों द्वारा संचालित एक प्रमुख वैश्विक विनिर्माण और प्रौद्योगिकी केंद्र के रूप में उभरता रहा है।',
@@ -156,8 +157,8 @@ const homeNewsData = [
   },
   {
     id: 2,
-    title: 'PM launches PM-DevINE projects aimed at holistic development in North Eastern region',
-    titleHi: 'PM ने पूर्वोत्तर क्षेत्र के समग्र विकास के लिए PM-DevINE परियोजनाएं लॉन्च कीं',
+    title: 'Swarna Bharatlaunches PM-DevINE projects aimed at holistic development in North Eastern region',
+    titleHi: 'Swarna Bharatने पूर्वोत्तर क्षेत्र के समग्र विकास के लिए PM-DevINE परियोजनाएं लॉन्च कीं',
     date: 'JULY 24, 2026',
     snippet: 'Multiple connectivity, healthcare, and educational institutions dedicated to the nation to empower local youth.',
     snippetHi: 'स्थानीय युवाओं को सशक्त बनाने के लिए राष्ट्र को समर्पित कई कनेक्टिविटी, स्वास्थ्य सेवा और शैक्षणिक संस्थान।',
@@ -174,7 +175,60 @@ const storyImages = [
 export default function App() {
   const { lang, toggleLang, t } = useLang();
   const [openDropdown, setOpenDropdown] = useState(null);
-  const [activeTab, setActiveTab] = useState('Home');
+  const getTabFromLocation = () => {
+    const hash = window.location.hash.toLowerCase().replace('#/', '').replace('#', '');
+    const path = window.location.pathname.toLowerCase().replace('/', '');
+    const route = hash || path;
+
+    if (route === 'auth' || route === 'login' || route === 'register') return 'Auth';
+    if (route === 'dashboard') return 'Dashboard';
+    if (route === 'about') return 'About';
+    if (route === 'news') return 'News';
+    if (route === 'events') return 'Events';
+    if (route === 'videos') return 'Videos';
+    if (route === 'gallery') return 'Gallery';
+    if (route === 'enquiry') return 'Enquiry';
+    if (route === 'partners') return 'Partners';
+    if (route === 'download') return 'DownloadApp';
+    if (route === 'profile') return 'ProfileDetails';
+    return 'Home';
+  };
+
+  const [activeTab, setActiveTabState] = useState(getTabFromLocation);
+
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    let routeName = '';
+    if (tab === 'Auth') routeName = 'auth';
+    else if (tab === 'Dashboard') routeName = 'dashboard';
+    else if (tab === 'About') routeName = 'about';
+    else if (tab === 'News') routeName = 'news';
+    else if (tab === 'Events') routeName = 'events';
+    else if (tab === 'Videos') routeName = 'videos';
+    else if (tab === 'Gallery') routeName = 'gallery';
+    else if (tab === 'Enquiry') routeName = 'enquiry';
+    else if (tab === 'Partners') routeName = 'partners';
+    else if (tab === 'DownloadApp') routeName = 'download';
+    else if (tab === 'ProfileDetails') routeName = 'profile';
+
+    if (routeName) {
+      window.location.hash = `#/${routeName}`;
+    } else {
+      window.location.hash = '';
+    }
+  };
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const tab = getTabFromLocation();
+      setActiveTabState(tab);
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   const [selectedPartner, setSelectedPartner] = useState(null);
   const [selectedSector, setSelectedSector] = useState('rural');
 
@@ -183,8 +237,13 @@ export default function App() {
   const [authMode, setAuthMode] = useState('login');
   const [userState, setUserState] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedVideo, setSelectedVideo] = useState(homeVideosList[0]);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [selectedVideo, setSelectedVideo] = useState(homeVideosList[0]);
+  // const [isPlaying, setIsPlaying] = useState(false);
+  const [youtubeVideos, setYoutubeVideos] = useState([]);
+const [selectedVideo, setSelectedVideo] = useState(homeVideosList[0]);
+const [isPlaying, setIsPlaying] = useState(false);
+const [youtubeLoading, setYoutubeLoading] = useState(true);
+
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
@@ -221,6 +280,101 @@ export default function App() {
       })
       .catch(e => console.error('Error fetching events:', e));
   }, []);
+
+
+
+
+  useEffect(() => {
+  const fetchYouTubeVideos = async () => {
+    try {
+      setYoutubeLoading(true);
+
+      const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
+      const CHANNEL_ID = import.meta.env.VITE_YOUTUBE_CHANNEL_ID;
+
+      if (!API_KEY || !CHANNEL_ID) {
+        console.warn('YouTube API configuration missing');
+        setYoutubeLoading(false);
+        return;
+      }
+
+      // 1. Get channel's uploads playlist
+      const channelResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${API_KEY}`
+      );
+
+      if (!channelResponse.ok) {
+        throw new Error('Failed to fetch YouTube channel');
+      }
+
+      const channelData = await channelResponse.json();
+
+      const uploadsPlaylistId =
+        channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+
+      if (!uploadsPlaylistId) {
+        throw new Error('Uploads playlist not found');
+      }
+
+      // 2. Get latest videos
+      const videosResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylistId}&maxResults=10&key=${API_KEY}`
+      );
+
+      if (!videosResponse.ok) {
+        throw new Error('Failed to fetch YouTube videos');
+      }
+
+      const videosData = await videosResponse.json();
+
+      const formattedVideos = (videosData.items || [])
+        .filter(item => item.snippet?.resourceId?.videoId)
+        .map((item) => {
+          const videoId = item.snippet.resourceId.videoId;
+
+          return {
+            id: videoId,
+            youtubeId: videoId,
+            videoUrl: `https://www.youtube.com/watch?v=${videoId}`,
+
+            title: item.snippet.title,
+            titleHi: item.snippet.title,
+
+            category: 'YouTube',
+            categoryHi: 'यूट्यूब',
+
+            date: new Date(
+              item.snippet.publishedAt
+            ).toLocaleDateString('en-IN', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric'
+            }),
+
+            duration: '',
+
+            thumb:
+              item.snippet.thumbnails?.high?.url ||
+              item.snippet.thumbnails?.medium?.url ||
+              item.snippet.thumbnails?.default?.url
+          };
+        });
+
+      if (formattedVideos.length > 0) {
+        setYoutubeVideos(formattedVideos);
+        setSelectedVideo(formattedVideos[0]);
+      }
+    } catch (error) {
+      console.error('YouTube videos fetch error:', error);
+    } finally {
+      setYoutubeLoading(false);
+    }
+  };
+
+  fetchYouTubeVideos();
+}, []); 
+
+ 
 
   const demoBanners = [
     {
@@ -555,10 +709,11 @@ export default function App() {
         onMouseLeave={(e) =>
           (e.currentTarget.style.background = 'transparent')
         }
-      >
+       >
         <Image size={16} />
         {lang === 'en' ? 'Gallery' : 'गैलरी'}
       </div>
+
     </div>
   )}
 </li>  
@@ -911,36 +1066,90 @@ export default function App() {
             </div>
           </section>
 
-          {/* Ground Impact Stories Section */}
-          <section className="section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
+          {/* About Section */}
+          <section className="section-bg-f8fafc" style={{ background: '#F8FAFC', padding: '60px 0' }}>
             <div className="section-container">
               <div className="section-header">
                 <div className="section-title-wrap">
                   <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Quote color="#FF9933" size={28} /> {t.impactSectionTitle}
+                    <BookOpen color="#FF9933" size={28} /> {lang === 'en' ? 'About Vishwaguru Bharat Abhiyan' : 'विश्वगुरु भारत अभियान के बारे में'}
                   </h2>
                 </div>
-                <span className="view-all-link" onClick={() => setActiveTab('News')}>
-                  {t.viewAllImpact} <ChevronRight size={16} />
+                <span className="view-all-link" onClick={() => setActiveTab('About')}>
+                  {lang === 'en' ? 'Learn More' : 'अधिक जानें'} <ChevronRight size={16} />
                 </span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '25px' }}>
-                {t.stories.map((story, idx) => (
-                  <div key={idx} className="story-card">
-                    <div className="story-card-img">
-                      <img src={storyImages[idx]} alt={story.title} />
-                      <span className="story-tag">{story.tag}</span>
-                    </div>
-                    <div className="story-card-content">
-                      <h3 className="story-title">{story.title}</h3>
-                      <p className="story-quote">{story.quote}</p>
-                      <a href="#" className="view-all-link" style={{ fontSize: '0.85rem' }} onClick={(e) => { e.preventDefault(); setActiveTab('News'); }}>
-                        {story.readMore} <ChevronRight size={14} />
-                      </a>
-                    </div>
+              <div className="dark-card" style={{ background: '#FFF', padding: '35px', borderRadius: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', border: '1px solid #E2E8F0' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', alignItems: 'center' }}>
+                  <div style={{ position: 'relative' }}>
+                    <img 
+                      src="/AboutLogo.jpg"      
+                      alt="Vishwaguru Bharat Abhiyan" 
+                      style={{ width: '100%', borderRadius: '16px', boxShadow: '0 12px 30px rgba(0,0,0,0.12)', border: '1px solid #E2E8F0' }}
+                    />
+                    <span style={{ position: 'absolute', top: '15px', left: '15px', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', fontSize: '0.8rem', fontWeight: 700, padding: '6px 16px', borderRadius: '30px', boxShadow: '0 4px 12px rgba(255,107,0,0.3)' }}>
+                      🚩 {lang === 'en' ? 'National Movement' : 'राष्ट्रीय महाअभियान'}
+                    </span>
                   </div>
-                ))}
+                  <div>
+                    <span style={{ color: '#FF9933', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.88rem', letterSpacing: '0.5px' }}>
+                      {lang === 'en' ? 'Rebuilding Golden Bharat' : 'स्वर्णिम भारत का पुनः निर्माण'}
+                    </span>
+                    <h3 style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--text-dark)', margin: '12px 0 16px', lineHeight: 1.3 }}>
+                      {lang === 'en' ? 'Empowering Youth, Reviving Heritage & Driving Sustainable Progress' : 'युवा शक्ति, सांस्कृतिक पुनरुत्थान एवं सतत विकास का महासंकल्प'}
+                    </h3>
+                    <p style={{ color: '#64748B', lineHeight: '1.7', fontSize: '0.98rem', marginBottom: '16px' }}>
+                      {lang === 'en'
+                        ? 'Vishwaguru Bharat Abhiyan is a nationwide transformative movement committed to youth empowerment, cultural heritage, digital education, and inclusive development across all sectors.'
+                        : 'विश्वगुरु भारत अभियान एक देशव्यापी परिवर्तनकारी अभियान है जो युवा सशक्तिकरण, सांस्कृतिक विरासत, डिजिटल शिक्षा और सभी क्षेत्रों में समावेशी विकास के लिए समर्पित है।'}
+                    </p>
+                    <div style={{ background: '#FFF7ED', borderLeft: '4px solid #FF9933', padding: '14px 18px', borderRadius: '8px', marginBottom: '22px' }}>
+                      <p style={{ color: '#C2410C', fontWeight: 700, fontSize: '0.92rem', margin: 0, fontStyle: 'italic' }}>
+                        "{lang === 'en' ? 'Sabka Saath, Sabka Vikas, Sabka Vishwas, Sabka Prayas' : 'सबका साथ, सबका विकास, सबका विश्वास, सबका प्रयास'}"
+                      </p>
+                    </div>
+                    <button
+                      className="btn-primary"
+                      onClick={() => setActiveTab('About')}
+                      style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', border: 'none', padding: '12px 28px', borderRadius: '40px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 18px rgba(255, 153, 51, 0.35)' }}
+                    >
+                      {lang === 'en' ? 'Explore Full Vision' : 'पूरा दृष्टिकोण देखें'} <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* 4 Pillars Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginTop: '40px', paddingTop: '30px', borderTop: '1px solid #F1F5F9' }}>
+                  {[
+                    {
+                      icon: <User size={26} color="#FF9933" />,
+                      title: lang === 'en' ? 'Inclusive Governance' : 'समावेशी शासन',
+                      desc: lang === 'en' ? 'Ensuring direct access to government schemes & welfare.' : 'प्रत्येक नागरिक को सरकारी योजनाओं तक सीधी पहुँच।'
+                    },
+                    {
+                      icon: <Award size={26} color="#FF9933" />,
+                      title: lang === 'en' ? 'Transparent Admin' : 'पारदर्शी प्रशासन',
+                      desc: lang === 'en' ? 'Promoting accountability and open public governance.' : 'जवाबदेही और पारदर्शी सार्वजनिक व्यवस्था।'
+                    },
+                    {
+                      icon: <BookOpen size={26} color="#FF9933" />,
+                      title: lang === 'en' ? 'Digital Empowerment' : 'डिजिटल सशक्तिकरण',
+                      desc: lang === 'en' ? 'Bridging digital gap with accessible tech & skills.' : 'तकनीक और कौशल से डिजिटल क्रांति।'
+                    },
+                    {
+                      icon: <Globe size={26} color="#FF9933" />,
+                      title: lang === 'en' ? 'Global Leadership' : 'वैश्विक नेतृत्व',
+                      desc: lang === 'en' ? 'Positioning Bharat as a premier world benchmark.' : 'विश्व मंच पर भारत के नेतृत्व को सुदृढ़ करना।'
+                    }
+                  ].map((p, idx) => (
+                    <div key={idx} style={{ background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0', borderLeft: '4px solid #FF9933' }}>
+                      <div style={{ marginBottom: '10px' }}>{p.icon}</div>
+                      <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-dark)', marginBottom: '6px' }}>{p.title}</h4>
+                      <p style={{ fontSize: '0.84rem', color: '#64748B', lineHeight: '1.4', margin: 0 }}>{p.desc}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
@@ -949,7 +1158,7 @@ export default function App() {
           <section className="video-section-bg section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
             <div className="section-container">
               <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-                <div className="section-title-wrap">
+                <div className="section-title-wrap">  
                   <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <Video color="#FF9933" size={28} /> {t.videoSectionTitle}
                   </h2>
@@ -1021,14 +1230,14 @@ export default function App() {
                       <Video size={14} /> Watch on @विश्वगुरुभारतअभियान
                     </a>
                   </div>
-                </div>
+                </div>    
               </div>
 
               {/* More Videos Grid */}
               <h3 style={{ fontSize: '1.2rem', margin: '30px 0 15px', color: '#CBD5E1' }}>{t.moreVideos}</h3>
               <div className="video-grid">
-                {homeVideosList.map((vid) => (
-                  <div
+                {(youtubeVideos.length > 0 ? youtubeVideos : homeVideosList).map((vid) => (
+                  <div 
                     key={vid.id}
                     className="video-card"
                     onClick={() => { setSelectedVideo(vid); setIsPlaying(true); window.scrollTo({ top: 450, behavior: 'smooth' }); }}

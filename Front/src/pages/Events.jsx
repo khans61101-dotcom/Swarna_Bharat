@@ -8,11 +8,11 @@ const allEventsList = [
     day: '07 & 08',
     month: 'FEB',
     year: '2026',
-    title: 'Building Flourishing Futures: National Conclave on Early Education & Youth Development',
+    title: 'Building Flourishing Futures: National Conclave on Early Education & Youth DeveloSwarna Bharatent',
     location: 'Bharat Mandapam, Pragati Maidan, New Delhi',
     category: 'National Conclave',
     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=600&q=80',
-    desc: 'Bringing together educationists, policymakers, and innovators to shape early childhood development and NEP implementation across India.'
+    desc: 'Bringing together educationists, policymakers, and innovators to shape early childhood develoSwarna Bharatent and NEP implementation across India.'
   },
   {
     id: 2,

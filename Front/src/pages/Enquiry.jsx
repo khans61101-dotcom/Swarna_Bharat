@@ -38,8 +38,8 @@ export default function EnquiryPage() {
   const labelStyle = { display: 'block', fontWeight: 600, fontSize: '0.9rem', marginBottom: '5px', color: 'var(--text-dark)' };
 
   const categories = lang === 'en'
-    ? ['Governance Suggestion', 'PM Scheme Enquiry', 'Public Grievance', 'Media Inquiry']
-    : ['शासन सुझाव', 'PM योजना पूछताछ', 'सार्वजनिक शिकायत', 'मीडिया जांच'];
+    ? ['Governance Suggestion', 'Swarna Bharat Scheme Enquiry', 'Public Grievance', 'Media Inquiry']
+    : ['शासन सुझाव', 'Swarna Bharat योजना पूछताछ', 'सार्वजनिक शिकायत', 'मीडिया जांच'];
 
   return (
     <div className="section-container">
@@ -136,7 +136,7 @@ export default function EnquiryPage() {
             <Mail size={24} color="#FF9933" style={{ flexShrink: 0 }} />
             <div>
               <h4 style={{ fontSize: '1rem', color: '#FFF' }}>{lang === 'en' ? 'Official Email' : 'आधिकारिक ईमेल'}</h4>
-              <p style={{ color: '#CBD5E1', fontSize: '0.9rem' }}>connect@pmindia.gov.in</p>
+              <p style={{ color: '#CBD5E1', fontSize: '0.9rem' }}>connect@Swarna_Bharatindia.gov.in</p>
             </div>
           </div>
         </div>

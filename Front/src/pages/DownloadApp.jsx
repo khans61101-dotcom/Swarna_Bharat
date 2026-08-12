@@ -11,8 +11,8 @@ export default function DownloadAppPage() {
       icon: <Bell size={32} color="#FF9933" style={{ marginBottom: '15px' }} />,
       title: lang === 'en' ? 'Instant News Notifications' : 'तत्काल समाचार अधिसूचना',
       desc: lang === 'en'
-        ? "First-hand notifications on PM's speeches, cabinet decisions, and international visits."
-        : 'PM के भाषणों, कैबिनेट निर्णयों और अंतर्राष्ट्रीय दौरों पर प्रत्यक्ष अधिसूचनाएं।'
+        ? "First-hand notifications on Swarna Bharat's speeches, cabinet decisions, and international visits."
+        : 'Swarna Bharat के भाषणों, कैबिनेट निर्णयों और अंतर्राष्ट्रीय दौरों पर प्रत्यक्ष अधिसूचनाएं।'
     },
     {
       icon: <Zap size={32} color="#FF9933" style={{ marginBottom: '15px' }} />,
@@ -87,7 +87,7 @@ export default function DownloadAppPage() {
         <div style={{ textAlign: 'center' }}>
           <img 
             src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=600&q=80" 
-            alt="NaMo App Screen" 
+            alt="Swarna Bharat App Screen" 
             style={{ maxWidth: '320px', width: '100%', borderRadius: '24px', border: '4px solid #334155', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
           />
         </div>
@@ -95,7 +95,7 @@ export default function DownloadAppPage() {
 
       {/* App Key Features Grid */}
       <h3 style={{ fontSize: '1.4rem', color: 'var(--text-dark)', marginBottom: '25px', textAlign: 'center' }}>
-        {lang === 'en' ? 'Key Features of NaMo App' : 'NaMo ऐप की प्रमुख विशेषताएं'}
+        {lang === 'en' ? 'Key Features of Swarna Bharat App' : 'Swarna Bharat ऐप की प्रमुख विशेषताएं'}
       </h3>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '25px' }}>

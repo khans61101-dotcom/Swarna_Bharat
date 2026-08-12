@@ -21,6 +21,7 @@ function optionalAuth(req) {
 // Non-Admin logged-in -> only items created by that user
 router.get('/', async (req, res) => {
   try {
+    const { mine } = req.query;
     const user = optionalAuth(req);
 
     let query = `
@@ -31,7 +32,7 @@ router.get('/', async (req, res) => {
     `;
     let params = [];
 
-    if (user && user.role !== 'Admin') {
+    if (mine === 'true' && user && user.role !== 'Admin') {
       query += ` WHERE g.created_by = ?`;
       params.push(user.id);
     }

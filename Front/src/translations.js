@@ -16,7 +16,7 @@ export const translations = {
       about: 'About',
       news: 'News & Updates',
       events: 'Events',
-      videos: 'Videos',
+      videos: 'YT-Videos',
       enquiry: 'Enquiry',
       downloadApp: 'Download App',
       loginRegister: 'Login / Register',
@@ -27,7 +27,7 @@ export const translations = {
     // ---- Hero Slides ----
     slides: [
       {
-        tag: 'PM Speeches & Initiatives',
+        tag: 'Swarna Bharat Speeches & Initiatives',
         title: 'Transforming India: Infrastructure, Innovation & Inclusive Growth',
         desc: 'Highlights from recent national inaugurations and flagship initiatives powering Viksit Bharat 2047.',
         btn: 'Read Full Address',
@@ -93,8 +93,8 @@ export const translations = {
     ],
 
     // ---- Video Section ----
-    videoSectionTitle: 'PM Video Library & Speeches',
-    viewAllVideos: 'View All Videos',
+    videoSectionTitle: 'YT-Videos Library & Speeches',
+    viewAllVideos: 'View All Videos', 
     moreVideos: 'More Videos',
 
     // ---- News Section ----
@@ -107,26 +107,26 @@ export const translations = {
       mediaCorner: 'Media Corner',
       contactDesk: 'Contact Desk',
       links: {
-        aboutPM: 'About PM',
+        aboutPM: 'About Swarna Bharat',
         newsUpdates: 'News & Updates',
         eventsConclaves: 'Events & Conclaves',
         videoLibrary: 'Video Library',
         citizenEnquiry: 'Citizen Enquiry Portal',
-        downloadApp: 'Download NaMo App',
+        downloadApp: 'Download Swarna Bharat App',
         citizenLogin: 'Citizen Login',
         speeches: 'Speeches & Statements',
         pressReleases: 'Press Releases',
         submitGrievance: 'Submit Grievance',
-        pmoAddress: 'PMO Address & Email',
+        pmoAddress: 'Swarna Bharat Desk',
       },
-      copyright: '© Content Owned, Maintained & Updated by Prime Minister\'s Office, Government of India.',
+      copyright: '© Content Owned & Maintained by Swarna Bharat Initiative, Government of India.',
     },
 
     // ---- About Page ----
     about: {
-      pageTitle: 'About SwarnaIndia',
-      subtitle: 'Biography & Journey',
-      intro: 'SwarnaIndia is an initiative dedicated to fostering transparency, accountability, and direct citizen engagement with the Prime Minister\'s Office. Our platform bridges the gap between governance and citizens through digital empowerment.',
+      pageTitle: 'About Swarna Bharat',
+      subtitle: 'Mission & Vision',
+      intro: 'Swarna Bharat is an initiative dedicated to fostering transparency, accountability, and direct citizen engagement. Our platform bridges the gap between governance and citizens through digital empowerment.',
       pillar1Title: 'Inclusive Governance',
       pillar1Desc: 'Ensuring every citizen has access to government services and information through digital India initiatives.',
       pillar2Title: 'Transparent Administration',
@@ -148,7 +148,7 @@ export const translations = {
 
     // ---- Videos Page ----
     videosPage: {
-      title: 'PM Video Library',
+      title: 'YT-Video Library',
       subtitle: 'Speeches, Addresses & Key Events',
       searchPlaceholder: 'Search videos...',
       categories: ['All', 'Keynote', 'Mann Ki Baat', 'Infrastructure', 'Diplomacy'],
@@ -204,7 +204,7 @@ export const translations = {
 
     // ---- Download App Page ----
     downloadPage: {
-      title: 'Download NaMo App',
+      title: 'Download Swarna Bharat App',
       subtitle: 'Connect Directly with the Prime Minister',
       desc: 'Stay updated with the latest news, speeches, and government initiatives. Engage directly with PM\'s office through the official mobile application.',
       feature1: 'Live Speeches & Events',
@@ -233,7 +233,7 @@ export const translations = {
       about: 'परिचय',
       news: 'समाचार और अपडेट',
       events: 'कार्यक्रम',
-      videos: 'वीडियो',
+      videos: 'YT-Videos',
       enquiry: 'पूछताछ',
       downloadApp: 'ऐप डाउनलोड करें',
       loginRegister: 'लॉगिन / पंजीकरण',
@@ -310,7 +310,7 @@ export const translations = {
     ],
 
     // ---- Video Section ----
-    videoSectionTitle: 'प्रधानमंत्री वीडियो लाइब्रेरी और भाषण',
+    videoSectionTitle: 'Swarna Bharat वीडियो लाइब्रेरी और भाषण',
     viewAllVideos: 'सभी वीडियो देखें',
     moreVideos: 'और वीडियो',
 
@@ -324,26 +324,26 @@ export const translations = {
       mediaCorner: 'मीडिया कॉर्नर',
       contactDesk: 'संपर्क डेस्क',
       links: {
-        aboutPM: 'प्रधानमंत्री के बारे में',
+        aboutPM: 'Swarna Bharat के बारे में',
         newsUpdates: 'समाचार और अपडेट',
         eventsConclaves: 'कार्यक्रम और सम्मेलन',
         videoLibrary: 'वीडियो लाइब्रेरी',
         citizenEnquiry: 'नागरिक पूछताछ पोर्टल',
-        downloadApp: 'NaMo ऐप डाउनलोड करें',
+        downloadApp: 'Swarna Bharat ऐप डाउनलोड करें',
         citizenLogin: 'नागरिक लॉगिन',
         speeches: 'भाषण और बयान',
         pressReleases: 'प्रेस विज्ञप्तियां',
         submitGrievance: 'शिकायत दर्ज करें',
-        pmoAddress: 'PMO पता और ईमेल',
+        pmoAddress: 'Swarna Bharat संपर्क पता',
       },
-      copyright: '© सामग्री प्रधानमंत्री कार्यालय, भारत सरकार द्वारा स्वामित्व, रखरखाव और अद्यतन की गई है।',
+      copyright: '© सामग्री Swarna Bharat पहल द्वारा स्वामित्व और अद्यतन की गई है।',
     },
 
     // ---- About Page ----
     about: {
-      pageTitle: 'सुवार्ड इंडिया के बारे में',
-      subtitle: 'जीवनी और यात्रा',
-      intro: 'सुवार्ड इंडिया पारदर्शिता, जवाबदेही और प्रधानमंत्री कार्यालय के साथ सीधे नागरिक जुड़ाव को बढ़ावा देने के लिए समर्पित एक पहल है। हमारा मंच डिजिटल सशक्तिकरण के माध्यम से शासन और नागरिकों के बीच की खाई को पाटता है।',
+      pageTitle: 'Swarna Bharat के बारे में',
+      subtitle: 'मिशन और विजन',
+      intro: 'Swarna Bharat पारदर्शिता, जवाबदेही और नागरिक जुड़ाव को बढ़ावा देने के लिए समर्पित एक पहल है। हमारा मंच डिजिटल सशक्तिकरण के माध्यम से शासन और नागरिकों के बीच की खाई को पाटता है।',
       pillar1Title: 'समावेशी शासन',
       pillar1Desc: 'डिजिटल इंडिया पहलों के माध्यम से प्रत्येक नागरिक को सरकारी सेवाओं और सूचनाओं तक पहुंच सुनिश्चित करना।',
       pillar2Title: 'पारदर्शी प्रशासन',
@@ -421,7 +421,7 @@ export const translations = {
 
     // ---- Download App Page ----
     downloadPage: {
-      title: 'NaMo ऐप डाउनलोड करें',
+      title: 'Swarna Bharat ऐप डाउनलोड करें',
       subtitle: 'प्रधानमंत्री से सीधे जुड़ें',
       desc: 'नवीनतम समाचार, भाषणों और सरकारी पहलों से अपडेट रहें। आधिकारिक मोबाइल एप्लिकेशन के माध्यम से प्रधानमंत्री कार्यालय के साथ सीधे जुड़ें।',
       feature1: 'लाइव भाषण और कार्यक्रम',

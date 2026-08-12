@@ -898,6 +898,24 @@ body.dark-mode .tree-viewport {
   animation: badgeSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tree-node-wrapper {
+    animation: fadeIn 0.3s ease;
+}
+
+.tree-node-avatar-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tree-node-avatar-card:hover {
+    transform: scale(1.08);
+}    
+
 @keyframes badgeSlideIn {
   from { opacity: 0; transform: translateX(-10px); }
   to { opacity: 1; transform: translateX(0); }

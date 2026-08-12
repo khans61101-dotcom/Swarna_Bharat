@@ -1294,96 +1294,345 @@ function focusUserFromSelect(userId) {
     renderAccountsTree();
 }
 
+
+function fitTreeToScreen() {
+    const container = document.getElementById('treeContainer');
+    const treeContent = document.getElementById('treeContent');
+
+    if (!container || !treeContent) return;
+
+    // Reset first so we can measure natural size
+    treeContent.style.transform = 'scale(1)';
+    treeContent.style.transformOrigin = 'top center';
+
+    requestAnimationFrame(() => {
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+
+        const treeWidth = treeContent.scrollWidth;
+        const treeHeight = treeContent.scrollHeight;
+
+        if (!treeWidth || !treeHeight) return;
+
+        const widthScale = containerWidth / treeWidth;
+        const heightScale = containerHeight / treeHeight;
+
+        // Use whichever scale is smaller
+        let scale = Math.min(widthScale, heightScale);
+
+        // Don't enlarge small trees
+        scale = Math.min(scale, 1);
+
+        // Don't make tree ridiculously tiny
+        scale = Math.max(scale, 0.35);
+
+        treeContent.style.transform = `scale(${scale})`;
+        treeContent.style.transformOrigin = 'top center';
+    });
+}
+
+    
 function renderAccountsTree(usersList = null) {
     const treeContent = document.getElementById('treeContent');
     if (!treeContent) return;
 
-    const fullList = cachedUsers || usersList || [];
+    // Always use the complete user list
+    const fullList =
+        Array.isArray(cachedUsers) && cachedUsers.length > 0
+            ? cachedUsers
+            : Array.isArray(usersList)
+                ? usersList
+                : [];
+
     populateTreeUserSelect();
 
     if (fullList.length === 0) {
-        treeContent.innerHTML = '<div style="color:var(--text-secondary);padding:3rem;text-align:center;">No accounts available to render tree diagram.</div>';
+        treeContent.innerHTML = `
+            <div style="
+                color: var(--text-secondary);
+                padding: 3rem;
+                text-align: center;
+            ">
+                No accounts available to render tree diagram.
+            </div>
+        `;
         return;
     }
 
     // Role filter
-    const roleFilter = document.getElementById('treeRoleFilter') ? document.getElementById('treeRoleFilter').value : 'All';
+    const roleFilter =
+        document.getElementById('treeRoleFilter')?.value || 'All';
+
     let filterSet = null;
-    if (roleFilter && roleFilter !== 'All') {
-        filterSet = new Set(fullList.filter(u => u.role_name === roleFilter).map(u => Number(u.id)));
+
+    if (roleFilter !== 'All') {
+        filterSet = new Set(
+            fullList
+                .filter(user => user.role_name === roleFilter)
+                .map(user => Number(user.id))
+        );
     }
 
-    // Build hierarchy tree using fullList so children are NEVER lost!
-    const treeData = buildUserTreeStructure(fullList, currentTreeRootId, filterSet);
+    // IMPORTANT:
+    // Always build the tree from the COMPLETE user list.
+    // Never filter fullList before passing it to buildUserTreeStructure().
+    const treeData = buildUserTreeStructure(
+        fullList,
+        currentTreeRootId,
+        filterSet
+    );
 
-    if (treeData.length === 0) {
-        treeContent.innerHTML = '<div style="color:var(--text-secondary);padding:3rem;text-align:center;">No accounts match the current filter or search criteria.</div>';
+    if (!Array.isArray(treeData) || treeData.length === 0) {
+        treeContent.innerHTML = `
+            <div style="
+                color: var(--text-secondary);
+                padding: 3rem;
+                text-align: center;
+            ">
+                No accounts match the current filter or search criteria.
+            </div>
+        `;
         return;
     }
 
-    // Render tree at 100% natural scale
-    treeContent.style.transform = 'scale(1)';
-    treeContent.innerHTML = treeData.map(rootNode => renderTreeNodeHTML(rootNode, true)).join('');
-}
+    // Reset scale
+    // treeContent.style.transform = 'scale(1)';  
+    fitTreeToScreen();  
+
+    // Render complete hierarchy
+    treeContent.innerHTML = treeData
+        .map(rootNode => renderTreeNodeHTML(rootNode, true))
+        .join('');
+}   
 
 function buildUserTreeStructure(allUsers, rootId = null, filterSet = null) {
-    if (!allUsers || allUsers.length === 0) return [];
+    if (!Array.isArray(allUsers) || allUsers.length === 0) {
+        return [];
+    }
 
-    // Sort users ascending by ID so first created user is rendered at the top
-    const sortedUsers = [...allUsers].sort((a, b) => Number(a.id) - Number(b.id));
+    // ---------------------------------------------------------
+    // 1. Sort users
+    // ---------------------------------------------------------
+    const users = [...allUsers].sort(
+        (a, b) => Number(a.id) - Number(b.id)
+    );
 
+    // ---------------------------------------------------------
+    // 2. Fast lookup maps
+    // ---------------------------------------------------------
+    const userById = new Map();
+    const userByReferralCode = new Map();
+
+    users.forEach(user => {
+        const id = Number(user.id);
+
+        userById.set(id, user);
+
+        if (user.referral_code) {
+            userByReferralCode.set(
+                String(user.referral_code).trim().toUpperCase(),
+                user
+            );
+        }
+    });
+
+    // ---------------------------------------------------------
+    // 3. Parent -> Children map
+    // ---------------------------------------------------------
+    const childrenMap = new Map();
+
+    users.forEach(user => {
+        const userId = Number(user.id);
+
+        if (!childrenMap.has(userId)) {
+            childrenMap.set(userId, []);
+        }
+    });
+
+    // ---------------------------------------------------------
+    // 4. Determine parent
+    // ---------------------------------------------------------
+    users.forEach(user => {
+        const userId = Number(user.id);
+
+        let parentId = null;
+
+        // Priority 1: created_by
+        if (
+            user.created_by !== null &&
+            user.created_by !== undefined &&
+            userById.has(Number(user.created_by)) &&
+            Number(user.created_by) !== userId
+        ) {
+            parentId = Number(user.created_by);
+        }
+
+        // Priority 2: referred_by as USER ID
+        if (
+            parentId === null &&
+            user.referred_by !== null &&
+            user.referred_by !== undefined &&
+            userById.has(Number(user.referred_by)) &&
+            Number(user.referred_by) !== userId
+        ) {
+            parentId = Number(user.referred_by);
+        }
+
+        // Priority 3: referred_by as referral code
+        if (
+            parentId === null &&
+            user.referred_by &&
+            userByReferralCode.has(
+                String(user.referred_by).trim().toUpperCase()
+            )
+        ) {
+            const parentUser = userByReferralCode.get(
+                String(user.referred_by).trim().toUpperCase()
+            );
+
+            if (parentUser && Number(parentUser.id) !== userId) {
+                parentId = Number(parentUser.id);
+            }
+        }
+
+        // -----------------------------------------------------
+        // Add child only once
+        // -----------------------------------------------------
+        if (parentId !== null) {
+            const children = childrenMap.get(parentId) || [];
+
+            if (!children.some(c => Number(c.id) === userId)) {
+                children.push(user);
+            }
+
+            childrenMap.set(parentId, children);
+        }
+    });
+
+    // ---------------------------------------------------------
+    // 5. Sort children by ID
+    // ---------------------------------------------------------
+    childrenMap.forEach(children => {
+        children.sort(
+            (a, b) => Number(a.id) - Number(b.id)
+        );
+    });
+
+    // ---------------------------------------------------------
+    // 6. Find root nodes
+    // ---------------------------------------------------------
     let rootNodes = [];
-    if (rootId) {
-        const found = sortedUsers.find(u => Number(u.id) === Number(rootId));
-        if (found) {
-            rootNodes = [found];
+
+    users.forEach(user => {
+        const userId = Number(user.id);
+
+        let hasParent = false;
+
+        // created_by
+        if (
+            user.created_by !== null &&
+            user.created_by !== undefined &&
+            userById.has(Number(user.created_by)) &&
+            Number(user.created_by) !== userId
+        ) {
+            hasParent = true;
+        }
+
+        // referred_by as ID
+        if (
+            !hasParent &&
+            user.referred_by !== null &&
+            user.referred_by !== undefined &&
+            userById.has(Number(user.referred_by)) &&
+            Number(user.referred_by) !== userId
+        ) {
+            hasParent = true;
+        }
+
+        // referred_by as referral code
+        if (
+            !hasParent &&
+            user.referred_by &&
+            userByReferralCode.has(
+                String(user.referred_by).trim().toUpperCase()
+            )
+        ) {
+            const parentUser = userByReferralCode.get(
+                String(user.referred_by).trim().toUpperCase()
+            );
+
+            if (parentUser && Number(parentUser.id) !== userId) {
+                hasParent = true;
+            }
+        }
+
+        if (!hasParent) {
+            rootNodes.push(user);
+        }
+    });
+
+    // ---------------------------------------------------------
+    // 7. If specific root selected
+    // ---------------------------------------------------------
+    if (rootId !== null && rootId !== undefined) {
+        const selectedRoot = userById.get(Number(rootId));
+
+        if (selectedRoot) {
+            rootNodes = [selectedRoot];
         }
     }
 
+    // ---------------------------------------------------------
+    // 8. Safety fallback
+    // ---------------------------------------------------------
     if (rootNodes.length === 0) {
-        const userIds = new Set(sortedUsers.map(u => Number(u.id)));
-        const userCodes = new Set(sortedUsers.map(u => u.referral_code).filter(Boolean));
-
-        rootNodes = sortedUsers.filter(u => {
-            const hasParentById = u.created_by != null && userIds.has(Number(u.created_by));
-            const hasRefById = u.referred_by != null && userIds.has(Number(u.referred_by));
-            const hasRefByCode = u.referred_by != null && userCodes.has(String(u.referred_by).trim().toUpperCase());
-            return !hasParentById && !hasRefById && !hasRefByCode;
-        });
-
-        if (filterSet && filterSet.size > 0) {
-            rootNodes = rootNodes.filter(u => filterSet.has(Number(u.id)));
-        }
-
-        if (rootNodes.length === 0) {
-            rootNodes = [sortedUsers[0]];
-        }
+        rootNodes = users.length > 0 ? [users[0]] : [];
     }
 
-    // Recursively gather all children, grandchildren, and sub-downlines from sortedUsers
-    function getNode(user, visited = new Set()) {
-        if (visited.has(Number(user.id))) {
-            return { ...user, children: [] };
+    // ---------------------------------------------------------
+    // 9. Recursively build tree
+    // ---------------------------------------------------------
+    function buildNode(user, visited = new Set()) {
+        const id = Number(user.id);
+
+        // Prevent circular hierarchy
+        if (visited.has(id)) {
+            return {
+                ...user,
+                children: []
+            };
         }
-        visited.add(Number(user.id));
 
-        const children = sortedUsers.filter(u => {
-            if (Number(u.id) === Number(user.id)) return false;
+        const nextVisited = new Set(visited);
+        nextVisited.add(id);
 
-            const isCreatedBy = u.created_by != null && Number(u.created_by) === Number(user.id);
-            const isReferredById = u.referred_by != null && Number(u.referred_by) === Number(user.id);
-            const isReferredByCode = u.referred_by != null && user.referral_code && String(u.referred_by).trim().toUpperCase() === String(user.referral_code).trim().toUpperCase();
+        let children = childrenMap.get(id) || [];
 
-            return isCreatedBy || isReferredById || isReferredByCode;
-        });
+        // -----------------------------------------------------
+        // Role filtering
+        //
+        // IMPORTANT:
+        // We don't remove children here.
+        // This keeps the hierarchy intact.
+        // -----------------------------------------------------
+        if (filterSet && filterSet.size > 0) {
+            children = children.filter(child => {
+                return filterSet.has(Number(child.id));
+            });
+        }
 
         return {
             ...user,
-            children: children.map(c => getNode(c, new Set(visited)))
+            children: children.map(child =>
+                buildNode(child, nextVisited)
+            )
         };
     }
 
-    return rootNodes.map(r => getNode(r));
+    // ---------------------------------------------------------
+    // 10. Build final tree
+    // ---------------------------------------------------------
+    return rootNodes.map(root => buildNode(root));
 }
 
 function renderTreeNodeHTML(node, isRoot = false) {
@@ -1392,45 +1641,74 @@ function renderTreeNodeHTML(node, isRoot = false) {
     const initials = (node.name || 'U').substring(0, 2).toUpperCase();
     const hasChildren = node.children && node.children.length > 0;
     const accountCode = node.referral_code || `ACC${node.id}`;
+    const memberCount = hasChildren ? node.children.length : 0;
+
+    // Premium card glow effect for selected
+    const glowStyle = isSelected ? `box-shadow: 0 0 0 3px ${roleColor}, 0 0 20px ${roleColor}40; transform: scale(1.05);` : '';
 
     return `
-        <div class="tree-node-wrapper">
-            <div class="tree-node-card-container">
+        <div class="tree-node-wrapper" style="display:flex; flex-direction:column; align-items:center; animation:fadeIn 0.3s ease;">
+            
+            <!-- Main Node Card -->
+            <div class="tree-node-card-container" style="display:flex; align-items:center; gap:12px; position:relative; padding:6px 8px 6px 4px; border-radius:16px; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background:${isSelected ? 'rgba(255,255,255,0.95)' : 'transparent'}; ${isSelected ? 'backdrop-filter: blur(10px); box-shadow: 0 8px 30px rgba(0,0,0,0.08);' : ''}">
+                
+                <!-- Avatar with Premium Ring -->
                 <div class="tree-node-avatar-card ${isSelected ? 'active-selected' : ''}" 
                      onclick="selectTreeNode(${node.id}, event)"
-                     style="border-color: ${roleColor};"
-                     title="Click to view details of ${node.name}">
+                     style="position:relative; cursor:pointer; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); ${glowStyle}">
                     
                     ${node.profile_image 
-                        ? `<img src="${node.profile_image}" class="tree-avatar-img" alt="${node.name}" />`
-                        : `<div class="tree-avatar-initials" style="background: ${roleColor};">${initials}</div>`
+                        ? `<img src="${node.profile_image}" class="tree-avatar-img" alt="${node.name}" style="width:52px; height:52px; border-radius:50%; object-fit:cover; border:3px solid ${roleColor}; box-shadow:0 4px 12px rgba(0,0,0,0.1);" />`
+                        : `<div class="tree-avatar-initials" style="width:52px; height:52px; border-radius:50%; background: linear-gradient(135deg, ${roleColor}, ${roleColor}dd); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem; border:3px solid ${roleColor}80; box-shadow:0 4px 12px rgba(0,0,0,0.08);">${initials}</div>`
                     }
+                    
+                    <!-- Online/Status Dot -->
+                    <div style="position:absolute; bottom:2px; right:2px; width:14px; height:14px; background:#22c55e; border-radius:50%; border:2px solid white; box-shadow:0 2px 8px rgba(34,197,94,0.4);"></div>
                 </div>
 
-                ${(isSelected || isRoot || hasChildren) ? `
-                    <div class="tree-node-side-badge" onclick="selectTreeNode(${node.id}, event)" style="cursor:pointer;">
-                        <span class="tree-badge-id" style="color: ${roleColor};">${accountCode}</span>
-                        <span class="tree-badge-name">${node.name || 'User'}</span>
-                        <span class="tree-badge-medal">🎗️</span>
+                <!-- Info Side Badge (always visible now) -->
+                <div class="tree-node-side-badge" onclick="selectTreeNode(${node.id}, event)" style="cursor:pointer; display:flex; flex-direction:column; gap:2px; padding:6px 14px 6px 10px; border-radius:12px; background:${isSelected ? 'white' : 'rgba(255,255,255,0.7)'}; backdrop-filter:${isSelected ? 'none' : 'blur(4px)'}; transition:all 0.3s ease; border:1px solid ${isSelected ? roleColor : 'rgba(0,0,0,0.04)'};">
+                    
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="tree-badge-id" style="font-size:0.7rem; font-weight:700; color:${roleColor}; letter-spacing:0.5px; font-family:monospace; background:${roleColor}15; padding:1px 10px; border-radius:20px;">${accountCode}</span>
+                        <span style="font-size:0.6rem; color:#94a3b8;">•</span>
+                        <span style="font-size:0.6rem; color:#94a3b8; font-weight:500;">${memberCount} 👥</span>
                     </div>
-                ` : `
-                    <div style="margin-left: 10px; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); cursor: pointer;" onclick="selectTreeNode(${node.id}, event)">
-                        ${node.name}
+                    
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="tree-badge-name" style="font-size:0.92rem; font-weight:700; color:#0b1a33; line-height:1.2;">${node.name || 'User'}</span>
+                        <span style="font-size:0.6rem; background:${roleColor}20; color:${roleColor}; padding:1px 10px; border-radius:20px; font-weight:600; letter-spacing:0.3px;">${node.role_name || 'Member'}</span>
                     </div>
-                `}
+                    
+                    ${isSelected ? `<div style="font-size:0.6rem; color:${roleColor}; font-weight:600; margin-top:2px;">⭐ Selected</div>` : ''}
+                </div>
+
+                <!-- Expand/Collapse Toggle (if has children) -->
+                ${hasChildren ? `
+                    <button onclick="event.stopPropagation(); toggleTreeNode(${node.id})" style="background:rgba(255,255,255,0.8); border:1px solid #e2e8f0; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.8rem; transition:all 0.3s ease; box-shadow:0 2px 8px rgba(0,0,0,0.04); backdrop-filter:blur(4px);">
+                        <span style="transform:rotate(0deg); display:inline-block; transition:transform 0.3s ease;">▼</span>
+                    </button>
+                ` : ''}
             </div>
 
+            <!-- Children Section -->
             ${hasChildren ? `
-                <div class="tree-children-container">
-                    <div class="tree-connector-line-v"></div>
-                    <div class="tree-children-row">
+                <div class="tree-children-container" style="display:flex; flex-direction:column; align-items:center; width:100%; margin-top:8px; position:relative;">
+                    <!-- Elegant Connector Line -->
+                    <div style="width:2px; height:24px; background:linear-gradient(180deg, ${roleColor}60, ${roleColor}20); border-radius:2px; position:relative;">
+                        <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:8px; height:8px; background:${roleColor}; border-radius:50%; opacity:0.3;"></div>
+                    </div>
+                    
+                    <div class="tree-children-row" style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px 30px; padding:8px 12px; position:relative; width:100%;">
+                        <!-- Horizontal connector line behind children -->
+                        <div style="position:absolute; top:0; left:10%; right:10%; height:2px; background:linear-gradient(90deg, transparent, ${roleColor}20, ${roleColor}30, ${roleColor}20, transparent); border-radius:2px;"></div>
                         ${node.children.map(child => renderTreeNodeHTML(child, false)).join('')}
                     </div>
                 </div>
             ` : ''}
         </div>
     `;
-}
+}    
 
 function selectTreeNode(userId, event) {
     if (event) event.stopPropagation();

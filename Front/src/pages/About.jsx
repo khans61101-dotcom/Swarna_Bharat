@@ -48,7 +48,7 @@ export default function AboutPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', alignItems: 'center' }}>
           <div>
             <img 
-              src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=800&q=80" 
+              src="/AboutLogo.jpg"  
               alt="Swarna India" 
               style={{ width: '100%', borderRadius: '10px', boxShadow: '0 8px 20px rgba(0,0,0,0.1)' }}
             />

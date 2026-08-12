@@ -18,7 +18,7 @@ export const sectorDataList = [
     ],
     initiatives: [
       {
-        title: 'PM Gram Sadak Yojana (PMGSY)',
+        title: 'Swarna BharatGram Sadak Yojana (PMGSY)',
         titleHi: 'प्रधानमंत्री ग्राम सड़क योजना',
         desc: 'Connecting remote habitations with all-weather roads for seamless transport and economic mobility.',
         descHi: 'अबाध परिवहन और आर्थिक गतिशीलता के लिए दूरदराज की बस्तियों को बारहमासी सड़कों से जोड़ना।'
@@ -74,7 +74,7 @@ export const sectorDataList = [
         descHi: 'मुफ्त आवश्यक निदान सेवाओं के साथ घरों के करीब व्यापक प्राथमिक स्वास्थ्य देखभाल सेवाएं।'
       },
       {
-        title: 'PM Bharatiya Janaushadhi Pariyojana',
+        title: 'Swarna BharatBharatiya Janaushadhi Pariyojana',
         titleHi: 'प्रधानमंत्री भारतीय जनऔषधि परियोजना',
         desc: 'Making quality generic medicines accessible at 50% to 90% lower prices than branded drugs.',
         descHi: 'ब्रांडेड दवाओं की तुलना में 50% से 90% कम कीमतों पर गुणवत्तापूर्ण जेनेरिक दवाएं सुलभ कराना।'
@@ -96,11 +96,11 @@ export const sectorDataList = [
     bgImage: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80',
     tagline: 'National Education Policy (NEP 2020), Smart Digital Classrooms & Skill India Youth Training',
     taglineHi: 'राष्ट्रीय शिक्षा नीति (NEP 2020), स्मार्ट डिजिटल क्लासरूम और स्किल इंडिया युवा प्रशिक्षण',
-    desc: 'Transforming India into a global knowledge superpower by implementing NEP 2020, upgrading government schools to PM SHRI standards, integrating AI education, and building future-ready skill sets.',
+    desc: 'Transforming India into a global knowledge superpower by implementing NEP 2020, upgrading government schools to Swarna BharatSHRI standards, integrating AI education, and building future-ready skill sets.',
     descHi: 'एनईपी 2020 को लागू करके, सरकारी स्कूलों को पीएम श्री मानकों में अपग्रेड करके, एआई शिक्षा को एकीकृत करके और भविष्य के अनुकूल कौशल सेट बनाकर भारत को एक वैश्विक ज्ञान महाशक्ति में बदलना।',
     stats: [
       { label: 'Smart Classrooms Built', labelHi: 'स्मार्ट क्लासरूम', value: '1.5M+' },
-      { label: 'PM SHRI Schools', labelHi: 'पीएम श्री स्कूल', value: '14,500+' },
+      { label: 'Swarna BharatSHRI Schools', labelHi: 'पीएम श्री स्कूल', value: '14,500+' },
       { label: 'Youth Skill Trained', labelHi: 'प्रशिक्षित युवा', value: '50M+' },
       { label: 'Foundational Literacy Goal', labelHi: 'बुनियादी साक्षरता लक्ष्य', value: '100%' }
     ],
@@ -112,13 +112,13 @@ export const sectorDataList = [
         descHi: 'महत्वपूर्ण सोच, व्यावसायिक प्रदर्शन और बहुभाषी सीखने पर केंद्रित 5+3+3+4 पाठ्यक्रम संरचना।'
       },
       {
-        title: 'PM SHRI Exemplar Schools',
+        title: 'Swarna BharatSHRI Exemplar Schools',
         titleHi: 'पीएम श्री मॉडल स्कूल',
         desc: 'Upgrading 14,500+ schools with green energy, modern labs & experiential learning methodologies.',
         descHi: 'हरित ऊर्जा, आधुनिक प्रयोगशालाओं और अनुभवात्मक शिक्षण विधियों के साथ 14,500+ स्कूलों को अपग्रेड करना।'
       },
       {
-        title: 'PM eVidya Digital Learning',
+        title: 'Swarna BharateVidya Digital Learning',
         titleHi: 'पीएम ई-विद्या डिजिटल लर्निंग',
         desc: 'Multi-mode access to digital education through TV channels, DIKSHA portal & audio podcasts.',
         descHi: 'टीवी चैनलों, दीक्षा पोर्टल और ऑडियो पॉडकास्ट के माध्यम से डिजिटल शिक्षा तक बहु-मोड पहुंच।'
@@ -200,13 +200,13 @@ export const sectorDataList = [
         descHi: 'वार्षिक ₹1 लाख से अधिक कमाने के लिए सूक्ष्म उद्यमों और कृषि उपकरणों में कौशल प्रशिक्षण।'
       },
       {
-        title: 'Namo Drone Didi Scheme',
+        title: 'Swarna Bharat Drone Didi Scheme',
         titleHi: 'नमो ड्रोन दीदी योजना',
         desc: 'Equipping 15,000 women SHGs with agricultural drones for crop monitoring and liquid fertilizer spraying.',
         descHi: 'फसल निगरानी और तरल उर्वरक छिड़काव के लिए 15,000 महिला SHG को कृषि ड्रोन से लैस करना।'
       },
       {
-        title: 'PM Matru Vandana Yojana (PMMVY)',
+        title: 'Swarna BharatMatru Vandana Yojana (PMMVY)',
         titleHi: 'प्रधानमंत्री मातृ वंदना योजना',
         desc: 'Direct Benefit Transfer (DBT) cash incentive for pregnant & lactating mothers for health & nutrition.',
         descHi: 'स्वास्थ्य और पोषण के लिए गर्भवती और स्तनपान कराने वाली माताओं के लिए प्रत्यक्ष लाभ हस्तांतरण (DBT)।'
@@ -358,13 +358,13 @@ export const sectorDataList = [
     borderColor: '#F59E0B',
     iconName: 'Building2',
     bgImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
-    tagline: '100 Smart Cities Mission, PM Awas Housing for All, Metro Transit Networks & Waste Recycling',
+    tagline: '100 Smart Cities Mission, Swarna Bharat Awas Housing for All, Metro Transit Networks & Waste Recycling',
     taglineHi: '100 स्मार्ट सिटी मिशन, सभी के लिए आवास, मेट्रो नेटवर्क और अपशिष्ट पुनर्चक्रण',
     desc: 'Transforming Indian cities into vibrant, sustainable urban economic hubs with modern metro rail networks, affordable housing, smart traffic systems, 24x7 clean water supply, and green public parks.',
     descHi: 'आधुनिक मेट्रो रेल नेटवर्क, किफायती आवास, स्मार्ट ट्रैफिक सिस्टम, 24x7 स्वच्छ जल आपूर्ति और हरे-भरे सार्वजनिक पार्कों के साथ भारतीय शहरों को जीवंत बनाना।',
     stats: [
       { label: 'Smart Cities Mission', labelHi: 'स्मार्ट सिटी मिशन', value: '100 Cities' },
-      { label: 'PM Awas Urban Houses', labelHi: 'शहरी किफायती मकान', value: '12M+' },
+      { label: 'Swarna Bharat Awas Urban Houses', labelHi: 'शहरी किफायती मकान', value: '12M+' },
       { label: 'Metro Rail Network', labelHi: 'संचालित मेट्रो नेटवर्क', value: '950+ km' },
       { label: 'Solid Waste Processing', labelHi: 'ठोस कचरा प्रसंस्करण', value: '100%' }
     ],
@@ -376,7 +376,7 @@ export const sectorDataList = [
         descHi: 'एकीकृत कमांड सेंटर, इंटरनेट ऑफ थिंग्स ट्रैफिक, सीसीटीवी निगरानी और डिजिटल नागरिक सुविधाएं।'
       },
       {
-        title: 'PM Awas Yojana - Urban (PMAY-U)',
+        title: 'Swarna Bharat Awas Yojana - Urban (PMAY-U)',
         titleHi: 'प्रधानमंत्री आवास योजना - शहरी',
         desc: 'Constructing pucca affordable homes with clean tap water, electricity & toilet connections for urban poor.',
         descHi: 'शहरी गरीबों के लिए नल के पानी, बिजली और शौचालय कनेक्शन के साथ पक्के मकानों का निर्माण।'

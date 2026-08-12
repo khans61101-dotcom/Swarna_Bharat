@@ -863,7 +863,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
             WebkitTextFillColor: 'transparent',
             margin: 0
           }}>
-            PM Portal
+            Swarna Bharat Portal
           </h2>
         </div>
         <p style={{
@@ -1036,7 +1036,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
             WebkitTextFillColor: 'transparent',
             margin: 0
           }}>
-            PM Portal
+            Swarna Bharat Portal
           </h2>
         </div>
         <p style={{
@@ -1231,7 +1231,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           </h3>
           <p style={{ color: '#64748B', fontSize: '0.95rem', marginTop: '8px', lineHeight: '1.6' }}>
             {mode === 'login'
-              ? (lang === 'en' ? 'You have successfully logged into PM Portal.' : 'आप PM पोर्टल में सफलतापूर्वक लॉग इन हो गए हैं।')
+              ? (lang === 'en' ? 'You have successfully logged into Swarna Bharat Portal.' : 'आप Swarna Bharat पोर्टल में सफलतापूर्वक लॉग इन हो गए हैं।')
               : (lang === 'en' ? `Your ${role} account has been created successfully.` : `आपका ${role} खाता सफलतापूर्वक बना लिया गया है।`)}
           </p>
         </div>

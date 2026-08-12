@@ -5,8 +5,8 @@ import { useLang } from '../LanguageContext';
 const FALLBACK_NEWS = [
   {
     id: 'f1',
-    title: 'PM Modi welcomes record FDI inflows, attributes growth to policy stability & reforms',
-    titleHi: 'PM मोदी ने रिकॉर्ड FDI प्रवाह का स्वागत किया, विकास का श्रेय नीति स्थिरता और सुधारों को दिया',
+    title: 'Welcomes record FDI inflows, attributes growth to policy stability & reforms',
+    titleHi: 'Swarna Bharat मोदी ने रिकॉर्ड FDI प्रवाह का स्वागत किया, विकास का श्रेय नीति स्थिरता और सुधारों को दिया',
     date: 'JULY 25, 2026',
     category: 'Economy & Trade',
     categoryHi: 'अर्थव्यवस्था और व्यापार',
@@ -16,8 +16,8 @@ const FALLBACK_NEWS = [
   },
   {
     id: 'f2',
-    title: 'PM launches PM-DevINE projects aimed at holistic development in North Eastern region',
-    titleHi: 'PM ने पूर्वोत्तर क्षेत्र के समग्र विकास के लिए PM-DevINE परियोजनाएं लॉन्च कीं',
+    title: 'Swarna Bharat launches PM-DevINE projects aimed at holistic development in North Eastern region',
+    titleHi: 'Swarna Bharat ने पूर्वोत्तर क्षेत्र के समग्र विकास के लिए PM-DevINE परियोजनाएं लॉन्च कीं',
     date: 'JULY 24, 2026',
     category: 'Development',
     categoryHi: 'विकास',
@@ -27,8 +27,8 @@ const FALLBACK_NEWS = [
   },
   {
     id: 'f3',
-    title: 'India surpasses 2 Billion Green Energy Milestone: PM lauds Renewable Energy sector',
-    titleHi: 'भारत 2 अरब हरित ऊर्जा मील के पत्थर को पार किया: PM ने नवीकरणीय ऊर्जा क्षेत्र की प्रशंसा की',
+    title: 'India surpasses 2 Billion Green Energy Milestone: Swarna Bharat lauds Renewable Energy sector',
+    titleHi: 'भारत 2 अरब हरित ऊर्जा मील के पत्थर को पार किया: Swarna Bharat ने नवीकरणीय ऊर्जा क्षेत्र की प्रशंसा की',
     date: 'JULY 22, 2026',
     category: 'Environment',
     categoryHi: 'पर्यावरण',
@@ -38,8 +38,8 @@ const FALLBACK_NEWS = [
   },
   {
     id: 'f4',
-    title: 'PM Modi inaugurates National Artificial Intelligence & Robotics Research Complex',
-    titleHi: 'PM मोदी ने राष्ट्रीय कृत्रिम बुद्धिमत्ता और रोबोटिक्स अनुसंधान परिसर का उद्घाटन किया',
+    title: 'Inaugurates National Artificial Intelligence & Robotics Research Complex',
+    titleHi: 'Swarna Bharat मोदी ने राष्ट्रीय कृत्रिम बुद्धिमत्ता और रोबोटिक्स अनुसंधान परिसर का उद्घाटन किया',
     date: 'JULY 19, 2026',
     category: 'Technology',
     categoryHi: 'प्रौद्योगिकी',
