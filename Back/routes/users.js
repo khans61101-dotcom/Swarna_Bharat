@@ -21,7 +21,7 @@ router.get('/', verifyToken, async (req, res) => {
         FROM users u
         JOIN roles r ON u.role_id = r.id
         LEFT JOIN users creator ON u.created_by = creator.id
-        ORDER BY u.created_at DESC
+        ORDER BY u.id ASC
       `;
     } else if (req.userRole === 'Agency' || req.userRole === 'NGO' || req.userRole === 'Agent') {
       // Agency / NGO view only their own created Members and Users
@@ -35,7 +35,7 @@ router.get('/', verifyToken, async (req, res) => {
         JOIN roles r ON u.role_id = r.id
         LEFT JOIN users creator ON u.created_by = creator.id
         WHERE u.created_by = ?
-        ORDER BY u.created_at DESC
+        ORDER BY u.id ASC
       `;
       params = [req.userId];
     } else {
@@ -50,7 +50,7 @@ router.get('/', verifyToken, async (req, res) => {
         JOIN roles r ON u.role_id = r.id
         LEFT JOIN users creator ON u.created_by = creator.id
         WHERE u.created_by = ?
-        ORDER BY u.created_at DESC
+        ORDER BY u.id ASC
       `;
       params = [req.userId];
     }

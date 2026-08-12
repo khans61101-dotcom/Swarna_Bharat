@@ -1327,39 +1327,40 @@ function renderAccountsTree(usersList = null) {
 function buildUserTreeStructure(allUsers, rootId = null) {
     if (!allUsers || allUsers.length === 0) return [];
 
+    // 1. Sort users ascending by ID so first created user is rendered at the top
+    const sortedUsers = [...allUsers].sort((a, b) => Number(a.id) - Number(b.id));
+
     let rootNodes = [];
     if (rootId) {
-        const found = allUsers.find(u => Number(u.id) === Number(rootId));
+        const found = sortedUsers.find(u => Number(u.id) === Number(rootId));
         if (found) {
-            // Include target's parent if present so hierarchy context is preserved!
-            const parent = allUsers.find(u => 
-                (u.id && Number(u.id) === Number(found.created_by)) || 
-                (u.id && Number(u.id) === Number(found.referred_by))
-            );
-            if (parent) {
-                rootNodes = [parent];
-            } else {
-                rootNodes = [found];
-            }
+            rootNodes = [found];
         }
     }
 
     if (rootNodes.length === 0) {
-        const userIds = new Set(allUsers.map(u => Number(u.id)));
-        rootNodes = allUsers.filter(u => !u.created_by || !userIds.has(Number(u.created_by)));
+        const userIds = new Set(sortedUsers.map(u => Number(u.id)));
+        rootNodes = sortedUsers.filter(u => !u.created_by || !userIds.has(Number(u.created_by)));
         if (rootNodes.length === 0) {
-            rootNodes = [allUsers[0]];
+            rootNodes = [sortedUsers[0]];
         }
     }
 
-    function getNode(user) {
-        const children = allUsers.filter(u => 
+    // 2. Recursively gather all children, grandchildren, and sub-downlines
+    function getNode(user, visited = new Set()) {
+        if (visited.has(Number(user.id))) {
+            return { ...user, children: [] };
+        }
+        visited.add(Number(user.id));
+
+        const children = sortedUsers.filter(u => 
             (u.created_by && Number(u.created_by) === Number(user.id)) || 
             (u.referred_by && Number(u.referred_by) === Number(user.id))
         );
+
         return {
             ...user,
-            children: children.map(c => getNode(c))
+            children: children.map(c => getNode(c, new Set(visited)))
         };
     }
 
@@ -1467,6 +1468,8 @@ function closeAccountTreeModal() {
 function focusSelectedUserTree() {
     if (selectedTreeUserId) {
         currentTreeRootId = selectedTreeUserId;
+        const userSelect = document.getElementById('treeFocusUserSelect');
+        if (userSelect) userSelect.value = selectedTreeUserId;
         closeAccountTreeModal();
         renderAccountsTree();
     }
@@ -1477,8 +1480,10 @@ function resetTreeRoot() {
     selectedTreeUserId = null;
     const searchInput = document.getElementById('treeSearchInput');
     const roleSelect = document.getElementById('treeRoleFilter');
+    const userSelect = document.getElementById('treeFocusUserSelect');
     if (searchInput) searchInput.value = '';
     if (roleSelect) roleSelect.value = 'All';
+    if (userSelect) userSelect.value = '';
     renderAccountsTree();
 }
 
