@@ -13,7 +13,7 @@ router.get('/', verifyToken, async (req, res) => {
     if (req.userRole === 'Admin') {
       // Admin views everyone with creator name & downline count
       query = `
-        SELECT u.id, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
+        SELECT u.id, u.created_by, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
                u.bank_name, u.account_no, u.ifsc_code, u.upi_id, u.referral_code, u.referral_link,
                u.referred_by, u.profile_image, u.created_at,
                r.name as role_name, creator.name as created_by_name,
@@ -26,7 +26,7 @@ router.get('/', verifyToken, async (req, res) => {
     } else if (req.userRole === 'Agency' || req.userRole === 'NGO' || req.userRole === 'Agent') {
       // Agency / NGO view only their own created Members and Users
       query = `
-        SELECT u.id, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
+        SELECT u.id, u.created_by, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
                u.bank_name, u.account_no, u.ifsc_code, u.upi_id, u.referral_code, u.referral_link,
                u.referred_by, u.profile_image, u.created_at,
                r.name as role_name, creator.name as created_by_name,
@@ -41,7 +41,7 @@ router.get('/', verifyToken, async (req, res) => {
     } else {
       // Users / Members view accounts created directly under them
       query = `
-        SELECT u.id, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
+        SELECT u.id, u.created_by, u.name, u.email, u.phone, u.dob, u.address, u.city, u.state, u.pincode,
                u.bank_name, u.account_no, u.ifsc_code, u.upi_id, u.referral_code, u.referral_link,
                u.referred_by, u.profile_image, u.created_at,
                r.name as role_name, creator.name as created_by_name,
