@@ -190,6 +190,8 @@ export default function App() {
   });
 
   const [heroList, setHeroList] = useState([]);
+  const [apiNewsList, setApiNewsList] = useState([]);
+  const [apiEventsList, setApiEventsList] = useState([]);
 
   useEffect(() => {
     fetch(`${API_URL}/hero`)
@@ -200,6 +202,24 @@ export default function App() {
         }
       })
       .catch(e => console.error('Error fetching hero settings:', e));
+
+    fetch(`${API_URL}/news`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (Array.isArray(d) && d.length > 0) {
+          setApiNewsList(d);
+        }
+      })
+      .catch(e => console.error('Error fetching news:', e));
+
+    fetch(`${API_URL}/events`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (Array.isArray(d) && d.length > 0) {
+          setApiEventsList(d);
+        }
+      })
+      .catch(e => console.error('Error fetching events:', e));
   }, []);
 
   const demoBanners = [
@@ -755,74 +775,127 @@ export default function App() {
                 </span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
-                {/* Featured Big Event Card */}
-                <div className="dark-card" style={{ background: '#FFF', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 25px rgba(0,0,0,0.06)', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ height: '270px', position: 'relative', overflow: 'hidden' }}>
-                    <img src={eventImages[0]} alt="event" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <span style={{ position: 'absolute', top: '15px', left: '15px', background: '#FF9933', color: '#FFF', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
-                      {lang === 'en' ? 'National Conclave' : 'राष्ट्रीय सम्मेलन'}
-                    </span>
-                  </div>
-                  <div style={{ padding: '25px', display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-                    <div className="dark-date-box" style={{ textAlign: 'center', background: '#F8FAFC', border: '1px solid #CBD5E1', padding: '10px 16px', borderRadius: '10px', minWidth: '85px', flexShrink: 0 }}>
-                      <span style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#16A34A', textTransform: 'uppercase' }}>FEB</span>
-                      <span style={{ display: 'block', fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-dark)', lineHeight: '1.1' }}>07 & 08</span>
-                      <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>2026</span>
-                    </div>
-                    <div>
-                      <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-dark)', marginBottom: '8px', lineHeight: '1.3' }}>
-                        {lang === 'en'
-                          ? 'Building Flourishing Futures: National Conclave on Early Education & Youth Development'
-                          : 'समृद्ध भविष्य का निर्माण: प्रारंभिक शिक्षा और युवा विकास पर राष्ट्रीय सम्मेलन'}
-                      </h3>
-                      <p style={{ color: '#64748B', fontSize: '0.88rem', marginBottom: '12px', lineHeight: '1.5' }}>
-                        {lang === 'en'
-                          ? 'Bringing together educationists, policymakers, and innovators to shape early childhood development and NEP implementation.'
-                          : 'प्रारंभिक बाल विकास और एनईपी कार्यान्वयन को आकार देने के लिए शिक्षाविदों, नीति निर्माताओं और नवप्रवर्तकों को एक साथ लाना।'}
-                      </p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#FF9933', fontSize: '0.82rem', fontWeight: 600 }}>
-                        <MapPin size={15} /> {eventLocations[0]}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              {(() => {
+                const activeEvents = apiEventsList.length > 0 ? apiEventsList : [
+                  {
+                    id: 'd1',
+                    day: '07 & 08',
+                    month: 'FEB',
+                    year: '2026',
+                    category: 'National Conclave',
+                    category_hi: 'राष्ट्रीय सम्मेलन',
+                    title: 'Building Flourishing Futures: National Conclave on Early Education & Youth Development',
+                    title_hi: 'समृद्ध भविष्य का निर्माण: प्रारंभिक शिक्षा और युवा विकास पर राष्ट्रीय सम्मेलन',
+                    desc: 'Bringing together educationists, policymakers, and innovators to shape early childhood development and NEP implementation.',
+                    desc_hi: 'प्रारंभिक बाल विकास और एनईपी कार्यान्वयन को आकार देने के लिए शिक्षाविदों, नीति निर्माताओं और नवप्रवर्तकों को एक साथ लाना।',
+                    location: 'Bharat Mandapam, Pragati Maidan, New Delhi',
+                    location_hi: 'भारत मंडपम, प्रगति मैदान, नई दिल्ली',
+                    image: eventImages[0]
+                  },
+                  {
+                    id: 'd2',
+                    day: '24',
+                    month: 'SEP',
+                    year: '2025',
+                    category: 'Global Summit',
+                    category_hi: 'वैश्विक शिखर सम्मेलन',
+                    title: "India Day @ UNGA: Highlighting India's Leadership on SDGs, AI-Driven Development & Climate Action",
+                    title_hi: 'संयुक्त राष्ट्र महासभा में भारत दिवस: SDG, AI-संचालित विकास और जलवायु कार्रवाई में भारत के नेतृत्व को उजागर करना',
+                    location: 'United Nations Headquarters, New York',
+                    location_hi: 'संयुक्त राष्ट्र मुख्यालय, न्यूयॉर्क',
+                    image: eventImages[1]
+                  },
+                  {
+                    id: 'd3',
+                    day: '25',
+                    month: 'SEP',
+                    year: '2024',
+                    category: 'Youth Forum',
+                    category_hi: 'युवा मंच',
+                    title: 'Global Youth & Technology Forum: Crafting a Bold Vision for Sustainable Innovation',
+                    title_hi: 'वैश्विक युवा और प्रौद्योगिकी मंच: सतत नवाचार के लिए एक साहसिक दृष्टिकोण',
+                    location: 'Amrit Udyan & Vigyan Bhawan, New Delhi',
+                    location_hi: 'अमृत उद्यान और विज्ञान भवन, नई दिल्ली',
+                    image: eventImages[2]
+                  }
+                ];
 
-                {/* Right Side Stacked Event Cards */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                  {[1, 2].map((i) => (
-                    <div
-                      key={i}
-                      className="dark-card"
-                      style={{ background: '#FFF', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: '1.2fr 1fr', transition: 'transform 0.3s ease', cursor: 'pointer' }}
-                      onClick={() => setActiveTab('Events')}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0px)'}
-                    >
-                      <div style={{ padding: '20px', display: 'flex', gap: '15px' }}>
-                        <div className="dark-date-box" style={{ textAlign: 'center', background: '#F8FAFC', border: '1px solid #CBD5E1', padding: '8px 12px', borderRadius: '8px', height: 'fit-content', flexShrink: 0 }}>
-                          <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, color: '#16A34A' }}>{eventDates[i].month}</span>
-                          <span style={{ display: 'block', fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-dark)', lineHeight: '1' }}>{eventDates[i].day}</span>
-                          <span style={{ display: 'block', fontSize: '0.7rem', color: '#64748B' }}>{eventDates[i].year}</span>
+                const featuredEvt = activeEvents[0];
+                const sideEvts = activeEvents.slice(1, 3);
+
+                return (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
+                    {/* Featured Big Event Card */}
+                    <div className="dark-card" style={{ background: '#FFF', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 25px rgba(0,0,0,0.06)', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ height: '270px', position: 'relative', overflow: 'hidden' }}>
+                        <img 
+                          src={featuredEvt.image ? (featuredEvt.image.startsWith('http') ? featuredEvt.image : getMediaUrl(featuredEvt.image)) : eventImages[0]} 
+                          alt={featuredEvt.title} 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        />
+                        <span style={{ position: 'absolute', top: '15px', left: '15px', background: '#FF9933', color: '#FFF', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                          {lang === 'en' ? (featuredEvt.category || 'National Conclave') : (featuredEvt.category_hi || featuredEvt.category || 'राष्ट्रीय सम्मेलन')}
+                        </span>
+                      </div>
+                      <div style={{ padding: '25px', display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+                        <div className="dark-date-box" style={{ textAlign: 'center', background: '#F8FAFC', border: '1px solid #CBD5E1', padding: '10px 16px', borderRadius: '10px', minWidth: '85px', flexShrink: 0 }}>
+                          <span style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: '#16A34A', textTransform: 'uppercase' }}>{featuredEvt.month || 'FEB'}</span>
+                          <span style={{ display: 'block', fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-dark)', lineHeight: '1.1' }}>{featuredEvt.day || '07'}</span>
+                          <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>{featuredEvt.year || '2026'}</span>
                         </div>
                         <div>
-                          <h4 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-dark)', marginBottom: '8px', lineHeight: '1.35' }}>
-                            {i === 1
-                              ? (lang === 'en' ? "India Day @ UNGA: Highlighting India's Leadership on SDGs, AI-Driven Development & Climate Action" : 'संयुक्त राष्ट्र महासभा में भारत दिवस: SDG, AI-संचालित विकास और जलवायु कार्रवाई में भारत के नेतृत्व को उजागर करना')
-                              : (lang === 'en' ? 'Global Youth & Technology Forum: Crafting a Bold Vision for Sustainable Innovation' : 'वैश्विक युवा और प्रौद्योगिकी मंच: सतत नवाचार के लिए एक साहसिक दृष्टिकोण')}
-                          </h4>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#64748B', fontSize: '0.8rem' }}>
-                            <MapPin size={14} color="#FF9933" /> {eventLocations[i]}
+                          <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-dark)', marginBottom: '8px', lineHeight: '1.3' }}>
+                            {lang === 'en' ? featuredEvt.title : (featuredEvt.title_hi || featuredEvt.title)}
+                          </h3>
+                          <p style={{ color: '#64748B', fontSize: '0.88rem', marginBottom: '12px', lineHeight: '1.5' }}>
+                            {lang === 'en' ? (featuredEvt.desc || featuredEvt.snippet || '') : (featuredEvt.desc_hi || featuredEvt.desc || '')}
+                          </p>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#FF9933', fontSize: '0.82rem', fontWeight: 600 }}>
+                            <MapPin size={15} /> {lang === 'en' ? (featuredEvt.location || 'New Delhi') : (featuredEvt.location_hi || featuredEvt.location || 'नई दिल्ली')}
                           </div>
                         </div>
                       </div>
-                      <div style={{ height: '100%', minHeight: '130px' }}>
-                        <img src={eventImages[i]} alt="event" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+
+                    {/* Right Side Stacked Event Cards */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      {sideEvts.map((evt, i) => (
+                        <div
+                          key={evt.id || i}
+                          className="dark-card"
+                          style={{ background: '#FFF', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: '1px solid #E2E8F0', display: 'grid', gridTemplateColumns: '1.2fr 1fr', transition: 'transform 0.3s ease', cursor: 'pointer' }}
+                          onClick={() => setActiveTab('Events')}
+                          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
+                          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0px)'}
+                        >
+                          <div style={{ padding: '20px', display: 'flex', gap: '15px' }}>
+                            <div className="dark-date-box" style={{ textAlign: 'center', background: '#F8FAFC', border: '1px solid #CBD5E1', padding: '8px 12px', borderRadius: '8px', height: 'fit-content', flexShrink: 0 }}>
+                              <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 800, color: '#16A34A' }}>{evt.month || 'AUG'}</span>
+                              <span style={{ display: 'block', fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-dark)', lineHeight: '1' }}>{evt.day || '15'}</span>
+                              <span style={{ display: 'block', fontSize: '0.7rem', color: '#64748B' }}>{evt.year || '2026'}</span>
+                            </div>
+                            <div>
+                              <h4 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-dark)', marginBottom: '8px', lineHeight: '1.35' }}>
+                                {lang === 'en' ? evt.title : (evt.title_hi || evt.title)}
+                              </h4>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#64748B', fontSize: '0.8rem' }}>
+                                <MapPin size={14} color="#FF9933" /> {lang === 'en' ? (evt.location || 'New Delhi') : (evt.location_hi || evt.location || 'नई दिल्ली')}
+                              </div>
+                            </div>
+                          </div>
+                          <div style={{ height: '100%', minHeight: '130px' }}>
+                            <img 
+                              src={evt.image ? (evt.image.startsWith('http') ? evt.image : getMediaUrl(evt.image)) : eventImages[1]} 
+                              alt={evt.title} 
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </section>
 
@@ -1001,7 +1074,15 @@ export default function App() {
               </div>
 
               <div className="news-grid">
-                {homeNewsData.map((item) => (
+                {(apiNewsList.length > 0 ? apiNewsList.map(n => ({
+                  id: n.id,
+                  title: n.title,
+                  titleHi: n.title_hi || n.title,
+                  date: n.date ? n.date.toUpperCase() : (n.created_at ? new Date(n.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase() : 'RECENT'),
+                  snippet: n.snippet || '',
+                  snippetHi: n.snippet_hi || n.snippet || '',
+                  image: n.image ? (n.image.startsWith('http') ? n.image : getMediaUrl(n.image)) : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80'
+                })) : homeNewsData).map((item) => (
                   <div key={item.id} className="news-card">
                     <div className="news-card-img">
                       <img src={item.image} alt={item.title} />
