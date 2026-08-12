@@ -3,7 +3,19 @@ import './css/ProfilePage.css';
 import { API_URL, getMediaUrl } from '../config';
 
 const ProfilePage = ({ partner, setActiveTab }) => {
-  const [currentPartner, setCurrentPartner] = useState(partner);
+  const getInitialPartner = () => {
+    if (partner) return partner;
+    try {
+      const saved = localStorage.getItem('selectedPartner');
+      return saved ? JSON.parse(saved) : null;
+    } catch(e) {
+      return null;
+    }
+  };
+
+  const activePartner = partner || currentPartner || getInitialPartner();
+
+  const [currentPartner, setCurrentPartner] = useState(getInitialPartner);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [activeTabMenu, setActiveTabMenu] = useState('images');
   const [activeMediaTab, setActiveMediaTab] = useState('self');
@@ -13,11 +25,11 @@ const ProfilePage = ({ partner, setActiveTab }) => {
   const [msg, setMsg] = useState({ text: '', type: '' });
 
   const [editForm, setEditForm] = useState({
-    name: partner?.name || '',
-    phone: partner?.phone || '',
-    city: partner?.city || '',
-    state: partner?.state || '',
-    address: partner?.address || ''
+    name: activePartner?.name || '',
+    phone: activePartner?.phone || '',
+    city: activePartner?.city || '',
+    state: activePartner?.state || '',
+    address: activePartner?.address || ''
   });
 
   useEffect(() => {
@@ -37,24 +49,37 @@ const ProfilePage = ({ partner, setActiveTab }) => {
   }, []);
 
   useEffect(() => {
-    if (!partner) return;
-    setCurrentPartner(partner);
+    const target = partner || activePartner;
+    if (!target) return;
+    setCurrentPartner(target);
     setEditForm({
-      name: partner.name || '',
-      phone: partner.phone || '',
-      city: partner.city || '',
-      state: partner.state || '',
-      address: partner.address || ''
+      name: target.name || '',
+      phone: target.phone || '',
+      city: target.city || '',
+      state: target.state || '',
+      address: target.address || ''
     });
 
     setLoadingDetails(true);
-    fetch(`${API_URL}/partners/${partner.id}/details`)
+    fetch(`${API_URL}/partners/${target.id}/details`)
       .then(r => r.json())
       .then(d => { setDetails(d); setLoadingDetails(false); })
       .catch(() => setLoadingDetails(false));
   }, [partner]);
 
-  if (!partner) return null;
+  if (!activePartner) {
+    return (
+      <div style={{ padding: '80px 20px', textAlign: 'center', minHeight: '60vh' }}>
+        <h3 style={{ fontSize: '1.4rem', color: '#1E293B', marginBottom: '16px' }}>No partner selected</h3>
+        <button 
+          onClick={() => setActiveTab('Partners')}
+          style={{ background: '#FF9933', color: '#FFF', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: 700, cursor: 'pointer' }}
+        >
+          ← Back to Partners
+        </button>
+      </div>
+    );
+  }
 
   const isOwner = currentUserId && partner && Number(currentUserId) === Number(partner.id);
 

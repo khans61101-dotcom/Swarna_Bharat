@@ -189,6 +189,7 @@ export default function App() {
     if (route === 'gallery') return 'Gallery';
     if (route === 'enquiry') return 'Enquiry';
     if (route === 'partners') return 'Partners';
+    if (route === 'partnerdetails' || route === 'partner-details') return 'PartnerDetails';
     if (route === 'download') return 'DownloadApp';
     if (route === 'profile') return 'ProfileDetails';
     return 'Home';
@@ -210,6 +211,7 @@ export default function App() {
     else if (tab === 'Gallery') routeName = 'gallery';
     else if (tab === 'Enquiry') routeName = 'enquiry';
     else if (tab === 'Partners') routeName = 'partners';
+    else if (tab === 'PartnerDetails') routeName = 'partnerdetails';
     else if (tab === 'DownloadApp') routeName = 'download';
     else if (tab === 'ProfileDetails') routeName = 'profile';
 
@@ -229,7 +231,23 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const [selectedPartner, setSelectedPartner] = useState(null);
+  const [selectedPartner, setSelectedPartnerState] = useState(() => {
+    try {
+      const saved = localStorage.getItem('selectedPartner');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const setSelectedPartner = (partner) => {
+    setSelectedPartnerState(partner);
+    if (partner) {
+      try { localStorage.setItem('selectedPartner', JSON.stringify(partner)); } catch (e) {}
+    } else {
+      localStorage.removeItem('selectedPartner');
+    }
+  };
   const [selectedSector, setSelectedSector] = useState('rural');
 
   const sectorIds = ['rural', 'health', 'education', 'sports', 'women', 'disaster', 'arts', 'environment', 'urban'];
