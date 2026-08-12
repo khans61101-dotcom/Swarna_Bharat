@@ -1294,66 +1294,42 @@ function focusUserFromSelect(userId) {
     renderAccountsTree();
 }
 
-function getMaxTreeBreadth(treeNodes) {
-    if (!treeNodes || treeNodes.length === 0) return 0;
-    let max = treeNodes.length;
-    let currentLevel = treeNodes;
-    while (currentLevel.length > 0) {
-        let nextLevel = [];
-        currentLevel.forEach(node => {
-            if (node.children && node.children.length > 0) {
-                nextLevel.push(...node.children);
-            }
-        });
-        if (nextLevel.length > max) max = nextLevel.length;
-        currentLevel = nextLevel;
-    }
-    return max;
-}
-
 function renderAccountsTree(usersList = null) {
     const treeContent = document.getElementById('treeContent');
     if (!treeContent) return;
 
-    const list = usersList || cachedUsers || [];
+    const fullList = cachedUsers || usersList || [];
     populateTreeUserSelect();
 
-    if (list.length === 0) {
+    if (fullList.length === 0) {
         treeContent.innerHTML = '<div style="color:var(--text-secondary);padding:3rem;text-align:center;">No accounts available to render tree diagram.</div>';
         return;
     }
 
     // Role filter
     const roleFilter = document.getElementById('treeRoleFilter') ? document.getElementById('treeRoleFilter').value : 'All';
-    let filteredList = list;
+    let filterSet = null;
     if (roleFilter && roleFilter !== 'All') {
-        filteredList = list.filter(u => u.role_name === roleFilter);
+        filterSet = new Set(fullList.filter(u => u.role_name === roleFilter).map(u => Number(u.id)));
     }
 
-    // Build hierarchy tree
-    const treeData = buildUserTreeStructure(filteredList, currentTreeRootId);
+    // Build hierarchy tree using fullList so children are NEVER lost!
+    const treeData = buildUserTreeStructure(fullList, currentTreeRootId, filterSet);
 
     if (treeData.length === 0) {
         treeContent.innerHTML = '<div style="color:var(--text-secondary);padding:3rem;text-align:center;">No accounts match the current filter or search criteria.</div>';
         return;
     }
 
+    // Render tree at 100% natural scale
+    treeContent.style.transform = 'scale(1)';
     treeContent.innerHTML = treeData.map(rootNode => renderTreeNodeHTML(rootNode, true)).join('');
-
-    // Auto-scale tree if broad so it fits nicely on screen
-    const maxNodesInLevel = getMaxTreeBreadth(treeData);
-    if (maxNodesInLevel > 4) {
-        const scale = Math.max(0.5, Math.min(1, 1 - (maxNodesInLevel - 4) * 0.08));
-        treeContent.style.transform = `scale(${scale})`;
-    } else {
-        treeContent.style.transform = 'scale(1)';
-    }
 }
 
-function buildUserTreeStructure(allUsers, rootId = null) {
+function buildUserTreeStructure(allUsers, rootId = null, filterSet = null) {
     if (!allUsers || allUsers.length === 0) return [];
 
-    // 1. Sort users ascending by ID so first created user is rendered at the top
+    // Sort users ascending by ID so first created user is rendered at the top
     const sortedUsers = [...allUsers].sort((a, b) => Number(a.id) - Number(b.id));
 
     let rootNodes = [];
@@ -1368,17 +1344,23 @@ function buildUserTreeStructure(allUsers, rootId = null) {
         const userIds = new Set(sortedUsers.map(u => Number(u.id)));
         const userCodes = new Set(sortedUsers.map(u => u.referral_code).filter(Boolean));
 
-        rootNodes = sortedUsers.filter(u => 
-            (!u.created_by || !userIds.has(Number(u.created_by))) &&
-            (!u.referred_by || (!userIds.has(Number(u.referred_by)) && !userCodes.has(u.referred_by)))
-        );
+        rootNodes = sortedUsers.filter(u => {
+            const hasParentById = u.created_by != null && userIds.has(Number(u.created_by));
+            const hasRefById = u.referred_by != null && userIds.has(Number(u.referred_by));
+            const hasRefByCode = u.referred_by != null && userCodes.has(String(u.referred_by).trim().toUpperCase());
+            return !hasParentById && !hasRefById && !hasRefByCode;
+        });
+
+        if (filterSet && filterSet.size > 0) {
+            rootNodes = rootNodes.filter(u => filterSet.has(Number(u.id)));
+        }
 
         if (rootNodes.length === 0) {
             rootNodes = [sortedUsers[0]];
         }
     }
 
-    // 2. Recursively gather all children, grandchildren, and sub-downlines
+    // Recursively gather all children, grandchildren, and sub-downlines from sortedUsers
     function getNode(user, visited = new Set()) {
         if (visited.has(Number(user.id))) {
             return { ...user, children: [] };
@@ -1390,7 +1372,7 @@ function buildUserTreeStructure(allUsers, rootId = null) {
 
             const isCreatedBy = u.created_by != null && Number(u.created_by) === Number(user.id);
             const isReferredById = u.referred_by != null && Number(u.referred_by) === Number(user.id);
-            const isReferredByCode = u.referred_by != null && user.referral_code && u.referred_by === user.referral_code;
+            const isReferredByCode = u.referred_by != null && user.referral_code && String(u.referred_by).trim().toUpperCase() === String(user.referral_code).trim().toUpperCase();
 
             return isCreatedBy || isReferredById || isReferredByCode;
         });
