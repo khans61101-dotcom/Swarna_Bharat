@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     res.json({ heroes: rows });
   } catch (error) {
     console.error('Error fetching hero settings:', error);
-    res.status(500).json({ error: 'Server error' });
+    res.json({ heroes: [], error: error.message });
   }
 });
 

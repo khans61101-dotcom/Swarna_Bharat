@@ -99,8 +99,8 @@ router.post('/login', async (req, res) => {
       accessToken: token
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Login Error:', error);
+    res.status(500).json({ error: 'Database Error: ' + (error.message || 'Internal server error') });
   }
 });
 

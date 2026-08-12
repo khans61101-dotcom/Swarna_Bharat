@@ -14,10 +14,10 @@ router.get('/', async (req, res) => {
       WHERE r.name IN ('Agency', 'NGO', 'Member', 'User')
       ORDER BY r.name, u.created_at DESC
     `);
-    res.json(rows);
+    res.json({ partners: rows });
   } catch (error) {
     console.error('Error fetching partners:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.json({ partners: [], error: error.message });
   }
 });
 
