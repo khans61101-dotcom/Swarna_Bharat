@@ -100,9 +100,10 @@ body {
 }
 
 .header-container {
-  max-width: 1400px;
+  max-width: 1650px;
+  width: 96%;
   margin: 0 auto;
-  padding: 12px 20px;
+  padding: 10px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -111,32 +112,32 @@ body {
 .logo-section {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .logo-badge {
   background: linear-gradient(135deg, var(--primary-saffron), var(--saffron-dark));
   color: #FFF;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   box-shadow: 0 4px 10px rgba(255, 153, 51, 0.4);
 }
 
 .logo-title h1 {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--header-bg);
   line-height: 1.2;
 }
 
 .logo-title span {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--primary-saffron);
   font-weight: 600;
   text-transform: uppercase;
@@ -145,15 +146,16 @@ body {
 
 .nav-menu {
   display: flex;
-  gap: 25px;
+  gap: 18px;
   list-style: none;
+  align-items: center;
 }
 
 .nav-link {
   text-decoration: none;
   color: var(--nav-text);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   transition: color 0.3s ease;
   cursor: pointer;
 }
