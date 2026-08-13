@@ -782,8 +782,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
               {/* Connected Members List Table */}
               {(() => {
-                const filteredNetwork = downlineUsers.filter(u => {
-                  const q = networkSearch.toLowerCase();
+                const safeNetwork = Array.isArray(downlineUsers) ? downlineUsers : [];
+                const filteredNetwork = safeNetwork.filter(u => {
+                  if (!u) return false;
+                  const q = (networkSearch || '').toLowerCase();
                   const name = (u.name || '').toLowerCase();
                   const email = (u.email || '').toLowerCase();
                   const phone = (u.phone || '').toLowerCase();
@@ -793,10 +795,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
                 if (filteredNetwork.length === 0) {
                   return (
-                    <div style={{ textAlign: 'center', padding: '50px 20px', background: '#F8FAFC', borderRadius: '16px', border: '1px border-dashed #CBD5E1' }}>
+                    <div style={{ textAlign: 'center', padding: '50px 20px', background: '#F8FAFC', borderRadius: '16px', border: '1px dashed #CBD5E1' }}>
                       <Users size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
                       <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
-                        {downlineUsers.length === 0 
+                        {safeNetwork.length === 0 
                           ? (lang === 'en' ? 'No members connected yet' : 'अभी तक कोई सदस्य नहीं जुड़ा है') 
                           : (lang === 'en' ? 'No matching members found' : 'कोई मेल खाता सदस्य नहीं मिला')}
                       </h4>
@@ -833,6 +835,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       </thead>
                       <tbody>
                         {filteredNetwork.map((m, idx) => {
+                          if (!m) return null;
                           let badgeBg = '#EFF6FF';
                           let badgeColor = '#2563EB';
                           if (m.role_name === 'Agency') { badgeBg = '#FFF7ED'; badgeColor = '#EA580C'; }
