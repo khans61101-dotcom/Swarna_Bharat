@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   User, Mail, Phone, MapPin, Camera, LogOut, CheckCircle, Shield, 
   Trash2, Video, Image, PlusCircle, Award, Users, CheckSquare, 
-  Film, LayoutDashboard, Copy, Check, ExternalLink, Share2, Sparkles, Key, Search
+  Film, LayoutDashboard, Copy, Check, ExternalLink, Share2, Sparkles, Key, Search,
+  Menu, X, ChevronRight
 } from 'lucide-react';
 import { useLang } from '../LanguageContext';
 import { API_BASE_URL, API_URL, getMediaUrl } from '../config';
@@ -11,8 +12,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const { lang } = useLang();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeDashTab, setActiveDashTab] = useState('overview'); // 'overview' | 'media' | 'profile'
+  const [activeDashTab, setActiveDashTab] = useState('overview'); // 'overview' | 'media' | 'profile' | 'network'
   const [mediaFilter, setMediaFilter] = useState('all'); // 'all' | 'image' | 'video'
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState({ text: '', type: '' });
@@ -303,193 +305,241 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   });
 
   return (
-    <div style={{ background: 'var(--bg-light)', color: 'var(--text-dark)', minHeight: '100vh', padding: '30px 16px 60px' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-        
-        {/* Header Profile Summary Card */}
-        <div className="dashboard-card" style={{ 
-          background: 'var(--card-bg)', 
-          borderRadius: '24px', 
-          padding: '28px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.04)',
+    <div style={{ background: '#F8FAFC', color: '#1E293B', minHeight: '100vh', fontFamily: "'Outfit', sans-serif" }}>
+      {/* Mobile & Desktop Responsive Layout CSS */}
+      <style>{`
+        @media (max-width: 1023px) {
+          .dash-sidebar { transform: translateX(-100%); }
+          .dash-sidebar.open { transform: translateX(0) !important; }
+          .dash-main-panel { margin-left: 0 !important; width: 100% !important; }
+        }
+        @media (min-width: 1024px) {
+          .dash-sidebar { transform: translateX(0) !important; }
+          .dash-main-panel { margin-left: 280px !important; width: calc(100% - 280px) !important; }
+        }
+      `}</style>
+
+      {/* Mobile Backdrop Overlay */}
+      {mobileSidebarOpen && (
+        <div 
+          onClick={() => setMobileSidebarOpen(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 99 }}
+        />
+      )}
+
+      {/* ── LEFT SIDEBAR PANEL ───────────────────────────────────────── */}
+      <aside 
+        className={`dash-sidebar ${mobileSidebarOpen ? 'open' : ''}`}
+        style={{
+          width: '280px',
+          background: 'linear-gradient(180deg, #0F172A 0%, #1E293B 100%)',
+          color: '#FFF',
           display: 'flex',
-          flexWrap: 'wrap',
-          gap: '24px',
-          alignItems: 'center',
-          marginBottom: '20px',
-          position: 'relative',
-          border: '1px solid var(--card-border)'
-        }}>
-          <button 
-            onClick={handleLogout}
-            style={{ position: 'absolute', top: '24px', right: '24px', background: '#FEE2E2', color: '#DC2626', border: 'none', padding: '8px 18px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, transition: '0.2s' }}
-          >
-            <LogOut size={16} /> {lang === 'en' ? 'Logout' : 'लॉगआउट'}
-          </button>
-
-          <div style={{ position: 'relative' }}>
-            <div style={{ 
-              width: '105px', height: '105px', borderRadius: '50%', 
-              background: 'var(--bg-alt)', overflow: 'hidden', border: '4px solid var(--card-bg)',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-            }}>
-              {user.profile_image ? (
-                <img src={getMediaUrl(user.profile_image)} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.4rem', color: 'var(--text-muted)', fontWeight: 700 }}>
-                  {user.name.substring(0,2).toUpperCase()}
-                </div>
-              )}
+          flexDirection: 'column',
+          position: 'fixed',
+          top: 0, bottom: 0, left: 0,
+          zIndex: 100,
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: '4px 0 25px rgba(0,0,0,0.15)'
+        }}
+      >
+        {/* Brand Header */}
+        <div style={{ padding: '24px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#FFF', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(255,153,51,0.3)' }}>
+              S
             </div>
-            
-            <label style={{
-              position: 'absolute', bottom: '0', right: '0',
-              background: '#FF9933', color: '#FFF', width: '34px', height: '34px',
-              borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-            }} title="Change Profile Picture">
-              <Camera size={16} />
-              <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} disabled={uploading} />
-            </label>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#FFF', letterSpacing: '-0.2px' }}>Swarna Bharat</h3>
+              <span style={{ fontSize: '0.72rem', color: '#94A3B8', fontWeight: 600 }}>Citizen Portal CMS</span>
+            </div>
           </div>
+          <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: '4px' }}>
+            <X size={20} />
+          </button>
+        </div>
 
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <h2 style={{ margin: 0, fontSize: '1.7rem', color: 'var(--text-dark)', fontWeight: 800 }}>{user.name}</h2>
-              <span style={{ background: '#EFF6FF', color: '#2563EB', padding: '4px 14px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                <Shield size={14} /> {user.role_name}
+        {/* User Profile Summary Card in Sidebar */}
+        <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{ position: 'relative', width: '52px', height: '52px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#FFF', overflow: 'hidden', flexShrink: 0, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+              {user.profile_image ? (
+                <img src={getMediaUrl(user.profile_image)} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <span>{user.name.substring(0, 2).toUpperCase()}</span>
+              )}
+              <label style={{ position: 'absolute', bottom: 0, right: 0, background: '#FF9933', color: '#FFF', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: '1px solid #FFF' }} title="Change Profile Picture">
+                <Camera size={10} />
+                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} disabled={uploading} />
+              </label>
+            </div>
+            <div style={{ overflow: 'hidden' }}>
+              <h4 style={{ margin: 0, fontSize: '0.95rem', color: '#F8FAFC', fontWeight: 700, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{user.name}</h4>
+              <span style={{ display: 'inline-block', background: 'rgba(255, 153, 51, 0.15)', color: '#FF9933', padding: '2px 8px', borderRadius: '12px', fontSize: '0.72rem', fontWeight: 700, marginTop: '3px' }}>
+                <Shield size={10} style={{ display: 'inline', marginRight: '3px' }} />
+                {user.role_name}
               </span>
             </div>
-            
-            <div style={{ display: 'flex', gap: '20px', marginTop: '10px', flexWrap: 'wrap', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Mail size={15} color="#FF9933" /> {user.email}</span>
-              {user.phone && <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Phone size={15} color="#FF9933" /> {user.phone}</span>}
-              {user.city && <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><MapPin size={15} color="#FF9933" /> {user.city}, {user.state}</span>}
-            </div>
           </div>
         </div>
 
-        {/* Global Notifications */}
-        {msg.text && (
-          <div style={{
-            padding: '14px 20px', borderRadius: '12px', marginBottom: '20px',
-            background: msg.type === 'error' ? '#FEE2E2' : msg.type === 'success' ? '#DCFCE7' : '#DBEAFE',
-            color: msg.type === 'error' ? '#DC2626' : msg.type === 'success' ? '#16A34A' : '#2563EB',
-            display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 600,
-            border: `1px solid ${msg.type === 'error' ? '#FCA5A5' : msg.type === 'success' ? '#86EFAC' : '#93C5FD'}`
-          }}>
-            <CheckCircle size={18} /> {msg.text}
+        {/* Sidebar Menu Items */}
+        <nav style={{ flex: 1, padding: '20px 14px', display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto' }}>
+          <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.8px', padding: '0 10px 4px' }}>
+            {lang === 'en' ? 'NAVIGATION MENU' : 'नेविगेशन मेनू'}
           </div>
-        )}
 
-        {/* ── MAIN DASHBOARD TABS NAVIGATION BAR ── */}
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          marginBottom: '28px',
-          background: '#FFF',
-          padding: '8px',
-          borderRadius: '16px',
-          border: '1px solid #E2E8F0',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
-          flexWrap: 'wrap'
-        }}>
           <button
-            onClick={() => setActiveDashTab('overview')}
+            onClick={() => { setActiveDashTab('overview'); setMobileSidebarOpen(false); }}
             style={{
-              flex: 1,
-              padding: '12px 20px',
-              borderRadius: '12px',
-              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
               background: activeDashTab === 'overview' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'overview' ? '#FFF' : '#64748B',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.3s ease',
-              boxShadow: activeDashTab === 'overview' ? '0 4px 12px rgba(255, 153, 51, 0.3)' : 'none'
+              color: activeDashTab === 'overview' ? '#FFF' : '#94A3B8',
+              fontWeight: activeDashTab === 'overview' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: activeDashTab === 'overview' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
             }}
           >
-            <LayoutDashboard size={18} />
-            <span>{lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड ओवरव्यू'}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <LayoutDashboard size={18} />
+              <span>{lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड ओवरव्यू'}</span>
+            </div>
+            {activeDashTab === 'overview' && <ChevronRight size={16} />}
           </button>
 
           <button
-            onClick={() => setActiveDashTab('network')}
+            onClick={() => { setActiveDashTab('network'); setMobileSidebarOpen(false); }}
             style={{
-              flex: 1,
-              padding: '12px 20px',
-              borderRadius: '12px',
-              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
               background: activeDashTab === 'network' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'network' ? '#FFF' : '#64748B',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.3s ease',
-              boxShadow: activeDashTab === 'network' ? '0 4px 12px rgba(255, 153, 51, 0.3)' : 'none'
+              color: activeDashTab === 'network' ? '#FFF' : '#94A3B8',
+              fontWeight: activeDashTab === 'network' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: activeDashTab === 'network' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
             }}
           >
-            <Users size={18} />
-            <span>{lang === 'en' ? 'My Connected Network' : 'मेरे से जुड़े सदस्य'} ({downlineUsers.length})</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Users size={18} />
+              <span>{lang === 'en' ? 'My Connected Network' : 'मेरे से जुड़े सदस्य'}</span>
+            </div>
+            <span style={{ background: activeDashTab === 'network' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)', color: '#FFF', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}>
+              {downlineUsers.length}
+            </span>
           </button>
 
           <button
-            onClick={() => setActiveDashTab('media')}
+            onClick={() => { setActiveDashTab('media'); setMobileSidebarOpen(false); }}
             style={{
-              flex: 1,
-              padding: '12px 20px',
-              borderRadius: '12px',
-              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
               background: activeDashTab === 'media' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'media' ? '#FFF' : '#64748B',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.3s ease',
-              boxShadow: activeDashTab === 'media' ? '0 4px 12px rgba(255, 153, 51, 0.3)' : 'none'
+              color: activeDashTab === 'media' ? '#FFF' : '#94A3B8',
+              fontWeight: activeDashTab === 'media' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: activeDashTab === 'media' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
             }}
           >
-            <Film size={18} />
-            <span>{lang === 'en' ? 'Upload Photo / Video & My Gallery' : 'फोटो/वीडियो अपलोड एवं मेरी गैलरी'} ({userMedia.length})</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Film size={18} />
+              <span>{lang === 'en' ? 'Gallery & Uploads' : 'गैलरी एवं फोटो/वीडियो'}</span>
+            </div>
+            <span style={{ background: activeDashTab === 'media' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)', color: '#FFF', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}>
+              {userMedia.length}
+            </span>
           </button>
 
           <button
-            onClick={() => setActiveDashTab('profile')}
+            onClick={() => { setActiveDashTab('profile'); setMobileSidebarOpen(false); }}
             style={{
-              flex: 1,
-              padding: '12px 20px',
-              borderRadius: '12px',
-              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
               background: activeDashTab === 'profile' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'profile' ? '#FFF' : '#64748B',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.3s ease',
-              boxShadow: activeDashTab === 'profile' ? '0 4px 12px rgba(255, 153, 51, 0.3)' : 'none'
+              color: activeDashTab === 'profile' ? '#FFF' : '#94A3B8',
+              fontWeight: activeDashTab === 'profile' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: activeDashTab === 'profile' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
             }}
           >
-            <User size={18} />
-            <span>{lang === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें'}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <User size={18} />
+              <span>{lang === 'en' ? 'Edit Profile & Account' : 'प्रोफ़ाइल संपादित करें'}</span>
+            </div>
+            {activeDashTab === 'profile' && <ChevronRight size={16} />}
+          </button>
+        </nav>
+
+        {/* Sidebar Footer Logout Button */}
+        <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <button
+            onClick={handleLogout}
+            style={{
+              width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.3)',
+              background: 'rgba(239,68,68,0.1)', color: '#F87171', fontWeight: 700, fontSize: '0.9rem',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <LogOut size={18} />
+            <span>{lang === 'en' ? 'Logout Account' : 'लॉगआउट करें'}</span>
           </button>
         </div>
+      </aside>
+
+      {/* ── MAIN CONTENT PANEL ────────────────────────────────────────── */}
+      <div className="dash-main-panel" style={{ flex: 1, marginLeft: '280px', width: 'calc(100% - 280px)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        {/* Sticky Top Header Bar */}
+        <header style={{
+          background: '#FFF', height: '70px', padding: '0 28px', borderBottom: '1px solid #E2E8F0',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 40,
+          boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <button 
+              onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)} 
+              style={{ background: '#F1F5F9', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', display: 'flex', color: '#0F172A' }}
+            >
+              <Menu size={22} />
+            </button>
+            <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0F172A' }}>
+              {activeDashTab === 'overview' && (lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड ओवरव्यू')}
+              {activeDashTab === 'network' && (lang === 'en' ? 'My Connected Network' : 'मेरे से जुड़े सदस्य')}
+              {activeDashTab === 'media' && (lang === 'en' ? 'Upload Media & My Gallery' : 'गैलरी एवं फोटो/वीडियो')}
+              {activeDashTab === 'profile' && (lang === 'en' ? 'Profile & Account Settings' : 'प्रोफ़ाइल एवं खाता विवरण')}
+            </h2>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '6px 14px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#16A34A', display: 'inline-block' }}></span>
+              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#334155' }}>{user.name}</span>
+            </div>
+
+            <button 
+              onClick={handleLogout}
+              style={{ background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', padding: '8px 16px', borderRadius: '30px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              <LogOut size={14} />
+              <span>Logout</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Content Body */}
+        <main style={{ padding: '28px', flex: 1 }}>
+          {/* Global Notifications */}
+          {msg.text && (
+            <div style={{
+              padding: '14px 20px', borderRadius: '12px', marginBottom: '24px',
+              background: msg.type === 'error' ? '#FEE2E2' : msg.type === 'success' ? '#DCFCE7' : '#DBEAFE',
+              color: msg.type === 'error' ? '#DC2626' : msg.type === 'success' ? '#16A34A' : '#2563EB',
+              display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 600,
+              border: `1px solid ${msg.type === 'error' ? '#FCA5A5' : msg.type === 'success' ? '#86EFAC' : '#93C5FD'}`
+            }}>
+              <CheckCircle size={18} /> {msg.text}
+            </div>
+          )}
 
         {/* ── TAB 1: OVERVIEW ────────────────────────────────────────────── */}
         {activeDashTab === 'overview' && (
@@ -1191,7 +1241,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             </div>
           </div>
         )}
-
+        </main>
       </div>
     </div>
   );
