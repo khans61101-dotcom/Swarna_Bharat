@@ -482,21 +482,10 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
 
   return (
     <div className="app-main">
-      {/* Top utility bar */}
-      <div className="top-bar section-bg-white" style={{ background: '#FFF' }}> 
-        <div>{t.topBar}</div>
-        <div className="top-bar-links">
-          <span>{t.skipContent}</span> |
-          <span onClick={toggleLang} style={{ cursor: 'pointer', color: '#FF9933', fontWeight: 700 }}>
-            {t.langToggle}
-          </span> |
-          <span>{t.accessibility}</span>
-        </div>
-      </div>
-
-      {/* Main Navigation Header */}
-      <header className="main-header">
-        <div className="header-container">
+      {/* Main Navigation Header - Hidden on Dashboard page after login */}
+      {activeTab !== 'Dashboard' && (
+        <header className="main-header">
+          <div className="header-container">
           <div className="logo-section" onClick={() => setActiveTab('Home')} style={{ cursor: 'pointer' }}>
             <img
               src={logoImg}
@@ -753,11 +742,25 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
             </ul>
           </nav>
 
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            {/* <Search size={20} style={{ cursor: 'pointer', color: 'var(--nav-text)' }} /> */}
-
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             {/* Language Toggle Button */}
-
+            <button
+              onClick={toggleLang}
+              style={{
+                background: 'rgba(255, 153, 51, 0.1)',
+                border: '1px solid #FF9933',
+                color: '#FF9933',
+                padding: '6px 14px',
+                borderRadius: '20px',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              title="Change Language"
+            >
+              {t.langToggle}
+            </button>
 
             {/* Dark Mode Toggle Button */}
             <button
@@ -771,6 +774,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
           </div>
         </div>
       </header>
+      )}
 
       {/* Main Dynamic View Content */}
       {activeTab === 'About' && <AboutPage />}
@@ -1327,40 +1331,42 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
         </>
       )}
 
-      {/* Footer */}
-      <footer className="section-bg-f1f5f9" style={{ background: '#F1F5F9' }}>
-        <div className="footer-container">
-          <div className="footer-col">
-            <h3>{t.footer.quickLinks}</h3>
-            <ul>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('About'); }}>{t.footer.links.aboutPM}</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('News'); }}>{t.footer.links.newsUpdates}</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Events'); }}>{t.footer.links.eventsConclaves}</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Videos'); }}>{t.footer.links.videoLibrary}</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.citizenEnquiry}</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('DownloadApp'); }}>{t.footer.links.downloadApp}</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setAuthMode('login'); setActiveTab('Auth'); }}>{t.footer.links.citizenLogin}</a></li>
-            </ul>
+      {/* Footer - Hidden on Dashboard page */}
+      {activeTab !== 'Dashboard' && (
+        <footer className="section-bg-f1f5f9" style={{ background: '#F1F5F9' }}>
+          <div className="footer-container">
+            <div className="footer-col">
+              <h3>{t.footer.quickLinks}</h3>
+              <ul>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('About'); }}>{t.footer.links.aboutPM}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('News'); }}>{t.footer.links.newsUpdates}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Events'); }}>{t.footer.links.eventsConclaves}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Videos'); }}>{t.footer.links.videoLibrary}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.citizenEnquiry}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('DownloadApp'); }}>{t.footer.links.downloadApp}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setAuthMode('login'); setActiveTab('Auth'); }}>{t.footer.links.citizenLogin}</a></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h3>{t.footer.mediaCorner}</h3>
+              <ul>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Videos'); }}>{t.footer.links.speeches}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('News'); }}>{t.footer.links.pressReleases}</a></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h3>{t.footer.contactDesk}</h3>
+              <ul>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.submitGrievance}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.pmoAddress}</a></li>
+              </ul>
+            </div>
           </div>
-          <div className="footer-col">
-            <h3>{t.footer.mediaCorner}</h3>
-            <ul>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Videos'); }}>{t.footer.links.speeches}</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('News'); }}>{t.footer.links.pressReleases}</a></li>
-            </ul>
+          <div className="footer-bottom">
+            <p>{t.footer.copyright}</p>
           </div>
-          <div className="footer-col">
-            <h3>{t.footer.contactDesk}</h3>
-            <ul>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.submitGrievance}</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.pmoAddress}</a></li>
-            </ul>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <p>{t.footer.copyright}</p>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 }

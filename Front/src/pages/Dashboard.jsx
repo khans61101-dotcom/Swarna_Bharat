@@ -3,10 +3,11 @@ import {
   User, Mail, Phone, MapPin, Camera, LogOut, CheckCircle, Shield, 
   Trash2, Video, Image, PlusCircle, Award, Users, CheckSquare, 
   Film, LayoutDashboard, Copy, Check, ExternalLink, Share2, Sparkles, Key, Search,
-  Menu, X, ChevronRight
+  Menu, X, ChevronRight, Eye
 } from 'lucide-react';
 import { useLang } from '../LanguageContext';
 import { API_BASE_URL, API_URL, getMediaUrl } from '../config';
+import ProfilePage from './ProfileDetails';
 
 export default function Dashboard({ setActiveTab, setUserState }) {
   const { lang } = useLang();
@@ -451,6 +452,25 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           </button>
 
           <button
+            onClick={() => { setActiveDashTab('public_profile'); setMobileSidebarOpen(false); }}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
+              background: activeDashTab === 'public_profile' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
+              color: activeDashTab === 'public_profile' ? '#FFF' : '#94A3B8',
+              fontWeight: activeDashTab === 'public_profile' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: activeDashTab === 'public_profile' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Eye size={18} />
+              <span>{lang === 'en' ? 'View Public Profile' : 'मेरी सार्वजनिक प्रोफ़ाइल'}</span>
+            </div>
+            {activeDashTab === 'public_profile' && <ChevronRight size={16} />}
+          </button>
+
+          <button
             onClick={() => { setActiveDashTab('profile'); setMobileSidebarOpen(false); }}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -506,6 +526,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
               {activeDashTab === 'overview' && (lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड ओवरव्यू')}
               {activeDashTab === 'network' && (lang === 'en' ? 'My Connected Network' : 'मेरे से जुड़े सदस्य')}
               {activeDashTab === 'media' && (lang === 'en' ? 'Upload Media & My Gallery' : 'गैलरी एवं फोटो/वीडियो')}
+              {activeDashTab === 'public_profile' && (lang === 'en' ? 'My Public Profile View' : 'मेरी सार्वजनिक प्रोफ़ाइल')}
               {activeDashTab === 'profile' && (lang === 'en' ? 'Profile & Account Settings' : 'प्रोफ़ाइल एवं खाता विवरण')}
             </h2>
           </div>
@@ -1239,6 +1260,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 </div>
               </form>
             </div>
+          </div>
+        )}
+
+        {/* ── TAB 5: PUBLIC PROFILE VIEW ───────────────────────────────── */}
+        {activeDashTab === 'public_profile' && (
+          <div style={{ animation: 'fadeIn 0.4s ease' }}>
+            <ProfilePage partner={user} setActiveTab={setActiveTab} />
           </div>
         )}
         </main>
