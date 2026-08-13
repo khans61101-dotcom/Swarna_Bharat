@@ -78,6 +78,7 @@ router.get('/:id/details', async (req, res) => {
       usersCount,
       membersCount,
       downlineUsers: downlines,
+      downlines: downlines,
       media: selfMedia,
       selfMedia,
       companyMedia

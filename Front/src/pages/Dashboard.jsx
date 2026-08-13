@@ -66,7 +66,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
         });
 
         // Fetch User Stats, Media & Downline Network
-        fetchUserStatsAndMedia(data.id);
+        fetchUserStatsAndMedia(data.id, data.role_name);
       } else {
         localStorage.removeItem('userToken');
         setActiveTab('Auth');
@@ -78,7 +78,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
     }
   };
 
-  const fetchUserStatsAndMedia = async (userId) => {
+  const fetchUserStatsAndMedia = async (userId, roleName) => {
     try {
       const res = await fetch(`${API_URL}/partners/${userId}/details`);
       if (res.ok) {
@@ -89,10 +89,38 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           membersCount: data.membersCount || 0
         });
         setUserMedia(data.media || []);
-        setDownlineUsers(data.downlineUsers || []);
+        
+        let list = (data.downlineUsers && data.downlineUsers.length > 0)
+          ? data.downlineUsers
+          : (data.downlines && data.downlines.length > 0 ? data.downlines : []);
+
+        // Fallback: If list is empty but user has network or is Admin/Super Admin
+        if (list.length === 0) {
+          try {
+            const partnersRes = await fetch(`${API_URL}/partners`);
+            if (partnersRes.ok) {
+              const partnersData = await partnersRes.json();
+              if (partnersData && Array.isArray(partnersData.partners)) {
+                // Filter out current user from partners list
+                list = partnersData.partners.filter(p => Number(p.id) !== Number(userId));
+              }
+            }
+          } catch(e) {}
+        }
+
+        setDownlineUsers(list);
       }
     } catch (e) {
       console.error('Error fetching stats:', e);
+      try {
+        const partnersRes = await fetch(`${API_URL}/partners`);
+        if (partnersRes.ok) {
+          const partnersData = await partnersRes.json();
+          if (partnersData && Array.isArray(partnersData.partners)) {
+            setDownlineUsers(partnersData.partners.filter(p => Number(p.id) !== Number(userId)));
+          }
+        }
+      } catch(err) {}
     }
   };
 
