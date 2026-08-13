@@ -189,6 +189,45 @@ const ProfilePage = ({ partner, setActiveTab }) => {
     }
   };
 
+  const handleShareProfile = async () => {
+    const targetPartner = currentPartner || partner;
+    const name = targetPartner ? (targetPartner.organization_name || targetPartner.name || 'Partner Profile') : 'Partner Profile';
+    const shareUrl = window.location.origin + '/#/partnerdetails';
+
+    const shareData = {
+      title: `${name} | Swarna Bharat`,
+      text: `Check out ${name}'s official profile on Swarna Bharat Network!`,
+      url: shareUrl
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        setMsg({ text: 'Profile shared successfully!', type: 'success' });
+        setTimeout(() => setMsg({ text: '', type: '' }), 3000);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          copyToClipboard(shareUrl);
+        }
+      }
+    } else {
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = (url) => {
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        setMsg({ text: 'Profile link copied to clipboard!', type: 'success' });
+      })
+      .catch(() => {
+        setMsg({ text: 'Failed to copy profile link', type: 'error' });
+      })
+      .finally(() => {
+        setTimeout(() => setMsg({ text: '', type: '' }), 3500);
+      });
+  };
+
   // Grid items data based on activeMediaTab (self vs company)
   const currentMediaList = activeMediaTab === 'company' 
     ? (details.companyMedia || []) 
@@ -528,24 +567,29 @@ const ProfilePage = ({ partner, setActiveTab }) => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button style={{
-              flex: 1,
-              backgroundColor: 'var(--card-bg)',
-              color: 'var(--text-dark)',
-              fontWeight: 600,
-              fontSize: '14px',
-              letterSpacing: '0.05em',
-              padding: '8px 0',
-              borderRadius: '8px',
-              border: '1px solid var(--card-border)',
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px'
-            }}>
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>share</span>
+            <button 
+              onClick={handleShareProfile}
+              style={{
+                flex: 1,
+                backgroundColor: 'var(--card-bg)',
+                color: 'var(--text-dark)',
+                fontWeight: 600,
+                fontSize: '14px',
+                letterSpacing: '0.05em',
+                padding: '10px 0',
+                borderRadius: '8px',
+                border: '1px solid var(--card-border)',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#FF9933'; e.currentTarget.style.color = '#FF9933'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--card-border)'; e.currentTarget.style.color = 'var(--text-dark)'; }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#FF9933' }}>share</span>
               Share Profile
             </button>
           </div>
