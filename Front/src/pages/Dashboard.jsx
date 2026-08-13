@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   User, Mail, Phone, MapPin, Camera, LogOut, CheckCircle, Shield, 
   Trash2, Video, Image, PlusCircle, Award, Users, CheckSquare, 
-  Film, LayoutDashboard, Copy, Check, ExternalLink, Share2, Sparkles, Key
+  Film, LayoutDashboard, Copy, Check, ExternalLink, Share2, Sparkles, Key, Search
 } from 'lucide-react';
 import { useLang } from '../LanguageContext';
 import { API_BASE_URL, API_URL, getMediaUrl } from '../config';
