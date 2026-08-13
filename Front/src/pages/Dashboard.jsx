@@ -27,9 +27,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const [galleryTitle, setGalleryTitle] = useState('');
   const [uploadingMedia, setUploadingMedia] = useState(false);
 
-  // User Stats & Media
+  // User Stats, Media & Downline Network
   const [userStats, setUserStats] = useState({ taskCount: 0, usersCount: 0, membersCount: 0 });
   const [userMedia, setUserMedia] = useState([]);
+  const [downlineUsers, setDownlineUsers] = useState([]);
+  const [networkSearch, setNetworkSearch] = useState('');
 
   useEffect(() => {
     fetchProfile();
@@ -63,7 +65,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           upi_id: data.upi_id || ''
         });
 
-        // Fetch User Stats & Gallery Media
+        // Fetch User Stats, Media & Downline Network
         fetchUserStatsAndMedia(data.id);
       } else {
         localStorage.removeItem('userToken');
@@ -87,6 +89,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           membersCount: data.membersCount || 0
         });
         setUserMedia(data.media || []);
+        setDownlineUsers(data.downlineUsers || []);
       }
     } catch (e) {
       console.error('Error fetching stats:', e);
@@ -385,6 +388,30 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           >
             <LayoutDashboard size={18} />
             <span>{lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड ओवरव्यू'}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveDashTab('network')}
+            style={{
+              flex: 1,
+              padding: '12px 20px',
+              borderRadius: '12px',
+              border: 'none',
+              background: activeDashTab === 'network' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
+              color: activeDashTab === 'network' ? '#FFF' : '#64748B',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.3s ease',
+              boxShadow: activeDashTab === 'network' ? '0 4px 12px rgba(255, 153, 51, 0.3)' : 'none'
+            }}
+          >
+            <Users size={18} />
+            <span>{lang === 'en' ? 'My Connected Network' : 'मेरे से जुड़े सदस्य'} ({downlineUsers.length})</span>
           </button>
 
           <button
@@ -699,6 +726,166 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   {lang === 'en' ? 'Edit phone, address, city and location info' : 'फोन, पता और स्थान की जानकारी संपादित करें'}
                 </p>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB 2: MY CONNECTED NETWORK (DOWNLINE LIST) ───────────────── */}
+        {activeDashTab === 'network' && (
+          <div style={{ animation: 'fadeIn 0.4s ease' }}>
+            <div style={{
+              background: '#FFF',
+              borderRadius: '24px',
+              padding: '28px',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+              marginBottom: '28px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.35rem', color: '#1E293B', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Users size={24} color="#FF9933" />
+                    {lang === 'en' ? 'My Connected Network & Downline Members' : 'मेरे से जुड़े सदस्य एवं नेटवर्क'}
+                  </h3>
+                  <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '4px', margin: 0 }}>
+                    {lang === 'en' ? 'List of all users, members, agencies and NGOs connected directly or indirectly under your account.' : 'आपके खाते के अंतर्गत सीधे या अप्रत्यक्ष रूप से जुड़े सभी सदस्यों की सूची।'}
+                  </p>
+                </div>
+
+                <div style={{ background: '#FFF7ED', border: '1px solid #FFEDD5', padding: '8px 18px', borderRadius: '40px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#C2410C' }}>
+                    {lang === 'en' ? 'Total Connected:' : 'कुल जुड़े सदस्य:'} {downlineUsers.length}
+                  </span>
+                </div>
+              </div>
+
+              {/* Search Bar */}
+              <div style={{ position: 'relative', marginBottom: '24px' }}>
+                <input
+                  type="text"
+                  placeholder={lang === 'en' ? 'Search connected member by name, email, phone or role...' : 'नाम, ईमेल, फोन या भूमिका द्वारा जुड़े सदस्य को खोजें...'}
+                  value={networkSearch}
+                  onChange={(e) => setNetworkSearch(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px 12px 42px',
+                    borderRadius: '12px',
+                    border: '1px solid #CBD5E1',
+                    fontSize: '0.92rem',
+                    background: '#F8FAFC',
+                    color: '#1E293B',
+                    outline: 'none'
+                  }}
+                />
+                <Search size={18} color="#94A3B8" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+              </div>
+
+              {/* Connected Members List Table */}
+              {(() => {
+                const filteredNetwork = downlineUsers.filter(u => {
+                  const q = networkSearch.toLowerCase();
+                  const name = (u.name || '').toLowerCase();
+                  const email = (u.email || '').toLowerCase();
+                  const phone = (u.phone || '').toLowerCase();
+                  const role = (u.role_name || '').toLowerCase();
+                  return name.includes(q) || email.includes(q) || phone.includes(q) || role.includes(q);
+                });
+
+                if (filteredNetwork.length === 0) {
+                  return (
+                    <div style={{ textAlign: 'center', padding: '50px 20px', background: '#F8FAFC', borderRadius: '16px', border: '1px border-dashed #CBD5E1' }}>
+                      <Users size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
+                      <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
+                        {downlineUsers.length === 0 
+                          ? (lang === 'en' ? 'No members connected yet' : 'अभी तक कोई सदस्य नहीं जुड़ा है') 
+                          : (lang === 'en' ? 'No matching members found' : 'कोई मेल खाता सदस्य नहीं मिला')}
+                      </h4>
+                      <p style={{ color: '#64748B', fontSize: '0.9rem', maxWidth: '500px', margin: '0 auto 20px' }}>
+                        {lang === 'en'
+                          ? 'Share your unique referral link to invite friends, team members, and organizations to register under your network.'
+                          : 'मित्रों, टीम के सदस्यों और संगठनों को अपने नेटवर्क के तहत पंजीकृत करने के लिए अपना अद्वितीय रेफरल लिंक साझा करें।'}
+                      </p>
+                      <button
+                        onClick={handleCopyRef}
+                        style={{
+                          background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                          color: '#FFF', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px'
+                        }}
+                      >
+                        {copiedRef ? <Check size={16} /> : <Copy size={16} />}
+                        {copiedRef ? (lang === 'en' ? 'Link Copied!' : 'लिंक कॉपी हो गया!') : (lang === 'en' ? 'Copy Referral Link' : 'रेफरल लिंक कॉपी करें')}
+                      </button>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '650px' }}>
+                      <thead>
+                        <tr style={{ background: '#F8FAFC', borderBottom: '2px solid #E2E8F0', color: '#64748B', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          <th style={{ padding: '12px 16px' }}>Member / Name</th>
+                          <th style={{ padding: '12px 16px' }}>Role</th>
+                          <th style={{ padding: '12px 16px' }}>Contact Info</th>
+                          <th style={{ padding: '12px 16px' }}>Location</th>
+                          <th style={{ padding: '12px 16px' }}>Joined Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredNetwork.map((m, idx) => {
+                          let badgeBg = '#EFF6FF';
+                          let badgeColor = '#2563EB';
+                          if (m.role_name === 'Agency') { badgeBg = '#FFF7ED'; badgeColor = '#EA580C'; }
+                          else if (m.role_name === 'NGO') { badgeBg = '#FDF2F8'; badgeColor = '#DB2777'; }
+                          else if (m.role_name === 'Member') { badgeBg = '#F5F3FF'; badgeColor = '#7C3AED'; }
+
+                          const initials = (m.name || 'User').substring(0, 2).toUpperCase();
+                          const profileImg = m.profile_image ? getMediaUrl(m.profile_image) : null;
+
+                          return (
+                            <tr key={m.id || idx} style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.2s' }}>
+                              <td style={{ padding: '14px 16px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem', overflow: 'hidden', flexShrink: 0 }}>
+                                    {profileImg ? (
+                                      <img src={profileImg} alt={m.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    ) : (
+                                      <span>{initials}</span>
+                                    )}
+                                  </div>
+                                  <div>
+                                    <strong style={{ fontSize: '0.95rem', color: '#0F172A', display: 'block' }}>{m.name || 'N/A'}</strong>
+                                    <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Ref Code: {m.referral_code || `REF-${m.id}`}</span>
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td style={{ padding: '14px 16px' }}>
+                                <span style={{ background: badgeBg, color: badgeColor, padding: '4px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>
+                                  {m.role_name || 'Member'}
+                                </span>
+                              </td>
+
+                              <td style={{ padding: '14px 16px' }}>
+                                <div style={{ fontSize: '0.85rem', color: '#334155' }}>✉️ {m.email || 'N/A'}</div>
+                                {m.phone && <div style={{ fontSize: '0.8rem', color: '#64748B', marginTop: '2px' }}>📞 {m.phone}</div>}
+                              </td>
+
+                              <td style={{ padding: '14px 16px', fontSize: '0.85rem', color: '#475569' }}>
+                                {m.city || m.state ? `${m.city || ''}${m.state ? `, ${m.state}` : ''}` : 'N/A'}
+                              </td>
+
+                              <td style={{ padding: '14px 16px', fontSize: '0.82rem', color: '#64748B' }}>
+                                {m.created_at ? new Date(m.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}

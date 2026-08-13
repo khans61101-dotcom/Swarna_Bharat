@@ -29,18 +29,19 @@ router.get('/:id/details', async (req, res) => {
     // 1. Task count (how many tasks assigned to this partner)
     const [[{ taskCount }]] = await db.query('SELECT count(*) as taskCount FROM task_assignments WHERE assigned_to = ?', [partnerId]);
     
-    // 2. Downline counts using CTE
+    // 2. Downline counts & full connected network list using CTE
     const [downlines] = await db.query(`
       WITH RECURSIVE Downlines AS (
-        SELECT id, role_id, created_by, referred_by FROM users WHERE created_by = ? OR referred_by = ?
+        SELECT id, name, email, phone, address, city, state, role_id, created_by, referred_by, referral_code, profile_image, created_at FROM users WHERE created_by = ? OR referred_by = ?
         UNION ALL
-        SELECT u.id, u.role_id, u.created_by, u.referred_by
+        SELECT u.id, u.name, u.email, u.phone, u.address, u.city, u.state, u.role_id, u.created_by, u.referred_by, u.referral_code, u.profile_image, u.created_at
         FROM users u
         INNER JOIN Downlines d ON u.created_by = d.id OR u.referred_by = d.id
       )
-      SELECT d.id, r.name as role_name 
+      SELECT d.*, r.name as role_name 
       FROM Downlines d
       JOIN roles r ON d.role_id = r.id
+      ORDER BY d.created_at DESC
     `, [partnerId, partnerId]);
 
     const usersCount = downlines.filter(d => d.role_name === 'User').length;
@@ -66,6 +67,7 @@ router.get('/:id/details', async (req, res) => {
       taskCount,
       usersCount,
       membersCount,
+      downlineUsers: downlines,
       media: selfMedia,
       selfMedia,
       companyMedia
