@@ -1019,6 +1019,12 @@
           <span class="icon">🎬</span> <span>Hero Video Banner</span>
       </div>
 
+      <div class="sidebar-item"
+           data-tab="documentsTab"
+           onclick="switchTab('documentsTab', this)">
+          <span class="icon">📄</span> <span>Important Documents</span>
+      </div>
+
       <div class="sidebar-divider"></div>
 
       <div class="sidebar-section-label">MY ACCOUNT</div>
@@ -1737,6 +1743,39 @@
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: IMPORTANT DOCUMENTS -->
+      <div id="documentsTab" class="tab-content">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+              <h3 style="margin:0; font-size:1.35rem; color:#0F172A; font-weight:800;">📄 Important Documents & Official Circulars</h3>
+              <p style="color:#64748B; font-size:0.88rem; margin-top:4px;">Manage official policy documents, circulars, application forms, gazette notifications, and downloads.</p>
+            </div>
+            <button class="btn btn-primary" onclick="window.location.href='add-document.html'" style="border-radius: 40px; padding: 0.65rem 1.6rem; font-weight: 700; background: linear-gradient(135deg, #FF9933, #FF6B00); color: white; border: none; cursor: pointer;">
+              + Upload New Document
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr style="background:#F8FAFC;">
+                  <th style="padding: 1rem 1.2rem;">#</th>
+                  <th style="padding: 1rem 1.2rem;">Document Title</th>
+                  <th style="padding: 1rem 1.2rem;">Category</th>
+                  <th style="padding: 1rem 1.2rem;">Type & Size</th>
+                  <th style="padding: 1rem 1.2rem;">Upload Date</th>
+                  <th style="padding: 1rem 1.2rem; text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="documentsTableBody">
+                <tr><td colspan="6" style="text-align:center; padding: 2.5rem; color:#64748B;">Loading documents...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

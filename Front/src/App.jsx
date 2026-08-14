@@ -28,7 +28,9 @@ import {
   Image,
   Globe,
   Phone,
-  Mail
+  Mail,
+  FileText,
+  Download
 } from 'lucide-react';
 
 const IconFacebook = () => (
@@ -71,6 +73,7 @@ import EventsPage from './pages/Events';
 import GalleryPage from './pages/Gallery';
 import PartnersPage from './pages/Partners';
 import EventDetailsPage from './pages/EventDetails';
+import DocumentsPage from './pages/Documents';
 import logoImg from './assets/logo.jpg';
 import { useLang } from './LanguageContext';
 import { API_URL, getMediaUrl } from './config';
@@ -224,6 +227,7 @@ export default function App() {
     if (route === 'partners') return 'Partners';
     if (route === 'partnerdetails' || route === 'partner-details') return 'PartnerDetails';
     if (route === 'eventdetails' || route === 'event-details') return 'EventDetails';
+    if (route === 'documents' || route === 'docs') return 'Documents';
     if (route === 'download') return 'DownloadApp';
     if (route === 'profile') return 'ProfileDetails';
     return 'Home';
@@ -242,6 +246,7 @@ export default function App() {
     else if (tab === 'News') routeName = 'news';
     else if (tab === 'Events') routeName = 'events';
     else if (tab === 'EventDetails') routeName = 'eventdetails';
+    else if (tab === 'Documents') routeName = 'documents';
     else if (tab === 'Videos') routeName = 'videos';
     else if (tab === 'Gallery') routeName = 'gallery';
     else if (tab === 'Enquiry') routeName = 'enquiry';
@@ -774,6 +779,34 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
         {lang === 'en' ? 'Gallery' : 'गैलरी'}
       </div>
 
+      <div
+        onClick={() => setActiveTab('Documents')}
+        style={{
+          padding: '10px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          cursor: 'pointer',
+          color:
+            activeTab === 'Documents'
+              ? '#FF9933'
+              : 'var(--text-dark)',
+          fontWeight:
+            activeTab === 'Documents' ? 700 : 500,
+          fontSize: '0.9rem',
+          transition: 'background 0.2s'
+        }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.background = 'var(--bg-alt)')
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.background = 'transparent')
+        }
+       >
+        <FileText size={16} />
+        {lang === 'en' ? 'Documents' : 'दस्तावेज़'}
+      </div>
+
     </div>
   )}
 </li>  
@@ -836,6 +869,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
       {activeTab === 'EventDetails' && <EventDetailsPage event={selectedEvent} setActiveTab={setActiveTab} />}
       {activeTab === 'Videos' && <VideosPage />}
       {activeTab === 'Gallery' && <GalleryPage />}
+      {activeTab === 'Documents' && <DocumentsPage />}
       {activeTab === 'Enquiry' && <EnquiryPage />}
       {activeTab === "Partners" && (
         <PartnersPage
@@ -1454,6 +1488,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                 <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Events'); }} className="footer-nav-item">▸ {t.nav.events}</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Videos'); }} className="footer-nav-item">▸ {t.nav.videos}</a></li>
                 <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Partners'); }} className="footer-nav-item">▸ {t.nav.partners || 'Partners'}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Documents'); }} className="footer-nav-item">▸ {lang === 'en' ? 'Important Documents' : 'महत्वपूर्ण दस्तावेज़'}</a></li>
               </ul>
             </div>
 

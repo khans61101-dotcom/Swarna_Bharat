@@ -91,4 +91,36 @@ router.post('/proof', (req, res, next) => {
   });
 });
 
+// ── Document Upload Storage ──────────────────────────────────────────────
+const docUploadDir = path.join(__dirname, '../public/uploads/documents');
+if (!fs.existsSync(docUploadDir)) fs.mkdirSync(docUploadDir, { recursive: true });
+
+const docStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, docUploadDir),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, 'doc-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const docUpload = multer({
+  storage: docStorage,
+  limits: { fileSize: 100 * 1024 * 1024 } // 100 MB max
+});
+
+// ── POST /api/upload/document  ── document file upload ────────────────────
+router.post('/document', docUpload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No document file uploaded' });
+  const fileUrl = `/uploads/documents/${req.file.filename}`;
+  const ext = path.extname(req.file.originalname).replace('.', '').toLowerCase();
+  const sizeMB = (req.file.size / (1024 * 1024)).toFixed(2) + ' MB';
+  res.json({
+    url: fileUrl,
+    publicUrl: `${baseUrl}${fileUrl}`,
+    file_type: ext || 'pdf',
+    file_size: sizeMB,
+    originalname: req.file.originalname
+  });
+});
+
 module.exports = router;

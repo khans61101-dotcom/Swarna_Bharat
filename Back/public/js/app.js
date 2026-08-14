@@ -15,6 +15,7 @@ const rolePermissions = {
         "blogsTab",
         "enquiriesTab",
         "heroTab",
+        "documentsTab",
         "profileTab",
         "settingsTab"
     ],
@@ -25,6 +26,7 @@ const rolePermissions = {
         "eventsTab",
         "galleryTab",
         "blogsTab",
+        "documentsTab",
         "profileTab"
     ],
     NGO: [
@@ -34,6 +36,7 @@ const rolePermissions = {
         "eventsTab",
         "galleryTab",
         "blogsTab",
+        "documentsTab",
         "profileTab"
     ],
     Agent: [
@@ -43,6 +46,7 @@ const rolePermissions = {
         "galleryTab",
         "blogsTab",
         "enquiriesTab",
+        "documentsTab",
         "profileTab"
     ],
     User: [
@@ -509,6 +513,9 @@ function switchTab(tabId, element) {
                 break;
             case 'heroTab':
                 loadHeroSettings();
+                break;
+            case 'documentsTab':
+                loadDocuments();
                 break;
             case 'profileTab':
                 loadMyProfile();
@@ -1071,6 +1078,57 @@ function setupFormListeners() {
                 image: imageUrl,
             };
             await sendPost(`${API_URL}/blogs`, body, blogForm, loadBlogs, 'blogError');
+        });
+    }
+
+    // Document Form
+    const docForm = document.getElementById('createDocumentForm');
+    if (docForm) {
+        docForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('Uploading document file...');
+            
+            const docFileInput = document.getElementById('docFile');
+            if (!docFileInput || !docFileInput.files || docFileInput.files.length === 0) {
+                hideLoading();
+                const errDiv = document.getElementById('docError');
+                if (errDiv) { errDiv.style.display = 'block'; errDiv.textContent = 'Please select a document file to upload.'; }
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', docFileInput.files[0]);
+
+                const uploadRes = await fetch(`${API_URL}/upload/document`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const uploadData = await uploadRes.json();
+
+                if (!uploadRes.ok || !uploadData.url) {
+                    hideLoading();
+                    const errDiv = document.getElementById('docError');
+                    if (errDiv) { errDiv.style.display = 'block'; errDiv.textContent = uploadData.error || 'File upload failed.'; }
+                    return;
+                }
+
+                const body = {
+                    title: document.getElementById('docTitle').value,
+                    title_hi: document.getElementById('docTitleHi').value,
+                    category: document.getElementById('docCategory').value,
+                    file_url: uploadData.url,
+                    file_type: uploadData.file_type || 'pdf',
+                    file_size: uploadData.file_size || 'N/A'
+                };
+
+                await sendPost(`${API_URL}/documents`, body, docForm, loadDocuments, 'docError');
+            } catch(err) {
+                hideLoading();
+                console.error(err);
+                const errDiv = document.getElementById('docError');
+                if (errDiv) { errDiv.style.display = 'block'; errDiv.textContent = 'Error uploading document file.'; }
+            }
         });
     }
 
@@ -3809,3 +3867,91 @@ window.saveHeroSettings = saveHeroSettings;
 window.editHeroBanner = editHeroBanner;
 window.deleteHeroBanner = deleteHeroBanner;
 window.resetHeroForm = resetHeroForm;
+window.loadDocuments = loadDocuments;
+window.deleteDocument = deleteDocument;
+
+async function loadDocuments() {
+    const tbody = document.getElementById('documentsTableBody');
+    if (!tbody) return;
+
+    try {
+        const res = await fetch(`${API_URL}/documents`);
+        const docs = await res.json();
+        
+        if (!Array.isArray(docs) || docs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2.5rem; color:#64748B;">No documents uploaded yet. Click "+ Upload New Document" to add one.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = docs.map((d, index) => {
+            const fileUrl = d.file_url ? (d.file_url.startsWith('http') ? d.file_url : (window.location.origin + d.file_url)) : '#';
+            const fileType = (d.file_type || 'PDF').toUpperCase();
+            let badgeBg = '#EFF6FF';
+            let badgeColor = '#2563EB';
+            if (fileType.includes('PDF')) { badgeBg = '#FEF2F2'; badgeColor = '#DC2626'; }
+            else if (fileType.includes('DOC')) { badgeBg = '#EFF6FF'; badgeColor = '#2563EB'; }
+            else if (fileType.includes('XLS')) { badgeBg = '#F0FDF4'; badgeColor = '#16A34A'; }
+            else if (fileType.includes('ZIP')) { badgeBg = '#FFF7ED'; badgeColor = '#EA580C'; }
+
+            const dateStr = d.created_at ? new Date(d.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
+
+            return `
+                <tr>
+                    <td style="font-weight:700; color:#64748B;">${index + 1}</td>
+                    <td>
+                        <strong style="color:#0F172A; display:block; font-size:0.95rem;">${d.title || 'Untitled Document'}</strong>
+                        ${d.title_hi ? `<span style="font-size:0.8rem; color:#64748B;">${d.title_hi}</span>` : ''}
+                    </td>
+                    <td>
+                        <span style="background:#F1F5F9; color:#475569; padding:4px 12px; border-radius:20px; font-size:0.78rem; font-weight:700;">
+                            ${d.category || 'General'}
+                        </span>
+                    </td>
+                    <td>
+                        <span style="background:${badgeBg}; color:${badgeColor}; padding:4px 10px; border-radius:8px; font-size:0.78rem; font-weight:800;">
+                            ${fileType}
+                        </span>
+                        <span style="font-size:0.78rem; color:#94A3B8; margin-left:6px;">${d.file_size || ''}</span>
+                    </td>
+                    <td style="font-size:0.85rem; color:#64748B;">${dateStr}</td>
+                    <td style="text-align:right;">
+                        <div style="display:flex; gap:8px; justify-content:flex-end;">
+                            <a href="${fileUrl}" target="_blank" download style="background:#EEF4FD; color:#1a4b6d; border:none; padding:6px 14px; border-radius:30px; font-size:0.8rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+                                📥 Download
+                            </a>
+                            <button onclick="deleteDocument(${d.id}, '${(d.title || '').replace(/'/g, "\\'")}')" style="background:#FEF2F2; color:#DC2626; border:none; padding:6px 14px; border-radius:30px; font-size:0.8rem; font-weight:700; cursor:pointer;">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (err) {
+        console.error('Error loading documents:', err);
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color:#DC2626;">❌ Failed to load documents.</td></tr>`;
+    }
+}
+
+async function deleteDocument(docId, title) {
+    if (!confirm(`Are you sure you want to delete document "${title}"?`)) return;
+    showLoading('Deleting document...');
+    try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}/documents/${docId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        hideLoading();
+        if (res.ok) {
+            alert('Document deleted successfully!');
+            loadDocuments();
+        } else {
+            alert(data.error || 'Failed to delete document');
+        }
+    } catch (err) {
+        hideLoading();
+        alert('Network error deleting document');
+    }
+}
