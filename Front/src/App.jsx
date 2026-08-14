@@ -26,8 +26,40 @@ import {
   MapPin,
   Languages,
   Image,
-  Globe
+  Globe,
+  Phone,
+  Mail
 } from 'lucide-react';
+
+const IconFacebook = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+  </svg>
+);
+
+const IconTwitter = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
+
+const IconInstagram = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+  </svg>
+);
+
+const IconYoutube = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+  </svg>
+);
+
+const IconLinkedin = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+  </svg>
+);
 
 import AboutPage from './pages/About';
 import NewsPage from './pages/News';
@@ -938,6 +970,106 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
             </div>
           </section>
 
+          {/* About Section */}
+          <section className="section-bg-f8fafc" style={{ background: '#F8FAFC', padding: '60px 0' }}>
+            <div className="section-container">
+              <div className="section-header">
+                <div className="section-title-wrap">
+                  <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <BookOpen color="#FF9933" size={28} /> {lang === 'en' ? 'About Vishwaguru Bharat Abhiyan' : 'विश्वगुरु भारत अभियान के बारे में'}
+                  </h2>
+                </div>
+                <span className="view-all-link" onClick={() => setActiveTab('About')}>
+                  {lang === 'en' ? 'Learn More' : 'अधिक जानें'} <ChevronRight size={16} />
+                </span>
+              </div>
+
+              <div className="dark-card" style={{ background: '#FFF', padding: '35px', borderRadius: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', border: '1px solid #E2E8F0' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', alignItems: 'center' }}>
+                  <div style={{ position: 'relative' }}>
+                    <img 
+                      src="/AboutLogo.jpg"      
+                      alt="Vishwaguru Bharat Abhiyan" 
+                      style={{ width: '100%', borderRadius: '16px', boxShadow: '0 12px 30px rgba(0,0,0,0.12)', border: '1px solid #E2E8F0' }}
+                    />
+                    <span style={{ position: 'absolute', top: '15px', left: '15px', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', fontSize: '0.8rem', fontWeight: 700, padding: '6px 16px', borderRadius: '30px', boxShadow: '0 4px 12px rgba(255,107,0,0.3)' }}>
+                      🚩 {lang === 'en' ? 'National Movement' : 'राष्ट्रीय महाअभियान'}
+                    </span>
+                  </div>
+                  <div>
+                    <span style={{ color: '#FF9933', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.88rem', letterSpacing: '0.5px' }}>
+                      {lang === 'en' ? 'Rebuilding Golden Bharat' : 'स्वर्णिम भारत का पुनः निर्माण'}
+                    </span>
+                    <h3 style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--text-dark)', margin: '12px 0 16px', lineHeight: 1.3 }}>
+                      {lang === 'en' ? 'Empowering Youth, Reviving Heritage & Driving Sustainable Progress' : 'युवा शक्ति, सांस्कृतिक पुनरुत्थान एवं सतत विकास का महासंकल्प'}
+                    </h3>
+                    <p style={{ color: '#64748B', lineHeight: '1.7', fontSize: '0.98rem', marginBottom: '16px' }}>
+                      {lang === 'en'
+                        ? 'Vishwaguru Bharat Abhiyan is a nationwide transformative movement committed to youth empowerment, cultural heritage, digital education, and inclusive development across all sectors.'
+                        : 'विश्वगुरु भारत अभियान एक देशव्यापी परिवर्तनकारी अभियान है जो युवा सशक्तिकरण, सांस्कृतिक विरासत, डिजिटल शिक्षा और सभी क्षेत्रों में समावेशी विकास के लिए समर्पित है।'}
+                    </p>
+                    <div style={{ background: '#FFF7ED', borderLeft: '4px solid #FF9933', padding: '14px 18px', borderRadius: '8px', marginBottom: '22px' }}>
+                      <p style={{ color: '#C2410C', fontWeight: 700, fontSize: '0.92rem', margin: 0, fontStyle: 'italic' }}>
+                        "{lang === 'en' ? 'Sabka Saath, Sabka Vikas, Sabka Vishwas, Sabka Prayas' : 'सबका साथ, सबका विकास, सबका विश्वास, सबका प्रयास'}"
+                      </p>
+                    </div>
+                    <button
+                      className="btn-primary"
+                      onClick={() => setActiveTab('About')}
+                      style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', border: 'none', padding: '12px 28px', borderRadius: '40px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 18px rgba(255, 153, 51, 0.35)' }}
+                    >
+                      {lang === 'en' ? 'Explore Full Vision' : 'पूरा दृष्टिकोण देखें'} <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* 4 Pillars Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginTop: '40px', paddingTop: '30px', borderTop: '1px solid #F1F5F9' }}>
+                  {[
+                    {
+                      icon: <User size={26} color="#FF9933" />,
+                      title: lang === 'en' ? 'Inclusive Governance' : 'समावेशी शासन',
+                      desc: lang === 'en' ? 'Ensuring direct access to government schemes & welfare.' : 'प्रत्येक नागरिक को सरकारी योजनाओं तक सीधी पहुँच।'
+                    },
+                    {
+                      icon: <Award size={26} color="#FF9933" />,
+                      title: lang === 'en' ? 'Transparent Admin' : 'पारदर्शी प्रशासन',
+                      desc: lang === 'en' ? 'Promoting accountability and open public governance.' : 'जवाबदेही और पारदर्शी सार्वजनिक व्यवस्था।'
+                    },
+                    {
+                      icon: <BookOpen size={26} color="#FF9933" />,
+                      title: lang === 'en' ? 'Digital Empowerment' : 'डिजिटल सशक्तिकरण',
+                      desc: lang === 'en' ? 'Bridging digital gap with accessible tech & skills.' : 'तकनीक और कौशल से डिजिटल क्रांति।'
+                    },
+                    {
+                      icon: <Globe size={26} color="#FF9933" />,
+                      title: lang === 'en' ? 'Global Leadership' : 'वैश्विक नेतृत्व',
+                      desc: lang === 'en' ? 'Positioning Bharat as a premier world benchmark.' : 'विश्व मंच पर भारत के नेतृत्व को सुदृढ़ करना।'
+                    }
+                  ].map((p, idx) => (
+                    <div key={idx} style={{ background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0', borderLeft: '4px solid #FF9933' }}>
+                      <div style={{ marginBottom: '10px' }}>{p.icon}</div>
+                      <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-dark)', marginBottom: '6px' }}>{p.title}</h4>
+                      <p style={{ fontSize: '0.84rem', color: '#64748B', lineHeight: '1.4', margin: 0 }}>{p.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>  
+
+          {/* Impact Counter Bar */}
+          <section className="impact-counter-bar section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
+            <div className="impact-counter-grid">
+              {t.metrics.map((item, index) => (
+                <div key={index} className="impact-counter-item">
+                  <div className="impact-counter-number">{item.value}</div>
+                  <div className="impact-counter-label">{item.label}</div>
+                </div>
+              ))}
+            </div>
+          </section>  
+
           {/* Events Section */}
           <section className="section-bg-white" style={{ background: '#FFF' }}>
             <div className="section-container">
@@ -1076,105 +1208,9 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
             </div>
           </section>
 
-          {/* Impact Counter Bar */}
-          <section className="impact-counter-bar section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
-            <div className="impact-counter-grid">
-              {t.metrics.map((item, index) => (
-                <div key={index} className="impact-counter-item">
-                  <div className="impact-counter-number">{item.value}</div>
-                  <div className="impact-counter-label">{item.label}</div>
-                </div>
-              ))}
-            </div>
-          </section>
+          
 
-          {/* About Section */}
-          <section className="section-bg-f8fafc" style={{ background: '#F8FAFC', padding: '60px 0' }}>
-            <div className="section-container">
-              <div className="section-header">
-                <div className="section-title-wrap">
-                  <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <BookOpen color="#FF9933" size={28} /> {lang === 'en' ? 'About Vishwaguru Bharat Abhiyan' : 'विश्वगुरु भारत अभियान के बारे में'}
-                  </h2>
-                </div>
-                <span className="view-all-link" onClick={() => setActiveTab('About')}>
-                  {lang === 'en' ? 'Learn More' : 'अधिक जानें'} <ChevronRight size={16} />
-                </span>
-              </div>
-
-              <div className="dark-card" style={{ background: '#FFF', padding: '35px', borderRadius: '20px', boxShadow: '0 8px 30px rgba(0,0,0,0.06)', border: '1px solid #E2E8F0' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', alignItems: 'center' }}>
-                  <div style={{ position: 'relative' }}>
-                    <img 
-                      src="/AboutLogo.jpg"      
-                      alt="Vishwaguru Bharat Abhiyan" 
-                      style={{ width: '100%', borderRadius: '16px', boxShadow: '0 12px 30px rgba(0,0,0,0.12)', border: '1px solid #E2E8F0' }}
-                    />
-                    <span style={{ position: 'absolute', top: '15px', left: '15px', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', fontSize: '0.8rem', fontWeight: 700, padding: '6px 16px', borderRadius: '30px', boxShadow: '0 4px 12px rgba(255,107,0,0.3)' }}>
-                      🚩 {lang === 'en' ? 'National Movement' : 'राष्ट्रीय महाअभियान'}
-                    </span>
-                  </div>
-                  <div>
-                    <span style={{ color: '#FF9933', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.88rem', letterSpacing: '0.5px' }}>
-                      {lang === 'en' ? 'Rebuilding Golden Bharat' : 'स्वर्णिम भारत का पुनः निर्माण'}
-                    </span>
-                    <h3 style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--text-dark)', margin: '12px 0 16px', lineHeight: 1.3 }}>
-                      {lang === 'en' ? 'Empowering Youth, Reviving Heritage & Driving Sustainable Progress' : 'युवा शक्ति, सांस्कृतिक पुनरुत्थान एवं सतत विकास का महासंकल्प'}
-                    </h3>
-                    <p style={{ color: '#64748B', lineHeight: '1.7', fontSize: '0.98rem', marginBottom: '16px' }}>
-                      {lang === 'en'
-                        ? 'Vishwaguru Bharat Abhiyan is a nationwide transformative movement committed to youth empowerment, cultural heritage, digital education, and inclusive development across all sectors.'
-                        : 'विश्वगुरु भारत अभियान एक देशव्यापी परिवर्तनकारी अभियान है जो युवा सशक्तिकरण, सांस्कृतिक विरासत, डिजिटल शिक्षा और सभी क्षेत्रों में समावेशी विकास के लिए समर्पित है।'}
-                    </p>
-                    <div style={{ background: '#FFF7ED', borderLeft: '4px solid #FF9933', padding: '14px 18px', borderRadius: '8px', marginBottom: '22px' }}>
-                      <p style={{ color: '#C2410C', fontWeight: 700, fontSize: '0.92rem', margin: 0, fontStyle: 'italic' }}>
-                        "{lang === 'en' ? 'Sabka Saath, Sabka Vikas, Sabka Vishwas, Sabka Prayas' : 'सबका साथ, सबका विकास, सबका विश्वास, सबका प्रयास'}"
-                      </p>
-                    </div>
-                    <button
-                      className="btn-primary"
-                      onClick={() => setActiveTab('About')}
-                      style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', border: 'none', padding: '12px 28px', borderRadius: '40px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 18px rgba(255, 153, 51, 0.35)' }}
-                    >
-                      {lang === 'en' ? 'Explore Full Vision' : 'पूरा दृष्टिकोण देखें'} <ChevronRight size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* 4 Pillars Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginTop: '40px', paddingTop: '30px', borderTop: '1px solid #F1F5F9' }}>
-                  {[
-                    {
-                      icon: <User size={26} color="#FF9933" />,
-                      title: lang === 'en' ? 'Inclusive Governance' : 'समावेशी शासन',
-                      desc: lang === 'en' ? 'Ensuring direct access to government schemes & welfare.' : 'प्रत्येक नागरिक को सरकारी योजनाओं तक सीधी पहुँच।'
-                    },
-                    {
-                      icon: <Award size={26} color="#FF9933" />,
-                      title: lang === 'en' ? 'Transparent Admin' : 'पारदर्शी प्रशासन',
-                      desc: lang === 'en' ? 'Promoting accountability and open public governance.' : 'जवाबदेही और पारदर्शी सार्वजनिक व्यवस्था।'
-                    },
-                    {
-                      icon: <BookOpen size={26} color="#FF9933" />,
-                      title: lang === 'en' ? 'Digital Empowerment' : 'डिजिटल सशक्तिकरण',
-                      desc: lang === 'en' ? 'Bridging digital gap with accessible tech & skills.' : 'तकनीक और कौशल से डिजिटल क्रांति।'
-                    },
-                    {
-                      icon: <Globe size={26} color="#FF9933" />,
-                      title: lang === 'en' ? 'Global Leadership' : 'वैश्विक नेतृत्व',
-                      desc: lang === 'en' ? 'Positioning Bharat as a premier world benchmark.' : 'विश्व मंच पर भारत के नेतृत्व को सुदृढ़ करना।'
-                    }
-                  ].map((p, idx) => (
-                    <div key={idx} style={{ background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0', borderLeft: '4px solid #FF9933' }}>
-                      <div style={{ marginBottom: '10px' }}>{p.icon}</div>
-                      <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-dark)', marginBottom: '6px' }}>{p.title}</h4>
-                      <p style={{ fontSize: '0.84rem', color: '#64748B', lineHeight: '1.4', margin: 0 }}>{p.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
+          
 
           {/* Video Section */}
           <section className="video-section-bg section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
@@ -1331,39 +1367,131 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
         </>
       )}
 
-      {/* Footer - Hidden on Dashboard page */}
+      {/* ── HIGH-END MODERN FOOTER WITH SOCIAL MEDIA ─────────────────────── */}
       {activeTab !== 'Dashboard' && (
-        <footer className="section-bg-f1f5f9" style={{ background: '#F1F5F9' }}>
-          <div className="footer-container">
-            <div className="footer-col">
-              <h3>{t.footer.quickLinks}</h3>
-              <ul>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('About'); }}>{t.footer.links.aboutPM}</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('News'); }}>{t.footer.links.newsUpdates}</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Events'); }}>{t.footer.links.eventsConclaves}</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Videos'); }}>{t.footer.links.videoLibrary}</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.citizenEnquiry}</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('DownloadApp'); }}>{t.footer.links.downloadApp}</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setAuthMode('login'); setActiveTab('Auth'); }}>{t.footer.links.citizenLogin}</a></li>
+        <footer style={{ background: '#0F172A', color: '#94A3B8', borderTop: '4px solid #FF9933', fontFamily: "'Outfit', sans-serif" }}>
+          {/* Main Footer Body Container */}
+          <div style={{ maxWidth: '1600px', width: '94%', margin: '0 auto', padding: '60px 20px 40px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '40px' }}>
+            
+            {/* Col 1: Brand & Mission */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <img
+                  src={logoImg}
+                  alt="Swarna Bharat Logo"
+                  style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #FF9933', boxShadow: '0 4px 12px rgba(255,153,51,0.4)', objectFit: 'cover' }}
+                />
+                <div>
+                  <h3 style={{ margin: 0, color: '#FFF', fontSize: '1.3rem', fontWeight: 800 }}>Swarna Bharat</h3>
+                  <span style={{ fontSize: '0.75rem', color: '#FF9933', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    {lang === 'en' ? 'Vishwaguru Bharat Abhiyan' : 'विश्वगुरु भारत अभियान'}
+                  </span>
+                </div>
+              </div>
+
+              <p style={{ fontSize: '0.9rem', color: '#CBD5E1', lineHeight: '1.6', margin: 0 }}>
+                {lang === 'en'
+                  ? 'Rebuilding Golden Bharat through youth empowerment, cultural heritage, national development, and citizen participation across all sectors.'
+                  : 'शिक्षा, संस्कृति, ग्राम विकास और युवा शक्ति के माध्यम से भारत को पुनः विश्वगुरु बनाने का राष्ट्रीय संकल्प।'}
+              </p>
+
+              {/* Social Media Links Section */}
+              <div style={{ marginTop: '8px' }}>
+                <span style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#F8FAFC', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
+                  {lang === 'en' ? 'CONNECT WITH US' : 'हमसे जुड़ें'}
+                </span>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <a href="https://facebook.com" target="_blank" rel="noreferrer" className="social-icon-link fb" title="Facebook">
+                    <IconFacebook />
+                  </a>
+                  <a href="https://twitter.com" target="_blank" rel="noreferrer" className="social-icon-link tw" title="Twitter / X">
+                    <IconTwitter />
+                  </a>
+                  <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social-icon-link ig" title="Instagram">
+                    <IconInstagram />
+                  </a>
+                  <a href="https://youtube.com" target="_blank" rel="noreferrer" className="social-icon-link yt" title="YouTube">
+                    <IconYoutube />
+                  </a>
+                  <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="social-icon-link li" title="LinkedIn">
+                    <IconLinkedin />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Col 2: Quick Links */}
+            <div>
+              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(255,153,51,0.3)' }}>
+                {lang === 'en' ? 'QUICK NAVIGATION' : 'त्वरित नेविगेशन'}
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Home'); }} className="footer-nav-item">▸ {t.nav.home}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('About'); }} className="footer-nav-item">▸ {t.nav.about}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('News'); }} className="footer-nav-item">▸ {t.nav.news}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Events'); }} className="footer-nav-item">▸ {t.nav.events}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Videos'); }} className="footer-nav-item">▸ {t.nav.videos}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Partners'); }} className="footer-nav-item">▸ {t.nav.partners || 'Partners'}</a></li>
               </ul>
             </div>
-            <div className="footer-col">
-              <h3>{t.footer.mediaCorner}</h3>
-              <ul>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Videos'); }}>{t.footer.links.speeches}</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('News'); }}>{t.footer.links.pressReleases}</a></li>
+
+            {/* Col 3: Focus Sectors */}
+            <div>
+              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(255,153,51,0.3)' }}>
+                {lang === 'en' ? 'NATIONAL PILLARS' : 'प्रमुख स्तंभ'}
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setSelectedSector('rural'); setActiveTab('SectorDetails'); }} className="footer-nav-item">▸ {lang === 'en' ? 'Rural Development' : 'ग्रामीण विकास'}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setSelectedSector('health'); setActiveTab('SectorDetails'); }} className="footer-nav-item">▸ {lang === 'en' ? 'Healthcare & Wellness' : 'स्वास्थ्य एवं निरोग'}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setSelectedSector('education'); setActiveTab('SectorDetails'); }} className="footer-nav-item">▸ {lang === 'en' ? 'Youth & Skill Education' : 'युवा एवं कौशल शिक्षा'}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setSelectedSector('women'); setActiveTab('SectorDetails'); }} className="footer-nav-item">▸ {lang === 'en' ? 'Women Empowerment' : 'महिला सशक्तिकरण'}</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); setSelectedSector('arts'); setActiveTab('SectorDetails'); }} className="footer-nav-item">▸ {lang === 'en' ? 'Cultural Heritage & Arts' : 'सांस्कृतिक विरासत एवं कला'}</a></li>
               </ul>
             </div>
-            <div className="footer-col">
-              <h3>{t.footer.contactDesk}</h3>
-              <ul>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.submitGrievance}</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setActiveTab('Enquiry'); }}>{t.footer.links.pmoAddress}</a></li>
+
+            {/* Col 4: Contact & Helpline */}
+            <div>
+              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(255,153,51,0.3)' }}>
+                {lang === 'en' ? 'CITIZEN HELPDESK' : 'नागरिक सहायता केंद्र'}
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: '#CBD5E1' }}>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <MapPin size={18} color="#FF9933" style={{ flexShrink: 0, marginTop: '3px' }} />
+                  <span>Swarna Bharat Bhawan, Central Secretariat, New Delhi - 110001</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Phone size={18} color="#FF9933" style={{ flexShrink: 0 }} />
+                  <span>1800-11-2026 (Toll Free Helpline)</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Mail size={18} color="#FF9933" style={{ flexShrink: 0 }} />
+                  <span>support@swarnabharat.org</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Globe size={18} color="#FF9933" style={{ flexShrink: 0 }} />
+                  <span>www.swarnabharat.gov.in</span>
+                </li>
               </ul>
             </div>
+
           </div>
-          <div className="footer-bottom">
-            <p>{t.footer.copyright}</p>
+
+          {/* Sub-Footer Copyright & Bottom Links */}
+          <div style={{ background: '#0B1120', borderTop: '1px solid rgba(255,255,255,0.08)', padding: '20px' }}>
+            <div style={{ maxWidth: '1600px', width: '94%', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '14px', fontSize: '0.82rem', color: '#94A3B8' }}>
+              <div>
+                © 2026 Swarna Bharat Network. All Rights Reserved. Govt Citizen Access Portal.
+              </div>
+              <div style={{ display: 'flex', gap: '18px', flexWrap: 'wrap' }}>
+                <a href="#" style={{ color: '#94A3B8', textDecoration: 'none' }}>Privacy Policy</a>
+                <span>|</span>
+                <a href="#" style={{ color: '#94A3B8', textDecoration: 'none' }}>Terms of Service</a>
+                <span>|</span>
+                <a href="#" style={{ color: '#94A3B8', textDecoration: 'none' }}>Accessibility</a>
+                <span>|</span>
+                <a href="#" style={{ color: '#94A3B8', textDecoration: 'none' }}>Sitemap</a>
+              </div>
+            </div>
           </div>
         </footer>
       )}

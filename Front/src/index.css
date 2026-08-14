@@ -746,6 +746,45 @@ footer {
   border-top: 1px solid rgba(255,255,255,0.05);
 }
 
+/* ===== SOCIAL MEDIA FOOTER ICONS & HOVER EFFECTS ===== */
+.social-icon-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F8FAFC;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.social-icon-link:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+.social-icon-link.fb:hover { background: #1877F2; border-color: #1877F2; color: #FFF; }
+.social-icon-link.tw:hover { background: #1DA1F2; border-color: #1DA1F2; color: #FFF; }
+.social-icon-link.ig:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-color: #e6683c; color: #FFF; }
+.social-icon-link.yt:hover { background: #FF0000; border-color: #FF0000; color: #FFF; }
+.social-icon-link.li:hover { background: #0A66C2; border-color: #0A66C2; color: #FFF; }
+
+.footer-nav-item {
+  color: #94A3B8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.footer-nav-item:hover {
+  color: #FF9933;
+  transform: translateX(4px);
+}
+
 /* ===== DARK MODE TOGGLE BUTTON ===== */
 .theme-toggle-btn {
   background: none;
