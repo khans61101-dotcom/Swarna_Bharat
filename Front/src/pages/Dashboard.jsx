@@ -35,6 +35,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const [userMedia, setUserMedia] = useState([]);
   const [downlineUsers, setDownlineUsers] = useState([]);
   const [networkSearch, setNetworkSearch] = useState('');
+  const [selectedMember, setSelectedMember] = useState(null);
 
   useEffect(() => {
     fetchProfile();
@@ -832,159 +833,214 @@ export default function Dashboard({ setActiveTab, setUserState }) {
         {/* ── TAB 2: MY CONNECTED NETWORK (DOWNLINE LIST) ───────────────── */}
         {activeDashTab === 'network' && (
           <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            <div style={{
-              background: '#FFF',
-              borderRadius: '24px',
-              padding: '28px',
-              border: '1px solid #E2E8F0',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-              marginBottom: '28px'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '1.35rem', color: '#1E293B', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Users size={24} color="#FF9933" />
-                    {lang === 'en' ? 'My Connected Network & Downline Members' : 'मेरे से जुड़े सदस्य एवं नेटवर्क'}
-                  </h3>
-                  <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '4px', margin: 0 }}>
-                    {lang === 'en' ? 'List of all users, members, agencies and NGOs connected directly or indirectly under your account.' : 'आपके खाते के अंतर्गत सीधे या अप्रत्यक्ष रूप से जुड़े सभी सदस्यों की सूची।'}
-                  </p>
-                </div>
-
-                <div style={{ background: '#FFF7ED', border: '1px solid #FFEDD5', padding: '8px 18px', borderRadius: '40px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#C2410C' }}>
-                    {lang === 'en' ? 'Total Connected:' : 'कुल जुड़े सदस्य:'} {downlineUsers.length}
-                  </span>
-                </div>
-              </div>
-
-              {/* Search Bar */}
-              <div style={{ position: 'relative', marginBottom: '24px' }}>
-                <input
-                  type="text"
-                  placeholder={lang === 'en' ? 'Search connected member by name, email, phone or role...' : 'नाम, ईमेल, फोन या भूमिका द्वारा जुड़े सदस्य को खोजें...'}
-                  value={networkSearch}
-                  onChange={(e) => setNetworkSearch(e.target.value)}
+            {selectedMember ? (
+              <div>
+                <button
+                  onClick={() => setSelectedMember(null)}
                   style={{
-                    width: '100%',
-                    padding: '12px 16px 12px 42px',
-                    borderRadius: '12px',
+                    background: '#FFF',
                     border: '1px solid #CBD5E1',
-                    fontSize: '0.92rem',
-                    background: '#F8FAFC',
-                    color: '#1E293B',
-                    outline: 'none'
+                    padding: '10px 22px',
+                    borderRadius: '30px',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    color: '#0F172A',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '20px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                    transition: 'all 0.2s'
                   }}
-                />
-                <Search size={18} color="#94A3B8" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+                >
+                  ← {lang === 'en' ? 'Back to Connected Network List' : 'वापस जुड़े सदस्यों की सूची पर जाएं'}
+                </button>
+                <ProfilePage partner={selectedMember} setActiveTab={setActiveTab} />
               </div>
+            ) : (
+              <div style={{
+                background: '#FFF',
+                borderRadius: '24px',
+                padding: '28px',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+                marginBottom: '28px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.35rem', color: '#1E293B', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <Users size={24} color="#FF9933" />
+                      {lang === 'en' ? 'My Connected Network & Downline Members' : 'मेरे से जुड़े सदस्य एवं नेटवर्क'}
+                    </h3>
+                    <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '4px', margin: 0 }}>
+                      {lang === 'en' ? 'List of all users, members, agencies and NGOs connected directly or indirectly under your account.' : 'आपके खाते के अंतर्गत सीधे या अप्रत्यक्ष रूप से जुड़े सभी सदस्यों की सूची।'}
+                    </p>
+                  </div>
 
-              {/* Connected Members List Table */}
-              {(() => {
-                const safeNetwork = Array.isArray(downlineUsers) ? downlineUsers : [];
-                const filteredNetwork = safeNetwork.filter(u => {
-                  if (!u) return false;
-                  const q = (networkSearch || '').toLowerCase();
-                  const name = (u.name || '').toLowerCase();
-                  const email = (u.email || '').toLowerCase();
-                  const phone = (u.phone || '').toLowerCase();
-                  const role = (u.role_name || '').toLowerCase();
-                  return name.includes(q) || email.includes(q) || phone.includes(q) || role.includes(q);
-                });
+                  <div style={{ background: '#FFF7ED', border: '1px solid #FFEDD5', padding: '8px 18px', borderRadius: '40px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#C2410C' }}>
+                      {lang === 'en' ? 'Total Connected:' : 'कुल जुड़े सदस्य:'} {downlineUsers.length}
+                    </span>
+                  </div>
+                </div>
 
-                if (filteredNetwork.length === 0) {
+                {/* Search Bar */}
+                <div style={{ position: 'relative', marginBottom: '24px' }}>
+                  <input
+                    type="text"
+                    placeholder={lang === 'en' ? 'Search connected member by name, email, phone or role...' : 'नाम, ईमेल, फोन या भूमिका द्वारा जुड़े सदस्य को खोजें...'}
+                    value={networkSearch}
+                    onChange={(e) => setNetworkSearch(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px 12px 42px',
+                      borderRadius: '12px',
+                      border: '1px solid #CBD5E1',
+                      fontSize: '0.92rem',
+                      background: '#F8FAFC',
+                      color: '#1E293B',
+                      outline: 'none'
+                    }}
+                  />
+                  <Search size={18} color="#94A3B8" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+                </div>
+
+                {/* Connected Members List Table */}
+                {(() => {
+                  const safeNetwork = Array.isArray(downlineUsers) ? downlineUsers : [];
+                  const filteredNetwork = safeNetwork.filter(u => {
+                    if (!u) return false;
+                    const q = (networkSearch || '').toLowerCase();
+                    const name = (u.name || '').toLowerCase();
+                    const email = (u.email || '').toLowerCase();
+                    const phone = (u.phone || '').toLowerCase();
+                    const role = (u.role_name || '').toLowerCase();
+                    return name.includes(q) || email.includes(q) || phone.includes(q) || role.includes(q);
+                  });
+
+                  if (filteredNetwork.length === 0) {
+                    return (
+                      <div style={{ textAlign: 'center', padding: '50px 20px', background: '#F8FAFC', borderRadius: '16px', border: '1px dashed #CBD5E1' }}>
+                        <Users size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
+                        <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
+                          {safeNetwork.length === 0 
+                            ? (lang === 'en' ? 'No members connected yet' : 'अभी तक कोई सदस्य नहीं जुड़ा है') 
+                            : (lang === 'en' ? 'No matching members found' : 'कोई मेल खाता सदस्य नहीं मिला')}
+                        </h4>
+                        <p style={{ color: '#64748B', fontSize: '0.9rem', maxWidth: '500px', margin: '0 auto 20px' }}>
+                          {lang === 'en'
+                            ? 'Share your unique referral link to invite friends, team members, and organizations to register under your network.'
+                            : 'मित्रों, टीम के सदस्यों और संगठनों को अपने नेटवर्क के तहत पंजीकृत करने के लिए अपना अद्वितीय रेफरल लिंक साझा करें।'}
+                        </p>
+                        <button
+                          onClick={handleCopyRef}
+                          style={{
+                            background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                            color: '#FFF', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px'
+                          }}
+                        >
+                          {copiedRef ? <Check size={16} /> : <Copy size={16} />}
+                          {copiedRef ? (lang === 'en' ? 'Link Copied!' : 'लिंक कॉपी हो गया!') : (lang === 'en' ? 'Copy Referral Link' : 'रेफरल लिंक कॉपी करें')}
+                        </button>
+                      </div>
+                    );
+                  }
+
                   return (
-                    <div style={{ textAlign: 'center', padding: '50px 20px', background: '#F8FAFC', borderRadius: '16px', border: '1px dashed #CBD5E1' }}>
-                      <Users size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
-                      <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
-                        {safeNetwork.length === 0 
-                          ? (lang === 'en' ? 'No members connected yet' : 'अभी तक कोई सदस्य नहीं जुड़ा है') 
-                          : (lang === 'en' ? 'No matching members found' : 'कोई मेल खाता सदस्य नहीं मिला')}
-                      </h4>
-                      <p style={{ color: '#64748B', fontSize: '0.9rem', maxWidth: '500px', margin: '0 auto 20px' }}>
-                        {lang === 'en'
-                          ? 'Share your unique referral link to invite friends, team members, and organizations to register under your network.'
-                          : 'मित्रों, टीम के सदस्यों और संगठनों को अपने नेटवर्क के तहत पंजीकृत करने के लिए अपना अद्वितीय रेफरल लिंक साझा करें।'}
-                      </p>
-                      <button
-                        onClick={handleCopyRef}
-                        style={{
-                          background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
-                          color: '#FFF', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px'
-                        }}
-                      >
-                        {copiedRef ? <Check size={16} /> : <Copy size={16} />}
-                        {copiedRef ? (lang === 'en' ? 'Link Copied!' : 'लिंक कॉपी हो गया!') : (lang === 'en' ? 'Copy Referral Link' : 'रेफरल लिंक कॉपी करें')}
-                      </button>
+                    <div style={{ overflowX: 'auto' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '650px' }}>
+                        <thead>
+                          <tr style={{ background: '#F8FAFC', borderBottom: '2px solid #E2E8F0', color: '#64748B', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Name' : 'नाम'}</th>
+                            <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Phone Number' : 'मोबाइल नंबर'}</th>
+                            <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Email Address' : 'ईमेल पता'}</th>
+                            <th style={{ padding: '14px 18px', textAlign: 'right' }}>{lang === 'en' ? 'Action' : 'प्रोफ़ाइल'}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredNetwork.map((m, idx) => {
+                            if (!m) return null;
+                            const initials = (m.name || 'User').substring(0, 2).toUpperCase();
+                            const profileImg = m.profile_image ? getMediaUrl(m.profile_image) : null;
+
+                            return (
+                              <tr 
+                                key={m.id || idx} 
+                                style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.2s', cursor: 'pointer' }}
+                                onClick={() => setSelectedMember(m)}
+                              >
+                                {/* Col 1: Name */}
+                                <td style={{ padding: '14px 18px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem', overflow: 'hidden', flexShrink: 0 }}>
+                                      {profileImg ? (
+                                        <img src={profileImg} alt={m.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                      ) : (
+                                        <span>{initials}</span>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <strong style={{ fontSize: '0.95rem', color: '#0F172A', display: 'block' }}>{m.name || 'N/A'}</strong>
+                                      <span style={{ fontSize: '0.75rem', color: '#64748B' }}>{m.role_name || 'Member'}</span>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                {/* Col 2: Number */}
+                                <td style={{ padding: '14px 18px', fontSize: '0.92rem', fontWeight: 600, color: '#1E293B' }}>
+                                  {m.phone ? (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                      <Phone size={14} color="#FF9933" /> {m.phone}
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: '#94A3B8' }}>N/A</span>
+                                  )}
+                                </td>
+
+                                {/* Col 3: Mail */}
+                                <td style={{ padding: '14px 18px', fontSize: '0.92rem', fontWeight: 600, color: '#1E293B' }}>
+                                  {m.email ? (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                      <Mail size={14} color="#FF9933" /> {m.email}
+                                    </span>
+                                  ) : (
+                                    <span style={{ color: '#94A3B8' }}>N/A</span>
+                                  )}
+                                </td>
+
+                                {/* Col 4: View Profile Button */}
+                                <td style={{ padding: '14px 18px', textAlign: 'right' }}>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setSelectedMember(m); }}
+                                    style={{
+                                      background: '#FFF7ED',
+                                      border: '1px solid #FFEDD5',
+                                      color: '#EA580C',
+                                      padding: '6px 14px',
+                                      borderRadius: '20px',
+                                      fontSize: '0.82rem',
+                                      fontWeight: 700,
+                                      cursor: 'pointer',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '6px',
+                                      transition: 'all 0.2s'
+                                    }}
+                                  >
+                                    <Eye size={14} /> {lang === 'en' ? 'View Profile' : 'प्रोफ़ाइल देखें'}
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
                     </div>
                   );
-                }
-
-                return (
-                  <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '550px' }}>
-                      <thead>
-                        <tr style={{ background: '#F8FAFC', borderBottom: '2px solid #E2E8F0', color: '#64748B', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Name' : 'नाम'}</th>
-                          <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Phone Number' : 'मोबाइल नंबर'}</th>
-                          <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Email Address' : 'ईमेल पता'}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredNetwork.map((m, idx) => {
-                          if (!m) return null;
-                          const initials = (m.name || 'User').substring(0, 2).toUpperCase();
-                          const profileImg = m.profile_image ? getMediaUrl(m.profile_image) : null;
-
-                          return (
-                            <tr key={m.id || idx} style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.2s' }}>
-                              {/* Col 1: Name */}
-                              <td style={{ padding: '14px 18px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                  <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem', overflow: 'hidden', flexShrink: 0 }}>
-                                    {profileImg ? (
-                                      <img src={profileImg} alt={m.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                    ) : (
-                                      <span>{initials}</span>
-                                    )}
-                                  </div>
-                                  <div>
-                                    <strong style={{ fontSize: '0.95rem', color: '#0F172A', display: 'block' }}>{m.name || 'N/A'}</strong>
-                                    <span style={{ fontSize: '0.75rem', color: '#64748B' }}>{m.role_name || 'Member'}</span>
-                                  </div>
-                                </div>
-                              </td>
-
-                              {/* Col 2: Number */}
-                              <td style={{ padding: '14px 18px', fontSize: '0.92rem', fontWeight: 600, color: '#1E293B' }}>
-                                {m.phone ? (
-                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                                    <Phone size={14} color="#FF9933" /> {m.phone}
-                                  </span>
-                                ) : (
-                                  <span style={{ color: '#94A3B8' }}>N/A</span>
-                                )}
-                              </td>
-
-                              {/* Col 3: Mail */}
-                              <td style={{ padding: '14px 18px', fontSize: '0.92rem', fontWeight: 600, color: '#1E293B' }}>
-                                {m.email ? (
-                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                                    <Mail size={14} color="#FF9933" /> {m.email}
-                                  </span>
-                                ) : (
-                                  <span style={{ color: '#94A3B8' }}>N/A</span>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                );
-              })()}
-            </div>
+                })()}
+              </div>
+            )}
           </div>
         )}
 
