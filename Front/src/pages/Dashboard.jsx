@@ -922,31 +922,24 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
                 return (
                   <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '650px' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '550px' }}>
                       <thead>
-                        <tr style={{ background: '#F8FAFC', borderBottom: '2px solid #E2E8F0', color: '#64748B', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          <th style={{ padding: '12px 16px' }}>Member / Name</th>
-                          <th style={{ padding: '12px 16px' }}>Role</th>
-                          <th style={{ padding: '12px 16px' }}>Contact Info</th>
-                          <th style={{ padding: '12px 16px' }}>Location</th>
-                          <th style={{ padding: '12px 16px' }}>Joined Date</th>
+                        <tr style={{ background: '#F8FAFC', borderBottom: '2px solid #E2E8F0', color: '#64748B', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Name' : 'नाम'}</th>
+                          <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Phone Number' : 'मोबाइल नंबर'}</th>
+                          <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Email Address' : 'ईमेल पता'}</th>
                         </tr>
                       </thead>
                       <tbody>
                         {filteredNetwork.map((m, idx) => {
                           if (!m) return null;
-                          let badgeBg = '#EFF6FF';
-                          let badgeColor = '#2563EB';
-                          if (m.role_name === 'Agency') { badgeBg = '#FFF7ED'; badgeColor = '#EA580C'; }
-                          else if (m.role_name === 'NGO') { badgeBg = '#FDF2F8'; badgeColor = '#DB2777'; }
-                          else if (m.role_name === 'Member') { badgeBg = '#F5F3FF'; badgeColor = '#7C3AED'; }
-
                           const initials = (m.name || 'User').substring(0, 2).toUpperCase();
                           const profileImg = m.profile_image ? getMediaUrl(m.profile_image) : null;
 
                           return (
                             <tr key={m.id || idx} style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.2s' }}>
-                              <td style={{ padding: '14px 16px' }}>
+                              {/* Col 1: Name */}
+                              <td style={{ padding: '14px 18px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                   <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem', overflow: 'hidden', flexShrink: 0 }}>
                                     {profileImg ? (
@@ -957,28 +950,31 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                                   </div>
                                   <div>
                                     <strong style={{ fontSize: '0.95rem', color: '#0F172A', display: 'block' }}>{m.name || 'N/A'}</strong>
-                                    <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Ref Code: {m.referral_code || `REF-${m.id}`}</span>
+                                    <span style={{ fontSize: '0.75rem', color: '#64748B' }}>{m.role_name || 'Member'}</span>
                                   </div>
                                 </div>
                               </td>
 
-                              <td style={{ padding: '14px 16px' }}>
-                                <span style={{ background: badgeBg, color: badgeColor, padding: '4px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700 }}>
-                                  {m.role_name || 'Member'}
-                                </span>
+                              {/* Col 2: Number */}
+                              <td style={{ padding: '14px 18px', fontSize: '0.92rem', fontWeight: 600, color: '#1E293B' }}>
+                                {m.phone ? (
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                    <Phone size={14} color="#FF9933" /> {m.phone}
+                                  </span>
+                                ) : (
+                                  <span style={{ color: '#94A3B8' }}>N/A</span>
+                                )}
                               </td>
 
-                              <td style={{ padding: '14px 16px' }}>
-                                <div style={{ fontSize: '0.85rem', color: '#334155' }}>✉️ {m.email || 'N/A'}</div>
-                                {m.phone && <div style={{ fontSize: '0.8rem', color: '#64748B', marginTop: '2px' }}>📞 {m.phone}</div>}
-                              </td>
-
-                              <td style={{ padding: '14px 16px', fontSize: '0.85rem', color: '#475569' }}>
-                                {m.city || m.state ? `${m.city || ''}${m.state ? `, ${m.state}` : ''}` : 'N/A'}
-                              </td>
-
-                              <td style={{ padding: '14px 16px', fontSize: '0.82rem', color: '#64748B' }}>
-                                {m.created_at ? new Date(m.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                              {/* Col 3: Mail */}
+                              <td style={{ padding: '14px 18px', fontSize: '0.92rem', fontWeight: 600, color: '#1E293B' }}>
+                                {m.email ? (
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                    <Mail size={14} color="#FF9933" /> {m.email}
+                                  </span>
+                                ) : (
+                                  <span style={{ color: '#94A3B8' }}>N/A</span>
+                                )}
                               </td>
                             </tr>
                           );
