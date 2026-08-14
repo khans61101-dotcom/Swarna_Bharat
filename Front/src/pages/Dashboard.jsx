@@ -3,7 +3,10 @@ import {
   User, Mail, Phone, MapPin, Camera, LogOut, CheckCircle, Shield, 
   Trash2, Video, Image, PlusCircle, Award, Users, CheckSquare, 
   Film, LayoutDashboard, Copy, Check, ExternalLink, Share2, Sparkles, Key, Search,
-  Menu, X, ChevronRight, Eye
+  Menu, X, ChevronRight, Eye, Star, Crown, TrendingUp, Calendar, 
+  Clock, Wallet, Gift, Bell, Settings, HelpCircle, ArrowUpRight,
+  Grid, List, Heart, ThumbsUp, MessageCircle, Bookmark, Play,
+  ChevronDown, Filter, Download, Upload, RefreshCw, Zap
 } from 'lucide-react';
 import { useLang } from '../LanguageContext';
 import { API_BASE_URL, API_URL, getMediaUrl } from '../config';
@@ -13,8 +16,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const { lang } = useLang();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeDashTab, setActiveDashTab] = useState('overview'); // 'overview' | 'media' | 'profile' | 'network'
-  const [mediaFilter, setMediaFilter] = useState('all'); // 'all' | 'image' | 'video'
+  const [activeDashTab, setActiveDashTab] = useState('overview');
+  const [mediaFilter, setMediaFilter] = useState('all');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const [uploading, setUploading] = useState(false);
@@ -30,12 +33,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const [galleryTitle, setGalleryTitle] = useState('');
   const [uploadingMedia, setUploadingMedia] = useState(false);
 
-  // User Stats, Media & Downline Network
   const [userStats, setUserStats] = useState({ taskCount: 0, usersCount: 0, membersCount: 0 });
   const [userMedia, setUserMedia] = useState([]);
   const [downlineUsers, setDownlineUsers] = useState([]);
   const [networkSearch, setNetworkSearch] = useState('');
   const [selectedMember, setSelectedMember] = useState(null);
+  const [viewMode, setViewMode] = useState('grid');
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -69,7 +73,6 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           upi_id: data.upi_id || ''
         });
 
-        // Fetch User Stats, Media & Downline Network
         fetchUserStatsAndMedia(data.id, data.role_name);
       } else {
         localStorage.removeItem('userToken');
@@ -98,14 +101,12 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           ? data.downlineUsers
           : (data.downlines && data.downlines.length > 0 ? data.downlines : []);
 
-        // Fallback: If list is empty but user has network or is Admin/Super Admin
         if (list.length === 0) {
           try {
             const partnersRes = await fetch(`${API_URL}/partners`);
             if (partnersRes.ok) {
               const partnersData = await partnersRes.json();
               if (partnersData && Array.isArray(partnersData.partners)) {
-                // Filter out current user from partners list
                 list = partnersData.partners.filter(p => Number(p.id) !== Number(userId));
               }
             }
@@ -290,12 +291,32 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   };
 
   if (loading) {
-    return <div style={{ padding: '100px', textAlign: 'center', fontSize: '1.2rem', color: '#64748B' }}>Loading Dashboard...</div>;
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            border: '4px solid #FF9933',
+            borderTopColor: 'transparent',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 20px'
+          }}></div>
+          <p style={{ fontSize: '1.1rem', color: '#78350F', fontWeight: 600 }}>Loading Dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!user) return null;
 
-  // Media counts
   const photosCount = userMedia.filter(m => m.type !== 'video' && !m.src?.endsWith('.mp4') && !m.src?.endsWith('.webm') && !m.src?.endsWith('.mov')).length;
   const videosCount = userMedia.filter(m => m.type === 'video' || m.src?.endsWith('.mp4') || m.src?.endsWith('.webm') || m.src?.endsWith('.mov')).length;
 
@@ -306,10 +327,41 @@ export default function Dashboard({ setActiveTab, setUserState }) {
     return true;
   });
 
+  const statsCards = [
+    { icon: CheckSquare, label: lang === 'en' ? 'Tasks' : 'कार्य', value: userStats.taskCount, color: '#3B82F6', bg: '#EFF6FF' },
+    { icon: Users, label: lang === 'en' ? 'Downline' : 'डाउनलाइन', value: userStats.usersCount, color: '#10B981', bg: '#ECFDF5' },
+    { icon: Award, label: lang === 'en' ? 'Members' : 'सदस्य', value: userStats.membersCount, color: '#F59E0B', bg: '#FEF3C7' },
+    { icon: Film, label: lang === 'en' ? 'Media Posts' : 'मीडिया', value: userMedia.length, color: '#8B5CF6', bg: '#F5F3FF' },
+    { icon: Image, label: lang === 'en' ? 'Photos' : 'फ़ोटो', value: photosCount, color: '#EF4444', bg: '#FEE2E2' },
+    { icon: Video, label: lang === 'en' ? 'Videos' : 'वीडियो', value: videosCount, color: '#EC4899', bg: '#FCE7F3' },
+  ];
+
   return (
-    <div style={{ background: '#F8FAFC', color: '#1E293B', minHeight: '100vh', fontFamily: "'Outfit', sans-serif" }}>
-      {/* Mobile & Desktop Responsive Layout CSS */}
+    <div style={{ 
+      background: '#F8FAFC', 
+      color: '#1E293B', 
+      minHeight: '100vh', 
+      fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif" 
+    }}>
       <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        .fade-in { animation: fadeIn 0.5s ease; }
+        .stat-card:hover { transform: translateY(-4px); transition: all 0.3s ease; }
+        .media-grid-item:hover { transform: scale(1.02); transition: all 0.3s ease; }
         @media (max-width: 1023px) {
           .dash-sidebar { transform: translateX(-100%); }
           .dash-sidebar.open { transform: translateX(0) !important; }
@@ -319,19 +371,28 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           .dash-sidebar { transform: translateX(0) !important; }
           .dash-main-panel { margin-left: 280px !important; width: calc(100% - 280px) !important; }
         }
+        .glow-btn:hover { box-shadow: 0 0 25px rgba(255, 153, 51, 0.5); }
+        .nav-item-active { background: linear-gradient(135deg, #FF9933, #FF6B00) !important; color: #FFF !important; }
+        .nav-item-active .nav-icon { color: #FFF !important; }
+        .nav-item:hover { background: rgba(255, 153, 51, 0.1); }
       `}</style>
 
-      {/* Mobile Backdrop Overlay */}
       {mobileSidebarOpen && (
         <div 
           onClick={() => setMobileSidebarOpen(false)}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 99 }}
+          style={{ 
+            position: 'fixed', 
+            inset: 0, 
+            background: 'rgba(15,23,42,0.6)', 
+            backdropFilter: 'blur(4px)', 
+            zIndex: 99 
+          }}
         />
       )}
 
-      {/* ── LEFT SIDEBAR PANEL ───────────────────────────────────────── */}
+      {/* SIDEBAR */}
       <aside 
-        className={`dash-sidebar ${mobileSidebarOpen ? 'open' : ''}`}
+        className="dash-sidebar"
         style={{
           width: '280px',
           background: 'linear-gradient(180deg, #0F172A 0%, #1E293B 100%)',
@@ -342,987 +403,1253 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           top: 0, bottom: 0, left: 0,
           zIndex: 100,
           transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: '4px 0 25px rgba(0,0,0,0.15)'
+          boxShadow: '4px 0 30px rgba(0,0,0,0.2)'
         }}
       >
-        {/* Brand Header */}
-        <div style={{ padding: '24px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#FFF', fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(255,153,51,0.3)' }}>
-              S
+        {/* Brand */}
+        <div style={{ 
+          padding: '24px 20px', 
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{
+              background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+              width: '44px',
+              height: '44px',
+              borderRadius: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 800,
+              color: '#FFF',
+              fontSize: '1.3rem',
+              boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+            }}>
+              SB
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#FFF', letterSpacing: '-0.2px' }}>Swarna Bharat</h3>
-              <span style={{ fontSize: '0.72rem', color: '#94A3B8', fontWeight: 600 }}>Citizen Portal CMS</span>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#FFF', letterSpacing: '-0.3px' }}>
+                Swarna Bharat
+              </h3>
+              <span style={{ fontSize: '0.7rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.3px' }}>
+                CITIZEN PORTAL
+              </span>
             </div>
           </div>
-          <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: '4px' }}>
+          <button 
+            onClick={() => setMobileSidebarOpen(false)} 
+            style={{ 
+              background: 'rgba(255,255,255,0.05)', 
+              border: 'none', 
+              color: '#94A3B8', 
+              cursor: 'pointer', 
+              padding: '6px',
+              borderRadius: '8px',
+              display: 'flex'
+            }}
+          >
             <X size={20} />
           </button>
         </div>
 
-        {/* User Profile Summary Card in Sidebar */}
-        <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        {/* User Profile */}
+        <div style={{ 
+          padding: '20px', 
+          background: 'rgba(255,255,255,0.03)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)'
+        }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ position: 'relative', width: '52px', height: '52px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#FFF', overflow: 'hidden', flexShrink: 0, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+            <div style={{
+              position: 'relative',
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 800,
+              color: '#FFF',
+              overflow: 'hidden',
+              flexShrink: 0,
+              boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+            }}>
               {user.profile_image ? (
                 <img src={getMediaUrl(user.profile_image)} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
-                <span>{user.name.substring(0, 2).toUpperCase()}</span>
+                <span style={{ fontSize: '1.2rem' }}>{user.name.substring(0, 2).toUpperCase()}</span>
               )}
-              <label style={{ position: 'absolute', bottom: 0, right: 0, background: '#FF9933', color: '#FFF', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: '1px solid #FFF' }} title="Change Profile Picture">
+              <label style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                background: '#FF9933',
+                color: '#FFF',
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                border: '2px solid #1E293B'
+              }}>
                 <Camera size={10} />
                 <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} disabled={uploading} />
               </label>
             </div>
             <div style={{ overflow: 'hidden' }}>
-              <h4 style={{ margin: 0, fontSize: '0.95rem', color: '#F8FAFC', fontWeight: 700, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{user.name}</h4>
-              <span style={{ display: 'inline-block', background: 'rgba(255, 153, 51, 0.15)', color: '#FF9933', padding: '2px 8px', borderRadius: '12px', fontSize: '0.72rem', fontWeight: 700, marginTop: '3px' }}>
-                <Shield size={10} style={{ display: 'inline', marginRight: '3px' }} />
-                {user.role_name}
-              </span>
+              <h4 style={{ 
+                margin: 0, 
+                fontSize: '0.95rem', 
+                color: '#F8FAFC', 
+                fontWeight: 700,
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden'
+              }}>
+                {user.name}
+              </h4>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                <Shield size={12} color="#FF9933" />
+                <span style={{
+                  fontSize: '0.72rem',
+                  color: '#FF9933',
+                  fontWeight: 600
+                }}>
+                  {user.role_name}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Sidebar Menu Items */}
-        <nav style={{ flex: 1, padding: '20px 14px', display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto' }}>
-          <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.8px', padding: '0 10px 4px' }}>
-            {lang === 'en' ? 'NAVIGATION MENU' : 'नेविगेशन मेनू'}
+        {/* Navigation */}
+        <nav style={{ 
+          flex: 1, 
+          padding: '16px 12px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '4px',
+          overflowY: 'auto'
+        }}>
+          <div style={{
+            fontSize: '0.65rem',
+            fontWeight: 700,
+            color: '#64748B',
+            textTransform: 'uppercase',
+            letterSpacing: '0.8px',
+            padding: '0 12px 8px'
+          }}>
+            {lang === 'en' ? 'Main Menu' : 'मुख्य मेनू'}
           </div>
 
-          <button
-            onClick={() => { setActiveDashTab('overview'); setMobileSidebarOpen(false); }}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
-              background: activeDashTab === 'overview' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'overview' ? '#FFF' : '#94A3B8',
-              fontWeight: activeDashTab === 'overview' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: activeDashTab === 'overview' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <LayoutDashboard size={18} />
-              <span>{lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड ओवरव्यू'}</span>
-            </div>
-            {activeDashTab === 'overview' && <ChevronRight size={16} />}
-          </button>
-
-          <button
-            onClick={() => { setActiveDashTab('network'); setMobileSidebarOpen(false); }}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
-              background: activeDashTab === 'network' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'network' ? '#FFF' : '#94A3B8',
-              fontWeight: activeDashTab === 'network' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: activeDashTab === 'network' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Users size={18} />
-              <span>{lang === 'en' ? 'My Connected Network' : 'मेरे से जुड़े सदस्य'}</span>
-            </div>
-            <span style={{ background: activeDashTab === 'network' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)', color: '#FFF', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}>
-              {downlineUsers.length}
-            </span>
-          </button>
-
-          <button
-            onClick={() => { setActiveDashTab('media'); setMobileSidebarOpen(false); }}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
-              background: activeDashTab === 'media' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'media' ? '#FFF' : '#94A3B8',
-              fontWeight: activeDashTab === 'media' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: activeDashTab === 'media' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Film size={18} />
-              <span>{lang === 'en' ? 'Gallery & Uploads' : 'गैलरी एवं फोटो/वीडियो'}</span>
-            </div>
-            <span style={{ background: activeDashTab === 'media' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)', color: '#FFF', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}>
-              {userMedia.length}
-            </span>
-          </button>
-
-          <button
-            onClick={() => { setActiveDashTab('public_profile'); setMobileSidebarOpen(false); }}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
-              background: activeDashTab === 'public_profile' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'public_profile' ? '#FFF' : '#94A3B8',
-              fontWeight: activeDashTab === 'public_profile' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: activeDashTab === 'public_profile' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Eye size={18} />
-              <span>{lang === 'en' ? 'View Public Profile' : 'मेरी सार्वजनिक प्रोफ़ाइल'}</span>
-            </div>
-            {activeDashTab === 'public_profile' && <ChevronRight size={16} />}
-          </button>
-
-          <button
-            onClick={() => { setActiveDashTab('profile'); setMobileSidebarOpen(false); }}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              width: '100%', padding: '12px 16px', borderRadius: '12px', border: 'none',
-              background: activeDashTab === 'profile' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
-              color: activeDashTab === 'profile' ? '#FFF' : '#94A3B8',
-              fontWeight: activeDashTab === 'profile' ? 700 : 500, fontSize: '0.92rem', cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: activeDashTab === 'profile' ? '0 4px 14px rgba(255, 153, 51, 0.3)' : 'none'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <User size={18} />
-              <span>{lang === 'en' ? 'Edit Profile & Account' : 'प्रोफ़ाइल संपादित करें'}</span>
-            </div>
-            {activeDashTab === 'profile' && <ChevronRight size={16} />}
-          </button>
+          {[
+            { id: 'overview', icon: LayoutDashboard, label: lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड' },
+            { id: 'network', icon: Users, label: lang === 'en' ? 'Network' : 'नेटवर्क', badge: downlineUsers.length },
+            { id: 'media', icon: Film, label: lang === 'en' ? 'Gallery' : 'गैलरी', badge: userMedia.length },
+            { id: 'public_profile', icon: Eye, label: lang === 'en' ? 'Public Profile' : 'सार्वजनिक प्रोफ़ाइल' },
+            { id: 'profile', icon: User, label: lang === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें' },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => { setActiveDashTab(item.id); setMobileSidebarOpen(false); }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: 'none',
+                background: activeDashTab === item.id ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
+                color: activeDashTab === item.id ? '#FFF' : '#94A3B8',
+                fontWeight: activeDashTab === item.id ? 700 : 500,
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: activeDashTab === item.id ? '0 4px 15px rgba(255,153,51,0.3)' : 'none'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <item.icon size={18} style={{ color: activeDashTab === item.id ? '#FFF' : '#94A3B8' }} />
+                <span>{item.label}</span>
+              </div>
+              {item.badge !== undefined && (
+                <span style={{
+                  background: activeDashTab === item.id ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
+                  color: '#FFF',
+                  padding: '2px 10px',
+                  borderRadius: '20px',
+                  fontSize: '0.7rem',
+                  fontWeight: 700
+                }}>
+                  {item.badge}
+                </span>
+              )}
+            </button>
+          ))}
         </nav>
 
-        {/* Sidebar Footer Logout Button */}
+        {/* Logout */}
         <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <button
             onClick={handleLogout}
             style={{
-              width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.3)',
-              background: 'rgba(239,68,68,0.1)', color: '#F87171', fontWeight: 700, fontSize: '0.9rem',
-              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              width: '100%',
+              padding: '12px',
+              borderRadius: '12px',
+              border: '1px solid rgba(239,68,68,0.3)',
+              background: 'rgba(239,68,68,0.08)',
+              color: '#F87171',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
               transition: 'all 0.2s ease'
             }}
           >
             <LogOut size={18} />
-            <span>{lang === 'en' ? 'Logout Account' : 'लॉगआउट करें'}</span>
+            <span>{lang === 'en' ? 'Logout' : 'लॉगआउट'}</span>
           </button>
         </div>
       </aside>
 
-      {/* ── MAIN CONTENT PANEL ────────────────────────────────────────── */}
-      <div className="dash-main-panel" style={{ flex: 1, marginLeft: '280px', width: 'calc(100% - 280px)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        {/* Sticky Top Header Bar */}
+      {/* MAIN CONTENT */}
+      <div className="dash-main-panel" style={{
+        flex: 1,
+        marginLeft: '280px',
+        width: 'calc(100% - 280px)',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        {/* Header */}
         <header style={{
-          background: '#FFF', height: '70px', padding: '0 28px', borderBottom: '1px solid #E2E8F0',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 40,
-          boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+          background: '#FFF',
+          padding: '0 28px',
+          height: '72px',
+          borderBottom: '1px solid #E2E8F0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'sticky',
+          top: 0,
+          zIndex: 40,
+          boxShadow: '0 1px 10px rgba(0,0,0,0.02)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <button 
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)} 
-              style={{ background: '#F1F5F9', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', display: 'flex', color: '#0F172A' }}
+              style={{
+                background: '#F1F5F9',
+                border: 'none',
+                padding: '8px 10px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                display: 'flex',
+                color: '#0F172A'
+              }}
             >
               <Menu size={22} />
             </button>
-            <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0F172A' }}>
-              {activeDashTab === 'overview' && (lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड ओवरव्यू')}
-              {activeDashTab === 'network' && (lang === 'en' ? 'My Connected Network' : 'मेरे से जुड़े सदस्य')}
-              {activeDashTab === 'media' && (lang === 'en' ? 'Upload Media & My Gallery' : 'गैलरी एवं फोटो/वीडियो')}
-              {activeDashTab === 'public_profile' && (lang === 'en' ? 'My Public Profile View' : 'मेरी सार्वजनिक प्रोफ़ाइल')}
-              {activeDashTab === 'profile' && (lang === 'en' ? 'Profile & Account Settings' : 'प्रोफ़ाइल एवं खाता विवरण')}
-            </h2>
+            <div>
+              <h2 style={{ 
+                margin: 0, 
+                fontSize: '1.2rem', 
+                fontWeight: 800, 
+                color: '#0F172A',
+                letterSpacing: '-0.3px'
+              }}>
+                {activeDashTab === 'overview' && (lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड अवलोकन')}
+                {activeDashTab === 'network' && (lang === 'en' ? 'My Network' : 'मेरा नेटवर्क')}
+                {activeDashTab === 'media' && (lang === 'en' ? 'Media Gallery' : 'मीडिया गैलरी')}
+                {activeDashTab === 'public_profile' && (lang === 'en' ? 'Public Profile' : 'सार्वजनिक प्रोफ़ाइल')}
+                {activeDashTab === 'profile' && (lang === 'en' ? 'Profile Settings' : 'प्रोफ़ाइल सेटिंग्स')}
+              </h2>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '6px 14px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#16A34A', display: 'inline-block' }}></span>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#334155' }}>{user.name}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{
+              background: '#F8FAFC',
+              padding: '6px 16px',
+              borderRadius: '30px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              border: '1px solid #E2E8F0'
+            }}>
+              <div style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#16A34A',
+                display: 'inline-block'
+              }}></div>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#334155' }}>
+                {user.name}
+              </span>
             </div>
-
-            <button 
-              onClick={handleLogout}
-              style={{ background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', padding: '8px 16px', borderRadius: '30px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-            >
-              <LogOut size={14} />
-              <span>Logout</span>
-            </button>
           </div>
         </header>
 
-        {/* Content Body */}
+        {/* Body */}
         <main style={{ padding: '28px', flex: 1 }}>
-          {/* Global Notifications */}
+          {/* Messages */}
           {msg.text && (
             <div style={{
-              padding: '14px 20px', borderRadius: '12px', marginBottom: '24px',
-              background: msg.type === 'error' ? '#FEE2E2' : msg.type === 'success' ? '#DCFCE7' : '#DBEAFE',
+              padding: '14px 20px',
+              borderRadius: '14px',
+              marginBottom: '24px',
+              background: msg.type === 'error' ? '#FEF2F2' : msg.type === 'success' ? '#F0FDF4' : '#EFF6FF',
               color: msg.type === 'error' ? '#DC2626' : msg.type === 'success' ? '#16A34A' : '#2563EB',
-              display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              fontWeight: 600,
               border: `1px solid ${msg.type === 'error' ? '#FCA5A5' : msg.type === 'success' ? '#86EFAC' : '#93C5FD'}`
             }}>
               <CheckCircle size={18} /> {msg.text}
             </div>
           )}
 
-        {/* ── TAB 1: OVERVIEW ────────────────────────────────────────────── */}
-        {activeDashTab === 'overview' && (
-          <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            {/* Quick Stats Grid Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '28px' }}>
-              <div style={{ background: '#FFF', padding: '22px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: '#EFF6FF', color: '#2563EB', padding: '14px', borderRadius: '14px' }}>
-                  <CheckSquare size={26} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {lang === 'en' ? 'Assigned Tasks' : 'सौंपे गए कार्य'}
-                  </span>
-                  <h3 style={{ margin: '4px 0 0', fontSize: '1.6rem', fontWeight: 800, color: '#1E293B' }}>{userStats.taskCount}</h3>
-                </div>
-              </div>
-
-              <div style={{ background: '#FFF', padding: '22px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: '#F0FDF4', color: '#16A34A', padding: '14px', borderRadius: '14px' }}>
-                  <Users size={26} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {lang === 'en' ? 'Downline Users' : 'डाउनलाइन उपयोगकर्ता'}
-                  </span>
-                  <h3 style={{ margin: '4px 0 0', fontSize: '1.6rem', fontWeight: 800, color: '#1E293B' }}>{userStats.usersCount}</h3>
-                </div>
-              </div>
-
-              <div style={{ background: '#FFF', padding: '22px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: '#FEF3C7', color: '#D97706', padding: '14px', borderRadius: '14px' }}>
-                  <Award size={26} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {lang === 'en' ? 'Members Count' : 'कुल सदस्य'}
-                  </span>
-                  <h3 style={{ margin: '4px 0 0', fontSize: '1.6rem', fontWeight: 800, color: '#1E293B' }}>{userStats.membersCount}</h3>
-                </div>
-              </div>
-
-              <div style={{ background: '#FFF', padding: '22px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: '#FFF7ED', color: '#EA580C', padding: '14px', borderRadius: '14px' }}>
-                  <Film size={26} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {lang === 'en' ? 'Total Media Posts' : 'कुल मीडिया पोस्ट'}
-                  </span>
-                  <h3 style={{ margin: '4px 0 0', fontSize: '1.6rem', fontWeight: 800, color: '#1E293B' }}>{userMedia.length}</h3>
-                </div>
-              </div>
-
-              <div style={{ background: '#FFF', padding: '22px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: '#F5F3FF', color: '#8B5CF6', padding: '14px', borderRadius: '14px' }}>
-                  <Image size={26} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {lang === 'en' ? 'Photos Uploaded' : 'अपलोड की गई फ़ोटो'}
-                  </span>
-                  <h3 style={{ margin: '4px 0 0', fontSize: '1.6rem', fontWeight: 800, color: '#1E293B' }}>{photosCount}</h3>
-                </div>
-              </div>
-
-              <div style={{ background: '#FFF', padding: '22px', borderRadius: '18px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ background: '#ECFDF5', color: '#10B981', padding: '14px', borderRadius: '14px' }}>
-                  <Video size={26} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {lang === 'en' ? 'Videos Uploaded' : 'अपलोड किए गए वीडियो'}
-                  </span>
-                  <h3 style={{ margin: '4px 0 0', fontSize: '1.6rem', fontWeight: 800, color: '#1E293B' }}>{videosCount}</h3>
-                </div>
-              </div>
-            </div>
-
-            {/* Account & Referral Information Card */}
-            <div style={{
-              background: '#FFF',
-              borderRadius: '24px',
-              padding: '28px',
-              border: '1px solid #E2E8F0',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-              marginBottom: '28px'
-            }}>
-              <h3 style={{ margin: '0 0 16px', fontSize: '1.2rem', color: '#1E293B', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Share2 size={20} color="#FF9933" />
-                {lang === 'en' ? 'Referral Link & Code' : 'रेफरल लिंक एवं कोड'}
-              </h3>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-                <div style={{ background: '#F8FAFC', padding: '16px 20px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>
-                    {lang === 'en' ? 'Your Referral Code' : 'आपका रेफरल कोड'}
-                  </span>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FF9933', marginTop: '4px', letterSpacing: '1px' }}>
-                    {user.referral_code || 'REF-USER-101'}
-                  </div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '16px 20px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>
-                    {lang === 'en' ? 'Your Referral Link' : 'आपका रेफरल लिंक'}
-                  </span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '6px' }}>
-                    <input 
-                      type="text" 
-                      readOnly 
-                      value={user.referral_link || `${API_BASE_URL}/register.html?ref=${user.referral_code || ''}`} 
-                      style={{ flex: 1, padding: '8px 12px', borderRadius: '8px', border: '1px solid #CBD5E1', fontSize: '0.85rem', color: '#334155', background: '#FFF' }}
-                    />
-                    <button
-                      onClick={handleCopyRef}
-                      style={{
-                        background: copiedRef ? '#16A34A' : '#FF9933',
-                        color: '#FFF',
-                        border: 'none',
-                        padding: '8px 16px',
-                        borderRadius: '8px',
-                        fontWeight: 700,
-                        fontSize: '0.85rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        transition: '0.2s'
-                      }}
-                    >
-                      {copiedRef ? <Check size={16} /> : <Copy size={16} />}
-                      {copiedRef ? (lang === 'en' ? 'Copied' : 'कॉपी हो गया') : (lang === 'en' ? 'Copy' : 'कॉपी करें')}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Complete Personal Profile Details Card */}
-            <div style={{
-              background: '#FFF',
-              borderRadius: '24px',
-              padding: '28px',
-              border: '1px solid #E2E8F0',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-              marginBottom: '28px'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#1E293B', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <User size={22} color="#FF9933" />
-                  {lang === 'en' ? 'Complete Personal & Account Profile' : 'संपूर्ण व्यक्तिगत एवं खाता प्रोफ़ाइल'}
-                </h3>
-                <button
-                  onClick={() => setActiveDashTab('profile')}
-                  style={{
-                    background: '#FFF7ED', color: '#EA580C', border: '1px solid #FFEDD5',
-                    padding: '6px 16px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer'
-                  }}
-                >
-                  ✏️ {lang === 'en' ? 'Edit Profile Info' : 'विवरण संपादित करें'}
-                </button>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Full Name</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.name || 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Email Address</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.email || 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Mobile Phone</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.phone || 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>User Role</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#FF9933', marginTop: '3px' }}>{user.role_name || user.role || 'Member'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Date of Birth</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.dob ? new Date(user.dob).toLocaleDateString('en-IN') : 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Address</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.address || 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>City / State / Pincode</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>
-                    {user.city || user.state || user.pincode ? `${user.city || ''}, ${user.state || ''} ${user.pincode || ''}` : 'N/A'}
-                  </div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Bank Name</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.bank_name || 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Account Number</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.account_no || 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>IFSC Code</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.ifsc_code || 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>UPI ID</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>{user.upi_id || 'N/A'}</div>
-                </div>
-
-                <div style={{ background: '#F8FAFC', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase' }}>Account Created On</span>
-                  <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#0F172A', marginTop: '3px' }}>
-                    {user.created_at ? new Date(user.created_at).toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions Shortcuts */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-              <div 
-                onClick={() => setActiveDashTab('media')} 
-                style={{ background: 'linear-gradient(135deg, #FFF7ED, #FFEDD5)', padding: '24px', borderRadius: '20px', border: '1px solid #FED7AA', cursor: 'pointer', transition: '0.2s' }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Film size={28} color="#EA580C" />
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#EA580C', background: '#FFF', padding: '3px 10px', borderRadius: '20px' }}>Quick Access</span>
-                </div>
-                <h4 style={{ margin: '14px 0 4px', fontSize: '1.15rem', color: '#9A3412', fontWeight: 800 }}>
-                  {lang === 'en' ? 'Upload Photos & Videos' : 'फ़ोटो एवं वीडियो अपलोड करें'}
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: '#C2410C' }}>
-                  {lang === 'en' ? 'Add media posts to your public profile gallery' : 'अपनी प्रोफ़ाइल गैलरी में मीडिया जोड़ें'}
-                </p>
-              </div>
-
-              <div 
-                onClick={() => setActiveDashTab('profile')} 
-                style={{ background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)', padding: '24px', borderRadius: '20px', border: '1px solid #BFDBFE', cursor: 'pointer', transition: '0.2s' }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <User size={28} color="#2563EB" />
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#2563EB', background: '#FFF', padding: '3px 10px', borderRadius: '20px' }}>Quick Edit</span>
-                </div>
-                <h4 style={{ margin: '14px 0 4px', fontSize: '1.15rem', color: '#1E40AF', fontWeight: 800 }}>
-                  {lang === 'en' ? 'Update Profile Details' : 'प्रोफ़ाइल विवरण अपडेट करें'}
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: '#1D4ED8' }}>
-                  {lang === 'en' ? 'Edit phone, address, city and location info' : 'फोन, पता और स्थान की जानकारी संपादित करें'}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── TAB 2: MY CONNECTED NETWORK (DOWNLINE LIST) ───────────────── */}
-        {activeDashTab === 'network' && (
-          <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            {selectedMember ? (
-              <div>
-                <button
-                  onClick={() => setSelectedMember(null)}
-                  style={{
-                    background: '#FFF',
-                    border: '1px solid #CBD5E1',
-                    padding: '10px 22px',
-                    borderRadius: '30px',
-                    fontWeight: 700,
-                    fontSize: '0.9rem',
-                    color: '#0F172A',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    marginBottom: '20px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  ← {lang === 'en' ? 'Back to Connected Network List' : 'वापस जुड़े सदस्यों की सूची पर जाएं'}
-                </button>
-                <ProfilePage partner={selectedMember} setActiveTab={setActiveTab} />
-              </div>
-            ) : (
+          {/* OVERVIEW */}
+          {activeDashTab === 'overview' && (
+            <div className="fade-in">
+              {/* Stats Grid */}
               <div style={{
-                background: '#FFF',
-                borderRadius: '24px',
-                padding: '28px',
-                border: '1px solid #E2E8F0',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '16px',
                 marginBottom: '28px'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: '1.35rem', color: '#1E293B', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <Users size={24} color="#FF9933" />
-                      {lang === 'en' ? 'My Connected Network & Downline Members' : 'मेरे से जुड़े सदस्य एवं नेटवर्क'}
-                    </h3>
-                    <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '4px', margin: 0 }}>
-                      {lang === 'en' ? 'List of all users, members, agencies and NGOs connected directly or indirectly under your account.' : 'आपके खाते के अंतर्गत सीधे या अप्रत्यक्ष रूप से जुड़े सभी सदस्यों की सूची।'}
-                    </p>
-                  </div>
-
-                  <div style={{ background: '#FFF7ED', border: '1px solid #FFEDD5', padding: '8px 18px', borderRadius: '40px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#C2410C' }}>
-                      {lang === 'en' ? 'Total Connected:' : 'कुल जुड़े सदस्य:'} {downlineUsers.length}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Search Bar */}
-                <div style={{ position: 'relative', marginBottom: '24px' }}>
-                  <input
-                    type="text"
-                    placeholder={lang === 'en' ? 'Search connected member by name, email, phone or role...' : 'नाम, ईमेल, फोन या भूमिका द्वारा जुड़े सदस्य को खोजें...'}
-                    value={networkSearch}
-                    onChange={(e) => setNetworkSearch(e.target.value)}
+                {statsCards.map((stat, idx) => (
+                  <div
+                    key={idx}
+                    className="stat-card"
                     style={{
-                      width: '100%',
-                      padding: '12px 16px 12px 42px',
-                      borderRadius: '12px',
-                      border: '1px solid #CBD5E1',
-                      fontSize: '0.92rem',
-                      background: '#F8FAFC',
-                      color: '#1E293B',
-                      outline: 'none'
+                      background: '#FFF',
+                      padding: '20px',
+                      borderRadius: '18px',
+                      border: '1px solid #E2E8F0',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
+                      cursor: 'default',
+                      transition: 'all 0.3s ease'
                     }}
-                  />
-                  <Search size={18} color="#94A3B8" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
-                </div>
-
-                {/* Connected Members List Table */}
-                {(() => {
-                  const safeNetwork = Array.isArray(downlineUsers) ? downlineUsers : [];
-                  const filteredNetwork = safeNetwork.filter(u => {
-                    if (!u) return false;
-                    const q = (networkSearch || '').toLowerCase();
-                    const name = (u.name || '').toLowerCase();
-                    const email = (u.email || '').toLowerCase();
-                    const phone = (u.phone || '').toLowerCase();
-                    const role = (u.role_name || '').toLowerCase();
-                    return name.includes(q) || email.includes(q) || phone.includes(q) || role.includes(q);
-                  });
-
-                  if (filteredNetwork.length === 0) {
-                    return (
-                      <div style={{ textAlign: 'center', padding: '50px 20px', background: '#F8FAFC', borderRadius: '16px', border: '1px dashed #CBD5E1' }}>
-                        <Users size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
-                        <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
-                          {safeNetwork.length === 0 
-                            ? (lang === 'en' ? 'No members connected yet' : 'अभी तक कोई सदस्य नहीं जुड़ा है') 
-                            : (lang === 'en' ? 'No matching members found' : 'कोई मेल खाता सदस्य नहीं मिला')}
-                        </h4>
-                        <p style={{ color: '#64748B', fontSize: '0.9rem', maxWidth: '500px', margin: '0 auto 20px' }}>
-                          {lang === 'en'
-                            ? 'Share your unique referral link to invite friends, team members, and organizations to register under your network.'
-                            : 'मित्रों, टीम के सदस्यों और संगठनों को अपने नेटवर्क के तहत पंजीकृत करने के लिए अपना अद्वितीय रेफरल लिंक साझा करें।'}
-                        </p>
-                        <button
-                          onClick={handleCopyRef}
-                          style={{
-                            background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
-                            color: '#FFF', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px'
-                          }}
-                        >
-                          {copiedRef ? <Check size={16} /> : <Copy size={16} />}
-                          {copiedRef ? (lang === 'en' ? 'Link Copied!' : 'लिंक कॉपी हो गया!') : (lang === 'en' ? 'Copy Referral Link' : 'रेफरल लिंक कॉपी करें')}
-                        </button>
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <div style={{
+                        background: stat.bg,
+                        color: stat.color,
+                        padding: '12px',
+                        borderRadius: '14px',
+                        display: 'flex'
+                      }}>
+                        <stat.icon size={22} />
                       </div>
-                    );
-                  }
-
-                  return (
-                    <div style={{ overflowX: 'auto' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '650px' }}>
-                        <thead>
-                          <tr style={{ background: '#F8FAFC', borderBottom: '2px solid #E2E8F0', color: '#64748B', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Name' : 'नाम'}</th>
-                            <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Phone Number' : 'मोबाइल नंबर'}</th>
-                            <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Email Address' : 'ईमेल पता'}</th>
-                            <th style={{ padding: '14px 18px', textAlign: 'right' }}>{lang === 'en' ? 'Action' : 'प्रोफ़ाइल'}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredNetwork.map((m, idx) => {
-                            if (!m) return null;
-                            const initials = (m.name || 'User').substring(0, 2).toUpperCase();
-                            const profileImg = m.profile_image ? getMediaUrl(m.profile_image) : null;
-
-                            return (
-                              <tr 
-                                key={m.id || idx} 
-                                style={{ borderBottom: '1px solid #F1F5F9', transition: 'background 0.2s', cursor: 'pointer' }}
-                                onClick={() => setSelectedMember(m)}
-                              >
-                                {/* Col 1: Name */}
-                                <td style={{ padding: '14px 18px' }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem', overflow: 'hidden', flexShrink: 0 }}>
-                                      {profileImg ? (
-                                        <img src={profileImg} alt={m.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                      ) : (
-                                        <span>{initials}</span>
-                                      )}
-                                    </div>
-                                    <div>
-                                      <strong style={{ fontSize: '0.95rem', color: '#0F172A', display: 'block' }}>{m.name || 'N/A'}</strong>
-                                      <span style={{ fontSize: '0.75rem', color: '#64748B' }}>{m.role_name || 'Member'}</span>
-                                    </div>
-                                  </div>
-                                </td>
-
-                                {/* Col 2: Number */}
-                                <td style={{ padding: '14px 18px', fontSize: '0.92rem', fontWeight: 600, color: '#1E293B' }}>
-                                  {m.phone ? (
-                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                                      <Phone size={14} color="#FF9933" /> {m.phone}
-                                    </span>
-                                  ) : (
-                                    <span style={{ color: '#94A3B8' }}>N/A</span>
-                                  )}
-                                </td>
-
-                                {/* Col 3: Mail */}
-                                <td style={{ padding: '14px 18px', fontSize: '0.92rem', fontWeight: 600, color: '#1E293B' }}>
-                                  {m.email ? (
-                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                                      <Mail size={14} color="#FF9933" /> {m.email}
-                                    </span>
-                                  ) : (
-                                    <span style={{ color: '#94A3B8' }}>N/A</span>
-                                  )}
-                                </td>
-
-                                {/* Col 4: View Profile Button */}
-                                <td style={{ padding: '14px 18px', textAlign: 'right' }}>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); setSelectedMember(m); }}
-                                    style={{
-                                      background: '#FFF7ED',
-                                      border: '1px solid #FFEDD5',
-                                      color: '#EA580C',
-                                      padding: '6px 14px',
-                                      borderRadius: '20px',
-                                      fontSize: '0.82rem',
-                                      fontWeight: 700,
-                                      cursor: 'pointer',
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      gap: '6px',
-                                      transition: 'all 0.2s'
-                                    }}
-                                  >
-                                    <Eye size={14} /> {lang === 'en' ? 'View Profile' : 'प्रोफ़ाइल देखें'}
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
+                      <div>
+                        <span style={{
+                          fontSize: '0.7rem',
+                          fontWeight: 700,
+                          color: '#94A3B8',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
+                        }}>
+                          {stat.label}
+                        </span>
+                        <h3 style={{
+                          margin: '2px 0 0',
+                          fontSize: '1.5rem',
+                          fontWeight: 800,
+                          color: '#0F172A'
+                        }}>
+                          {stat.value}
+                        </h3>
+                      </div>
                     </div>
-                  );
-                })()}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── TAB 2: MY MEDIA & GALLERY ─────────────────────────────────── */}
-        {activeDashTab === 'media' && (
-          <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            {/* Upload Media Section */}
-            <div style={{ 
-              background: '#FFF', 
-              borderRadius: '24px', 
-              padding: '28px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-              marginBottom: '28px',
-              border: '1px solid #E2E8F0'
-            }}>
-              <div style={{ marginBottom: '20px' }}>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 800 }}>
-                  <PlusCircle size={24} color="#FF9933" />
-                  {lang === 'en' ? 'Upload Photo or Video to My Gallery' : 'अपनी गैलरी में फ़ोटो या वीडियो अपलोड करें'}
-                </h3>
-                <p style={{ color: '#64748B', fontSize: '0.88rem', marginTop: '4px' }}>
-                  {lang === 'en' ? 'Media posts uploaded here will appear in your public Profile Page under Photos & Videos.' : 'यहाँ अपलोड की गई मीडिया आपकी सार्वजनिक प्रोफ़ाइल पृष्ठ पर दिखाई देगी।'}
-                </p>
+                  </div>
+                ))}
               </div>
 
-              <form onSubmit={handleGalleryUpload} style={{ display: 'grid', gap: '18px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', marginBottom: '6px', fontWeight: 600 }}>
-                    {lang === 'en' ? 'Title / Caption (Optional)' : 'शीर्षक / विवरण (वैकल्पिक)'}
-                  </label>
-                  <input 
-                    type="text" 
-                    value={galleryTitle}
-                    onChange={(e) => setGalleryTitle(e.target.value)}
-                    placeholder={lang === 'en' ? 'Enter caption for your photo or video' : 'अपनी फ़ोटो या वीडियो के लिए कैप्शन दर्ज करें'}
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #E2E8F0', background: '#FFF', color: '#1E293B', outline: 'none' }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', marginBottom: '6px', fontWeight: 600 }}>
-                    {lang === 'en' ? 'Select File (Photo or Video)' : 'फ़ाइल चुनें (फ़ोटो या वीडियो)'}
-                  </label>
-                  <input 
-                    type="file" 
-                    accept="image/*,video/*"
-                    onChange={(e) => setMediaFile(e.target.files[0])}
-                    style={{ 
-                      width: '100%', padding: '12px', borderRadius: '10px', border: '2px dashed #CBD5E1', background: '#F8FAFC', color: '#64748B', cursor: 'pointer'
+              {/* Referral Card */}
+              <div style={{
+                background: '#FFF',
+                borderRadius: '20px',
+                padding: '28px',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 15px rgba(0,0,0,0.02)',
+                marginBottom: '28px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '16px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{
+                      background: '#FFF7ED',
+                      padding: '10px',
+                      borderRadius: '12px',
+                      display: 'flex'
+                    }}>
+                      <Share2 size={20} color="#FF6B00" />
+                    </div>
+                    <div>
+                      <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
+                        {lang === 'en' ? 'Referral Program' : 'रेफरल प्रोग्राम'}
+                      </h4>
+                      <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#64748B' }}>
+                        {lang === 'en' ? 'Share your unique link and earn rewards' : 'अपनी अनूठी लिंक साझा करें और इनाम प्राप्त करें'}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCopyRef}
+                    style={{
+                      background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      color: '#FFF',
+                      border: 'none',
+                      padding: '10px 24px',
+                      borderRadius: '30px',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
                     }}
-                  />
+                  >
+                    {copiedRef ? <Check size={16} /> : <Copy size={16} />}
+                    {copiedRef ? (lang === 'en' ? 'Copied!' : 'कॉपी हो गया!') : (lang === 'en' ? 'Copy Referral Link' : 'रेफरल लिंक कॉपी करें')}
+                  </button>
+                </div>
+                <div style={{
+                  marginTop: '16px',
+                  background: '#F8FAFC',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  border: '1px solid #E2E8F0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '8px'
+                }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B' }}>
+                    {lang === 'en' ? 'Your Referral Code:' : 'आपका रेफरल कोड:'}
+                  </span>
+                  <span style={{
+                    fontSize: '1.1rem',
+                    fontWeight: 800,
+                    color: '#FF6B00',
+                    letterSpacing: '1px'
+                  }}>
+                    {user.referral_code || 'REF-USER-101'}
+                  </span>
+                  <span style={{
+                    fontSize: '0.7rem',
+                    background: '#FFEDD5',
+                    color: '#EA580C',
+                    padding: '2px 12px',
+                    borderRadius: '20px',
+                    fontWeight: 700
+                  }}>
+                    {lang === 'en' ? 'Active' : 'सक्रिय'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Profile Details Card */}
+              <div style={{
+                background: '#FFF',
+                borderRadius: '20px',
+                padding: '28px',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 15px rgba(0,0,0,0.02)',
+                marginBottom: '28px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '20px',
+                  flexWrap: 'wrap',
+                  gap: '12px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <User size={22} color="#FF6B00" />
+                    <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
+                      {lang === 'en' ? 'Personal Information' : 'व्यक्तिगत जानकारी'}
+                    </h4>
+                  </div>
+                  <button
+                    onClick={() => setActiveDashTab('profile')}
+                    style={{
+                      background: '#FFF7ED',
+                      border: '1px solid #FED7AA',
+                      color: '#EA580C',
+                      padding: '6px 18px',
+                      borderRadius: '30px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    ✏️ {lang === 'en' ? 'Edit' : 'संपादित करें'}
+                  </button>
                 </div>
 
-                <button 
-                  type="submit" 
-                  disabled={uploadingMedia || !mediaFile}
-                  style={{ 
-                    background: uploadingMedia || !mediaFile ? '#CBD5E1' : 'linear-gradient(135deg, #FF9933, #FF6B00)', 
-                    color: '#FFF', border: 'none', padding: '12px 28px', borderRadius: '10px', 
-                    cursor: uploadingMedia || !mediaFile ? 'not-allowed' : 'pointer', 
-                    fontWeight: 700, fontSize: '0.95rem', transition: '0.2s', width: 'fit-content',
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    boxShadow: uploadingMedia || !mediaFile ? 'none' : '0 4px 14px rgba(255, 153, 51, 0.3)'
-                  }}
-                >
-                  <PlusCircle size={18} />
-                  {uploadingMedia ? (lang === 'en' ? 'Uploading Media...' : 'मीडिया अपलोड हो रहा है...') : (lang === 'en' ? 'Post to My Gallery' : 'मेरी गैलरी में पोस्ट करें')}
-                </button>
-              </form>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gap: '14px'
+                }}>
+                  {[
+                    { label: lang === 'en' ? 'Full Name' : 'पूरा नाम', value: user.name || 'N/A', icon: User },
+                    { label: lang === 'en' ? 'Email' : 'ईमेल', value: user.email || 'N/A', icon: Mail },
+                    { label: lang === 'en' ? 'Phone' : 'फोन', value: user.phone || 'N/A', icon: Phone },
+                    { label: lang === 'en' ? 'Role' : 'भूमिका', value: user.role_name || 'Member', icon: Shield, highlight: true },
+                    { label: lang === 'en' ? 'City' : 'शहर', value: user.city || 'N/A', icon: MapPin },
+                    { label: lang === 'en' ? 'State' : 'राज्य', value: user.state || 'N/A', icon: MapPin },
+                  ].map((item, idx) => (
+                    <div key={idx} style={{
+                      background: '#F8FAFC',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      border: '1px solid #E2E8F0'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                        <item.icon size={14} color="#94A3B8" />
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          {item.label}
+                        </span>
+                      </div>
+                      <div style={{
+                        fontSize: '0.95rem',
+                        fontWeight: 700,
+                        color: item.highlight ? '#FF6B00' : '#0F172A'
+                      }}>
+                        {item.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                gap: '16px'
+              }}>
+                {[
+                  { 
+                    icon: Film, 
+                    label: lang === 'en' ? 'Upload Media' : 'मीडिया अपलोड करें',
+                    desc: lang === 'en' ? 'Add photos & videos to gallery' : 'गैलरी में फ़ोटो और वीडियो जोड़ें',
+                    color: '#EA580C',
+                    bg: '#FFF7ED',
+                    action: () => setActiveDashTab('media')
+                  },
+                  { 
+                    icon: Users, 
+                    label: lang === 'en' ? 'View Network' : 'नेटवर्क देखें',
+                    desc: lang === 'en' ? 'See all connected members' : 'सभी जुड़े सदस्यों को देखें',
+                    color: '#3B82F6',
+                    bg: '#EFF6FF',
+                    action: () => setActiveDashTab('network')
+                  },
+                  { 
+                    icon: Eye, 
+                    label: lang === 'en' ? 'Public Profile' : 'सार्वजनिक प्रोफ़ाइल',
+                    desc: lang === 'en' ? 'View your public page' : 'अपना सार्वजनिक पृष्ठ देखें',
+                    color: '#8B5CF6',
+                    bg: '#F5F3FF',
+                    action: () => setActiveDashTab('public_profile')
+                  },
+                ].map((item, idx) => (
+                  <div
+                    key={idx}
+                    onClick={item.action}
+                    style={{
+                      background: '#FFF',
+                      padding: '20px',
+                      borderRadius: '18px',
+                      border: '1px solid #E2E8F0',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <div style={{
+                        background: item.bg,
+                        color: item.color,
+                        padding: '12px',
+                        borderRadius: '14px',
+                        display: 'flex'
+                      }}>
+                        <item.icon size={22} />
+                      </div>
+                      <div>
+                        <h5 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#0F172A' }}>
+                          {item.label}
+                        </h5>
+                        <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#64748B' }}>
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                    <div style={{
+                      marginTop: '12px',
+                      display: 'flex',
+                      justifyContent: 'flex-end'
+                    }}>
+                      <span style={{
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        color: '#94A3B8',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        {lang === 'en' ? 'Explore' : 'जाएं'} <ArrowUpRight size={14} />
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
+          )}
 
-            {/* Gallery Media Grid & Filters */}
-            <div style={{ 
-              background: '#FFF', 
-              borderRadius: '24px', 
-              padding: '28px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-              border: '1px solid #E2E8F0'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-                <h4 style={{ margin: 0, fontSize: '1.2rem', color: '#1E293B', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Film size={22} color="#FF9933" />
-                  {lang === 'en' ? 'My Uploaded Media' : 'मेरी अपलोड की गई मीडिया'} ({filteredMedia.length})
-                </h4>
-
-                {/* Filter Pills */}
-                <div style={{ display: 'flex', gap: '8px', background: '#F1F5F9', padding: '4px', borderRadius: '12px' }}>
+          {/* NETWORK */}
+          {activeDashTab === 'network' && (
+            <div className="fade-in">
+              {selectedMember ? (
+                <div>
                   <button
-                    onClick={() => setMediaFilter('all')}
+                    onClick={() => setSelectedMember(null)}
                     style={{
-                      padding: '6px 14px', borderRadius: '8px', border: 'none',
-                      background: mediaFilter === 'all' ? '#FFF' : 'transparent',
-                      color: mediaFilter === 'all' ? '#FF9933' : '#64748B',
-                      fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                      boxShadow: mediaFilter === 'all' ? '0 2px 6px rgba(0,0,0,0.05)' : 'none'
+                      background: '#FFF',
+                      border: '1px solid #E2E8F0',
+                      padding: '10px 24px',
+                      borderRadius: '30px',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      color: '#0F172A',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      marginBottom: '24px',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      transition: 'all 0.2s ease'
                     }}
                   >
-                    {lang === 'en' ? `All (${userMedia.length})` : `सभी (${userMedia.length})`}
+                    ← {lang === 'en' ? 'Back to Network' : 'वापस नेटवर्क पर जाएं'}
                   </button>
-                  <button
-                    onClick={() => setMediaFilter('image')}
-                    style={{
-                      padding: '6px 14px', borderRadius: '8px', border: 'none',
-                      background: mediaFilter === 'image' ? '#FFF' : 'transparent',
-                      color: mediaFilter === 'image' ? '#FF9933' : '#64748B',
-                      fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                      boxShadow: mediaFilter === 'image' ? '0 2px 6px rgba(0,0,0,0.05)' : 'none'
-                    }}
-                  >
-                    {lang === 'en' ? `Photos (${photosCount})` : `फ़ोटो (${photosCount})`}
-                  </button>
-                  <button
-                    onClick={() => setMediaFilter('video')}
-                    style={{
-                      padding: '6px 14px', borderRadius: '8px', border: 'none',
-                      background: mediaFilter === 'video' ? '#FFF' : 'transparent',
-                      color: mediaFilter === 'video' ? '#FF9933' : '#64748B',
-                      fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                      boxShadow: mediaFilter === 'video' ? '0 2px 6px rgba(0,0,0,0.05)' : 'none'
-                    }}
-                  >
-                    {lang === 'en' ? `Videos (${videosCount})` : `वीडियो (${videosCount})`}
-                  </button>
-                </div>
-              </div>
-
-              {filteredMedia.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '50px 20px', background: '#F8FAFC', borderRadius: '18px', color: '#94A3B8', border: '1px dashed #CBD5E1' }}>
-                  <Image size={44} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
-                  <p style={{ margin: 0, fontWeight: 600, fontSize: '0.95rem' }}>
-                    {lang === 'en' ? 'No media posts found.' : 'कोई मीडिया पोस्ट नहीं मिली।'}
-                  </p>
+                  <ProfilePage partner={selectedMember} setActiveTab={setActiveTab} />
                 </div>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
-                  {filteredMedia.map(item => {
-                    const src = item.src || '';
-                    const isVideo = item.type === 'video' || src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov');
-                    return (
-                      <div key={item.id} style={{ borderRadius: '18px', overflow: 'hidden', border: '1px solid #E2E8F0', background: '#F8FAFC', position: 'relative', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-                        <div style={{ height: '170px', position: 'relative', background: '#000' }}>
-                          {isVideo ? (
-                            <video src={getMediaUrl(src)} controls style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          ) : (
-                            <img src={getMediaUrl(src)} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          )}
-                          <span style={{ position: 'absolute', top: '10px', left: '10px', background: isVideo ? '#2563EB' : '#FF9933', color: '#FFF', fontSize: '0.7rem', fontWeight: 800, padding: '3px 8px', borderRadius: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            {isVideo ? 'VIDEO' : 'IMAGE'}
-                          </span>
-                        </div>
-                        
-                        <div style={{ padding: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <div>
-                            <h5 style={{ margin: 0, fontSize: '0.9rem', color: '#1E293B', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '140px' }}>
-                              {item.title || (lang === 'en' ? 'Untitled' : 'बिना शीर्षक')}
-                            </h5>
-                            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>{item.category || 'General'}</span>
-                          </div>
+                <div style={{
+                  background: '#FFF',
+                  borderRadius: '20px',
+                  padding: '28px',
+                  border: '1px solid #E2E8F0',
+                  boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '16px',
+                    marginBottom: '24px'
+                  }}>
+                    <div>
+                      <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}>
+                        {lang === 'en' ? 'My Connected Network' : 'मेरा जुड़ा नेटवर्क'}
+                      </h4>
+                      <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748B' }}>
+                        {lang === 'en' ? `${downlineUsers.length} members connected` : `${downlineUsers.length} सदस्य जुड़े हैं`}
+                      </p>
+                    </div>
+                    <div style={{
+                      background: '#FFF7ED',
+                      padding: '6px 18px',
+                      borderRadius: '30px',
+                      border: '1px solid #FED7AA'
+                    }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#EA580C' }}>
+                        {lang === 'en' ? 'Total:' : 'कुल:'} {downlineUsers.length}
+                      </span>
+                    </div>
+                  </div>
 
-                          <button 
-                            onClick={() => handleDeleteMedia(item.id)}
-                            title={lang === 'en' ? 'Delete media post' : 'मीडिया हटाएं'}
-                            style={{ background: '#FEE2E2', color: '#DC2626', border: 'none', width: '34px', height: '34px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}
+                  {/* Search */}
+                  <div style={{ position: 'relative', marginBottom: '24px' }}>
+                    <Search size={18} color="#94A3B8" style={{
+                      position: 'absolute',
+                      left: '14px',
+                      top: '50%',
+                      transform: 'translateY(-50%)'
+                    }} />
+                    <input
+                      type="text"
+                      placeholder={lang === 'en' ? 'Search by name, email, phone...' : 'नाम, ईमेल, फोन से खोजें...'}
+                      value={networkSearch}
+                      onChange={(e) => setNetworkSearch(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px 12px 44px',
+                        borderRadius: '14px',
+                        border: '1px solid #E2E8F0',
+                        fontSize: '0.9rem',
+                        background: '#F8FAFC',
+                        color: '#1E293B',
+                        outline: 'none',
+                        transition: 'all 0.2s ease'
+                      }}
+                    />
+                  </div>
+
+                  {(() => {
+                    const safeNetwork = Array.isArray(downlineUsers) ? downlineUsers : [];
+                    const filteredNetwork = safeNetwork.filter(u => {
+                      if (!u) return false;
+                      const q = (networkSearch || '').toLowerCase();
+                      const name = (u.name || '').toLowerCase();
+                      const email = (u.email || '').toLowerCase();
+                      const phone = (u.phone || '').toLowerCase();
+                      const role = (u.role_name || '').toLowerCase();
+                      return name.includes(q) || email.includes(q) || phone.includes(q) || role.includes(q);
+                    });
+
+                    if (filteredNetwork.length === 0) {
+                      return (
+                        <div style={{
+                          textAlign: 'center',
+                          padding: '60px 20px',
+                          background: '#F8FAFC',
+                          borderRadius: '16px',
+                          border: '1px dashed #CBD5E1'
+                        }}>
+                          <Users size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
+                          <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
+                            {safeNetwork.length === 0 
+                              ? (lang === 'en' ? 'No members connected yet' : 'अभी तक कोई सदस्य नहीं जुड़ा है') 
+                              : (lang === 'en' ? 'No matching members found' : 'कोई मेल खाता सदस्य नहीं मिला')}
+                          </h4>
+                          <p style={{ color: '#64748B', fontSize: '0.9rem', maxWidth: '500px', margin: '0 auto 20px' }}>
+                            {lang === 'en'
+                              ? 'Share your referral link to invite people to join your network.'
+                              : 'अपने नेटवर्क में लोगों को आमंत्रित करने के लिए अपना रेफरल लिंक साझा करें।'}
+                          </p>
+                          <button
+                            onClick={handleCopyRef}
+                            style={{
+                              background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                              color: '#FFF',
+                              border: 'none',
+                              padding: '10px 28px',
+                              borderRadius: '30px',
+                              fontWeight: 700,
+                              fontSize: '0.9rem',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+                            }}
                           >
-                            <Trash2 size={16} />
+                            {copiedRef ? <Check size={16} /> : <Copy size={16} />}
+                            {copiedRef ? (lang === 'en' ? 'Copied!' : 'कॉपी हो गया!') : (lang === 'en' ? 'Copy Referral Link' : 'रेफरल लिंक कॉपी करें')}
                           </button>
                         </div>
+                      );
+                    }
+
+                    return (
+                      <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
+                          <thead>
+                            <tr style={{
+                              background: '#F8FAFC',
+                              borderBottom: '2px solid #E2E8F0',
+                              color: '#64748B',
+                              fontSize: '0.75rem',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px'
+                            }}>
+                              <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Member' : 'सदस्य'}</th>
+                              <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Phone' : 'फोन'}</th>
+                              <th style={{ padding: '14px 18px' }}>{lang === 'en' ? 'Email' : 'ईमेल'}</th>
+                              <th style={{ padding: '14px 18px', textAlign: 'right' }}>{lang === 'en' ? 'Action' : 'कार्य'}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredNetwork.map((m, idx) => {
+                              if (!m) return null;
+                              const initials = (m.name || 'User').substring(0, 2).toUpperCase();
+                              const profileImg = m.profile_image ? getMediaUrl(m.profile_image) : null;
+
+                              return (
+                                <tr 
+                                  key={m.id || idx} 
+                                  style={{
+                                    borderBottom: '1px solid #F1F5F9',
+                                    cursor: 'pointer',
+                                    transition: 'background 0.2s'
+                                  }}
+                                  onClick={() => setSelectedMember(m)}
+                                >
+                                  <td style={{ padding: '14px 18px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                      <div style={{
+                                        width: '42px',
+                                        height: '42px',
+                                        borderRadius: '50%',
+                                        background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                                        color: '#FFF',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontWeight: 800,
+                                        fontSize: '0.85rem',
+                                        overflow: 'hidden',
+                                        flexShrink: 0
+                                      }}>
+                                        {profileImg ? (
+                                          <img src={profileImg} alt={m.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        ) : (
+                                          <span>{initials}</span>
+                                        )}
+                                      </div>
+                                      <div>
+                                        <strong style={{ fontSize: '0.9rem', color: '#0F172A', display: 'block' }}>
+                                          {m.name || 'N/A'}
+                                        </strong>
+                                        <span style={{ fontSize: '0.7rem', color: '#94A3B8' }}>
+                                          {m.role_name || 'Member'}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: '14px 18px', fontSize: '0.85rem', fontWeight: 600, color: '#1E293B' }}>
+                                    {m.phone || <span style={{ color: '#94A3B8' }}>N/A</span>}
+                                  </td>
+                                  <td style={{ padding: '14px 18px', fontSize: '0.85rem', fontWeight: 600, color: '#1E293B' }}>
+                                    {m.email || <span style={{ color: '#94A3B8' }}>N/A</span>}
+                                  </td>
+                                  <td style={{ padding: '14px 18px', textAlign: 'right' }}>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); setSelectedMember(m); }}
+                                      style={{
+                                        background: '#FFF7ED',
+                                        border: '1px solid #FED7AA',
+                                        color: '#EA580C',
+                                        padding: '6px 16px',
+                                        borderRadius: '30px',
+                                        fontSize: '0.75rem',
+                                        fontWeight: 700,
+                                        cursor: 'pointer',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        transition: 'all 0.2s ease'
+                                      }}
+                                    >
+                                      <Eye size={14} /> {lang === 'en' ? 'View' : 'देखें'}
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
                       </div>
                     );
-                  })}
+                  })()}
                 </div>
               )}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ── TAB 3: EDIT PROFILE ────────────────────────────────────────── */}
-        {activeDashTab === 'profile' && (
-          <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            <div style={{ 
-              background: '#FFF', 
-              borderRadius: '24px', 
-              padding: '30px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-              border: '1px solid #E2E8F0'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#1E293B', fontWeight: 800 }}>
-                    {lang === 'en' ? 'Edit Profile Details' : 'प्रोफ़ाइल विवरण संपादित करें'}
-                  </h3>
-                  <p style={{ margin: '4px 0 0', color: '#64748B', fontSize: '0.88rem' }}>
-                    {lang === 'en' ? 'Update your personal and contact details' : 'अपनी व्यक्तिगत और संपर्क जानकारी अपडेट करें'}
+          {/* MEDIA */}
+          {activeDashTab === 'media' && (
+            <div className="fade-in">
+              {/* Upload */}
+              <div style={{
+                background: '#FFF',
+                borderRadius: '20px',
+                padding: '28px',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 15px rgba(0,0,0,0.02)',
+                marginBottom: '28px'
+              }}>
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <PlusCircle size={22} color="#FF6B00" />
+                    <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
+                      {lang === 'en' ? 'Upload to Gallery' : 'गैलरी में अपलोड करें'}
+                    </h4>
+                  </div>
+                  <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748B' }}>
+                    {lang === 'en' ? 'Share photos and videos to your public profile' : 'अपनी सार्वजनिक प्रोफ़ाइल पर फ़ोटो और वीडियो साझा करें'}
                   </p>
                 </div>
 
-                <button 
-                  onClick={handleSave} 
-                  style={{ 
-                    background: 'linear-gradient(135deg, #16A34A, #15803D)', 
-                    color: '#FFF', border: 'none', padding: '10px 24px', 
-                    borderRadius: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '0.92rem',
-                    boxShadow: '0 4px 12px rgba(22, 163, 74, 0.3)'
-                  }}
-                >
-                  {lang === 'en' ? 'Save Profile Changes' : 'प्रोफ़ाइल सहेजें'}
-                </button>
+                <form onSubmit={handleGalleryUpload} style={{ display: 'grid', gap: '16px' }}>
+                  <input
+                    type="text"
+                    value={galleryTitle}
+                    onChange={(e) => setGalleryTitle(e.target.value)}
+                    placeholder={lang === 'en' ? 'Caption (optional)' : 'शीर्षक (वैकल्पिक)'}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      border: '1px solid #E2E8F0',
+                      background: '#FFF',
+                      color: '#1E293B',
+                      outline: 'none',
+                      fontSize: '0.9rem',
+                      transition: 'all 0.2s ease'
+                    }}
+                  />
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    onChange={(e) => setMediaFile(e.target.files[0])}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      borderRadius: '12px',
+                      border: '2px dashed #CBD5E1',
+                      background: '#F8FAFC',
+                      color: '#64748B',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem'
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={uploadingMedia || !mediaFile}
+                    style={{
+                      background: uploadingMedia || !mediaFile ? '#CBD5E1' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      color: '#FFF',
+                      border: 'none',
+                      padding: '12px 28px',
+                      borderRadius: '12px',
+                      cursor: uploadingMedia || !mediaFile ? 'not-allowed' : 'pointer',
+                      fontWeight: 700,
+                      fontSize: '0.9rem',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      boxShadow: uploadingMedia || !mediaFile ? 'none' : '0 4px 15px rgba(255,153,51,0.3)',
+                      width: 'fit-content'
+                    }}
+                  >
+                    <PlusCircle size={18} />
+                    {uploadingMedia ? (lang === 'en' ? 'Uploading...' : 'अपलोड हो रहा...') : (lang === 'en' ? 'Post to Gallery' : 'गैलरी में पोस्ट करें')}
+                  </button>
+                </form>
               </div>
 
-              <form onSubmit={handleSave} className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', marginBottom: '6px', fontWeight: 600 }}>
-                    {lang === 'en' ? 'Full Name' : 'पूरा नाम'}
-                  </label>
-                  <input 
-                    type="text" 
-                    value={formData.name} 
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #E2E8F0', background: '#FFF', color: '#1E293B', outline: 'none' }}
-                  />
+              {/* Gallery */}
+              <div style={{
+                background: '#FFF',
+                borderRadius: '20px',
+                padding: '28px',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '16px',
+                  marginBottom: '24px'
+                }}>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
+                      {lang === 'en' ? 'My Gallery' : 'मेरी गैलरी'} ({filteredMedia.length})
+                    </h4>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', background: '#F1F5F9', padding: '4px', borderRadius: '12px' }}>
+                    {['all', 'image', 'video'].map((filter) => (
+                      <button
+                        key={filter}
+                        onClick={() => setMediaFilter(filter)}
+                        style={{
+                          padding: '6px 16px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: mediaFilter === filter ? '#FFF' : 'transparent',
+                          color: mediaFilter === filter ? '#FF6B00' : '#64748B',
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          boxShadow: mediaFilter === filter ? '0 2px 8px rgba(0,0,0,0.05)' : 'none',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        {filter === 'all' && (lang === 'en' ? `All (${userMedia.length})` : `सभी (${userMedia.length})`)}
+                        {filter === 'image' && (lang === 'en' ? `Photos (${photosCount})` : `फ़ोटो (${photosCount})`)}
+                        {filter === 'video' && (lang === 'en' ? `Videos (${videosCount})` : `वीडियो (${videosCount})`)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', marginBottom: '6px', fontWeight: 600 }}>
-                    {lang === 'en' ? 'Phone Number' : 'फोन नंबर'}
-                  </label>
-                  <input 
-                    type="text" 
-                    value={formData.phone} 
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #E2E8F0', background: '#FFF', color: '#1E293B', outline: 'none' }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', marginBottom: '6px', fontWeight: 600 }}>
-                    {lang === 'en' ? 'City' : 'शहर'}
-                  </label>
-                  <input 
-                    type="text" 
-                    value={formData.city} 
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #E2E8F0', background: '#FFF', color: '#1E293B', outline: 'none' }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', marginBottom: '6px', fontWeight: 600 }}>
-                    {lang === 'en' ? 'State' : 'राज्य'}
-                  </label>
-                  <input 
-                    type="text" 
-                    value={formData.state} 
-                    onChange={(e) => setFormData({...formData, state: e.target.value})}
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #E2E8F0', background: '#FFF', color: '#1E293B', outline: 'none' }}
-                  />
-                </div>
-
-                <div style={{ gridColumn: 'span 2' }}>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', marginBottom: '6px', fontWeight: 600 }}>
-                    {lang === 'en' ? 'Address' : 'पता'}
-                  </label>
-                  <input 
-                    type="text" 
-                    value={formData.address} 
-                    onChange={(e) => setFormData({...formData, address: e.target.value})}
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #E2E8F0', background: '#FFF', color: '#1E293B', outline: 'none' }}
-                  />
-                </div>
-              </form>
+                {filteredMedia.length === 0 ? (
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '60px 20px',
+                    background: '#F8FAFC',
+                    borderRadius: '16px',
+                    border: '1px dashed #CBD5E1'
+                  }}>
+                    <Image size={44} color="#CBD5E1" style={{ marginBottom: '12px' }} />
+                    <p style={{ margin: 0, fontWeight: 600, fontSize: '0.95rem', color: '#94A3B8' }}>
+                      {lang === 'en' ? 'No media posts yet' : 'अभी तक कोई मीडिया पोस्ट नहीं'}
+                    </p>
+                    <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#CBD5E1' }}>
+                      {lang === 'en' ? 'Upload your first photo or video above' : 'ऊपर अपनी पहली फ़ोटो या वीडियो अपलोड करें'}
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                    gap: '16px'
+                  }}>
+                    {filteredMedia.map(item => {
+                      const src = item.src || '';
+                      const isVideo = item.type === 'video' || src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov');
+                      return (
+                        <div
+                          key={item.id}
+                          className="media-grid-item"
+                          style={{
+                            borderRadius: '16px',
+                            overflow: 'hidden',
+                            border: '1px solid #E2E8F0',
+                            background: '#F8FAFC',
+                            position: 'relative',
+                            boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          <div style={{ height: '160px', position: 'relative', background: '#000' }}>
+                            {isVideo ? (
+                              <video src={getMediaUrl(src)} controls style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                              <img src={getMediaUrl(src)} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            )}
+                            <span style={{
+                              position: 'absolute',
+                              top: '8px',
+                              left: '8px',
+                              background: isVideo ? '#3B82F6' : '#FF6B00',
+                              color: '#FFF',
+                              fontSize: '0.6rem',
+                              fontWeight: 800,
+                              padding: '3px 10px',
+                              borderRadius: '6px',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px'
+                            }}>
+                              {isVideo ? 'VIDEO' : 'PHOTO'}
+                            </span>
+                          </div>
+                          <div style={{
+                            padding: '12px 16px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}>
+                            <div style={{ flex: 1 }}>
+                              <h5 style={{
+                                margin: 0,
+                                fontSize: '0.85rem',
+                                color: '#0F172A',
+                                fontWeight: 700,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                maxWidth: '130px'
+                              }}>
+                                {item.title || (lang === 'en' ? 'Untitled' : 'बिना शीर्षक')}
+                              </h5>
+                            </div>
+                            <button
+                              onClick={() => handleDeleteMedia(item.id)}
+                              style={{
+                                background: '#FEE2E2',
+                                color: '#DC2626',
+                                border: 'none',
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'all 0.2s ease'
+                              }}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ── TAB 5: PUBLIC PROFILE VIEW ───────────────────────────────── */}
-        {activeDashTab === 'public_profile' && (
-          <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            <ProfilePage partner={user} setActiveTab={setActiveTab} />
-          </div>
-        )}
+          {/* PUBLIC PROFILE */}
+          {activeDashTab === 'public_profile' && (
+            <div className="fade-in">
+              <ProfilePage partner={user} setActiveTab={setActiveTab} />
+            </div>
+          )}
+
+          {/* PROFILE */}
+          {activeDashTab === 'profile' && (
+            <div className="fade-in">
+              <div style={{
+                background: '#FFF',
+                borderRadius: '20px',
+                padding: '30px',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '12px',
+                  marginBottom: '24px'
+                }}>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}>
+                      {lang === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें'}
+                    </h4>
+                    <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: '#64748B' }}>
+                      {lang === 'en' ? 'Update your personal information' : 'अपनी व्यक्तिगत जानकारी अपडेट करें'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleSave}
+                    style={{
+                      background: 'linear-gradient(135deg, #16A34A, #15803D)',
+                      color: '#FFF',
+                      border: 'none',
+                      padding: '10px 28px',
+                      borderRadius: '12px',
+                      fontWeight: 700,
+                      fontSize: '0.9rem',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 15px rgba(22,163,74,0.3)',
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    {lang === 'en' ? 'Save Changes' : 'सहेजें'}
+                  </button>
+                </div>
+
+                <form onSubmit={handleSave} style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '16px'
+                }}>
+                  {[
+                    { label: lang === 'en' ? 'Full Name' : 'पूरा नाम', key: 'name', type: 'text' },
+                    { label: lang === 'en' ? 'Phone' : 'फोन', key: 'phone', type: 'text' },
+                    { label: lang === 'en' ? 'City' : 'शहर', key: 'city', type: 'text' },
+                    { label: lang === 'en' ? 'State' : 'राज्य', key: 'state', type: 'text' },
+                  ].map((field) => (
+                    <div key={field.key}>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        color: '#64748B',
+                        marginBottom: '4px'
+                      }}>
+                        {field.label}
+                      </label>
+                      <input
+                        type={field.type}
+                        value={formData[field.key] || ''}
+                        onChange={(e) => setFormData({...formData, [field.key]: e.target.value})}
+                        style={{
+                          width: '100%',
+                          padding: '10px 14px',
+                          borderRadius: '10px',
+                          border: '1px solid #E2E8F0',
+                          background: '#FFF',
+                          color: '#1E293B',
+                          outline: 'none',
+                          fontSize: '0.9rem',
+                          transition: 'all 0.2s ease'
+                        }}
+                      />
+                    </div>
+                  ))}
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      color: '#64748B',
+                      marginBottom: '4px'
+                    }}>
+                      {lang === 'en' ? 'Address' : 'पता'}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.address || ''}
+                      onChange={(e) => setFormData({...formData, address: e.target.value})}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: '10px',
+                        border: '1px solid #E2E8F0',
+                        background: '#FFF',
+                        color: '#1E293B',
+                        outline: 'none',
+                        fontSize: '0.9rem',
+                        transition: 'all 0.2s ease'
+                      }}
+                    />
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
   );
-}
+}  

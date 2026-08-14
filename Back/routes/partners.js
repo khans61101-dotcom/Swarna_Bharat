@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
       FROM users u
       JOIN roles r ON u.role_id = r.id
       LEFT JOIN organization_details o ON u.id = o.user_id
-      WHERE r.name IN ('Agency', 'NGO', 'Member', 'User')
+      WHERE r.name IN ('Agency', 'NGO')
       ORDER BY r.name, u.created_at DESC
     `);
     res.json({ partners: rows });

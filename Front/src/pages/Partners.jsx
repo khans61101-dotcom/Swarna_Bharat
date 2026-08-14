@@ -33,14 +33,14 @@ export default function PartnersPage({
       });
   }, []);
 
-  const safePartners = Array.isArray(partners) ? partners : [];
+  const rawPartners = Array.isArray(partners) ? partners : [];
+  const safePartners = rawPartners.filter(p => p && (p.role_name === 'Agency' || p.role_name === 'NGO'));
 
   const getRoleIcon = (roleName) => {
     switch(roleName) {
       case 'Agency': return <Building2 size={18} />;
       case 'NGO': return <Heart size={18} />;
-      case 'Member': return <Users size={18} />;
-      default: return <User size={18} />;
+      default: return <Building2 size={18} />;
     }
   };
 
@@ -48,8 +48,7 @@ export default function PartnersPage({
     switch(roleName) {
       case 'Agency': return { bg: '#FFF7ED', color: '#EA580C', border: '#FDBA74', hover: '#FFEDD5' };
       case 'NGO': return { bg: '#FDF2F8', color: '#DB2777', border: '#F9A8D4', hover: '#FCE7F3' };
-      case 'Member': return { bg: '#F5F3FF', color: '#7C3AED', border: '#C4B5FD', hover: '#EDE9FE' };
-      default: return { bg: '#EFF6FF', color: '#2563EB', border: '#93C5FD', hover: '#DBEAFE' };
+      default: return { bg: '#FFF7ED', color: '#EA580C', border: '#FDBA74', hover: '#FFEDD5' };
     }
   };
 
@@ -66,9 +65,7 @@ export default function PartnersPage({
   const stats = {
     All: safePartners.length,
     Agency: getRoleStats('Agency'),
-    NGO: getRoleStats('NGO'),
-    Member: getRoleStats('Member'),
-    User: getRoleStats('User')
+    NGO: getRoleStats('NGO')
   };
 
   return (
@@ -144,7 +141,7 @@ export default function PartnersPage({
         flexWrap: 'wrap',
         padding: '0 10px'
       }}>
-        {['All', 'Agency', 'NGO', 'Member', 'User'].map(role => {
+        {['All', 'Agency', 'NGO'].map(role => { 
           const isActive = filter === role;
           const colors = getRoleColor(role);
           
