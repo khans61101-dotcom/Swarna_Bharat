@@ -858,6 +858,31 @@ async function uploadFile(fileInput) {
     }
 }
 
+async function uploadMultipleFiles(fileInput) {
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) return [];
+    
+    showLoading('Uploading gallery images...');
+    
+    try {
+        const formData = new FormData();
+        for (let i = 0; i < fileInput.files.length; i++) {
+            formData.append('images', fileInput.files[i]);
+        }
+
+        const res = await fetch(`${API_URL}/upload/multiple`, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+        hideLoading();
+        return Array.isArray(data.urls) ? data.urls : [];
+    } catch (error) {
+        hideLoading();
+        console.error('Multiple upload error:', error);
+        return [];
+    }
+}
+
 // ==============================
 // FORM LISTENERS
 // ==============================
@@ -971,7 +996,10 @@ function setupFormListeners() {
             showLoading('Creating event...');
             
             const eventImgFile = document.getElementById('eventImage');
+            const eventGalleryFile = document.getElementById('eventGallery');
+
             const imageUrl = await uploadFile(eventImgFile);
+            const galleryUrls = await uploadMultipleFiles(eventGalleryFile);
 
             const body = {
                 day: document.getElementById('eventDay').value,
@@ -986,6 +1014,7 @@ function setupFormListeners() {
                 desc: document.getElementById('eventDesc').value,
                 desc_hi: document.getElementById('eventDescHi').value,
                 image: imageUrl,
+                gallery_images: galleryUrls
             };
             await sendPost(`${API_URL}/events`, body, eventForm, loadEvents, 'eventError');
         });

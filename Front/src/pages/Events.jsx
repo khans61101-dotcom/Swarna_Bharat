@@ -62,7 +62,7 @@ const allEventsList = [
 
 import { API_URL } from '../config';
 
-export default function EventsPage() {
+export default function EventsPage({ onSelectEvent, setSelectedEvent, setActiveTab }) {
   const { lang, t } = useLang();
   const ep = t.eventsPage;
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -80,20 +80,30 @@ export default function EventsPage() {
             month: item.month || 'JAN',
             year: item.year || '2026',
             title: item.title,
-            titleHi: item.title_hi || item.title,
+            title_hi: item.title_hi || item.title,
             location: item.location || 'New Delhi',
-            locationHi: item.location_hi || item.location || 'नई दिल्ली',
+            location_hi: item.location_hi || item.location || 'नई दिल्ली',
             category: item.category || 'National Conclave',
-            categoryHi: item.category_hi || item.category || 'राष्ट्रीय सम्मेलन',
+            category_hi: item.category_hi || item.category || 'राष्ट्रीय सम्मेलन',
             image: item.image || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=600&q=80',
+            gallery_images: item.gallery_images || [],
             desc: item.desc || '',
-            descHi: item.desc_hi || item.desc || ''
+            desc_hi: item.desc_hi || item.desc || ''
           }));
           setEventsList([...formatted, ...allEventsList]);
         }
       })
       .catch(err => console.log('Using static events fallback'));
   }, []);
+
+  const handleEventClick = (evt) => {
+    if (onSelectEvent) {
+      onSelectEvent(evt);
+    } else if (setSelectedEvent && setActiveTab) {
+      setSelectedEvent(evt);
+      setActiveTab('EventDetails');
+    }
+  };
 
   const categories = lang === 'en'
     ? ['All', 'National Conclave', 'Global Summit', 'Youth Forum', 'National Address', 'Cultural & Wellness']
@@ -181,12 +191,13 @@ export default function EventsPage() {
           filteredEvents.map((evt) => (
             <div 
               key={evt.id}
+              onClick={() => handleEventClick(evt)}
               style={{
-                background: '#FFF',
+                background: 'var(--card-bg)',
                 borderRadius: '16px',
                 overflow: 'hidden',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-                border: '1px solid #E2E8F0',
+                border: '1px solid var(--card-border)',
                 display: 'grid',
                 gridTemplateColumns: 'minmax(120px, 160px) 1fr minmax(200px, 280px)',
                 transition: 'transform 0.3s ease, box-shadow 0.3s ease',
@@ -203,8 +214,8 @@ export default function EventsPage() {
             >
               {/* Date Column */}
               <div style={{
-                background: '#F8FAFC',
-                borderRight: '1px solid #E2E8F0',
+                background: 'var(--bg-alt)',
+                borderRight: '1px solid var(--card-border)',
                 padding: '25px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -215,10 +226,10 @@ export default function EventsPage() {
                 <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#16A34A', textTransform: 'uppercase', letterSpacing: '1px' }}>
                   {evt.month}
                 </span>
-                <span style={{ fontSize: '2.2rem', fontWeight: 800, color: '#1E293B', lineHeight: '1' }}>
+                <span style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-dark)', lineHeight: '1' }}>
                   {evt.day}
                 </span>
-                <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600, marginTop: '4px' }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, marginTop: '4px' }}>
                   {evt.year}
                 </span>
               </div>
@@ -226,16 +237,30 @@ export default function EventsPage() {
               {/* Event Content Details */}
               <div style={{ padding: '25px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <span style={{ color: '#FF9933', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
-                  {evt.category}
+                  {(lang === 'hi' && evt.categoryHi) ? evt.categoryHi : evt.category}
                 </span>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1A2238', marginBottom: '10px', lineHeight: '1.35' }}>
-                  {evt.title}
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-dark)', marginBottom: '10px', lineHeight: '1.35' }}>
+                  {(lang === 'hi' && evt.titleHi) ? evt.titleHi : evt.title}
                 </h3>
-                <p style={{ color: '#64748B', fontSize: '0.9rem', marginBottom: '12px', lineHeight: '1.5' }}>
-                  {evt.desc}
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '14px', lineHeight: '1.5' }}>
+                  {(lang === 'hi' && evt.descHi) ? evt.descHi : evt.desc}
                 </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#64748B', fontSize: '0.85rem', fontWeight: 600 }}>
-                  <MapPin size={16} color="#FF9933" /> {evt.location}
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600 }}>
+                    <MapPin size={16} color="#FF9933" /> {(lang === 'hi' && evt.locationHi) ? evt.locationHi : evt.location}
+                  </div>
+
+                  <span style={{
+                    color: '#FF9933',
+                    fontSize: '0.88rem',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                    {lang === 'en' ? 'View Details' : 'विवरण देखें'} <ChevronRight size={16} />
+                  </span>
                 </div>
               </div>
 

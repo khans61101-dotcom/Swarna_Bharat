@@ -70,6 +70,7 @@ import DownloadAppPage from './pages/DownloadApp';
 import EventsPage from './pages/Events';
 import GalleryPage from './pages/Gallery';
 import PartnersPage from './pages/Partners';
+import EventDetailsPage from './pages/EventDetails';
 import logoImg from './assets/logo.jpg';
 import { useLang } from './LanguageContext';
 import { API_URL, getMediaUrl } from './config';
@@ -222,6 +223,7 @@ export default function App() {
     if (route === 'enquiry') return 'Enquiry';
     if (route === 'partners') return 'Partners';
     if (route === 'partnerdetails' || route === 'partner-details') return 'PartnerDetails';
+    if (route === 'eventdetails' || route === 'event-details') return 'EventDetails';
     if (route === 'download') return 'DownloadApp';
     if (route === 'profile') return 'ProfileDetails';
     return 'Home';
@@ -239,6 +241,7 @@ export default function App() {
     else if (tab === 'About') routeName = 'about';
     else if (tab === 'News') routeName = 'news';
     else if (tab === 'Events') routeName = 'events';
+    else if (tab === 'EventDetails') routeName = 'eventdetails';
     else if (tab === 'Videos') routeName = 'videos';
     else if (tab === 'Gallery') routeName = 'gallery';
     else if (tab === 'Enquiry') routeName = 'enquiry';
@@ -278,6 +281,24 @@ export default function App() {
       try { localStorage.setItem('selectedPartner', JSON.stringify(partner)); } catch (e) {}
     } else {
       localStorage.removeItem('selectedPartner');
+    }
+  };
+
+  const [selectedEvent, setSelectedEventState] = useState(() => {
+    try {
+      const saved = localStorage.getItem('selectedEvent');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const setSelectedEvent = (evt) => {
+    setSelectedEventState(evt);
+    if (evt) {
+      try { localStorage.setItem('selectedEvent', JSON.stringify(evt)); } catch (e) {}
+    } else {
+      localStorage.removeItem('selectedEvent');
     }
   };
   const [selectedSector, setSelectedSector] = useState('rural');
@@ -811,7 +832,8 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
       {/* Main Dynamic View Content */}
       {activeTab === 'About' && <AboutPage />}
       {activeTab === 'News' && <NewsPage />}
-      {activeTab === 'Events' && <EventsPage />}
+      {activeTab === 'Events' && <EventsPage setSelectedEvent={setSelectedEvent} setActiveTab={setActiveTab} />}
+      {activeTab === 'EventDetails' && <EventDetailsPage event={selectedEvent} setActiveTab={setActiveTab} />}
       {activeTab === 'Videos' && <VideosPage />}
       {activeTab === 'Gallery' && <GalleryPage />}
       {activeTab === 'Enquiry' && <EnquiryPage />}

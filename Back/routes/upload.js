@@ -57,6 +57,13 @@ router.post('/', imageUpload.single('image'), (req, res) => {
   res.json({ imageUrl: `${baseUrl}${fileUrl}`, url: fileUrl });
 });
 
+// ── POST /api/upload/multiple  ── multiple image upload ────────────────────
+router.post('/multiple', imageUpload.array('images', 10), (req, res) => {
+  if (!req.files || req.files.length === 0) return res.status(400).json({ error: 'No files uploaded' });
+  const urls = req.files.map(f => `/uploads/${f.filename}`);
+  res.json({ urls });
+});
+
 // ── POST /api/upload/proof  ── task proof upload (image or PDF) ────────────
 router.post('/proof', (req, res, next) => {
   proofUpload.single('proof_file')(req, res, (err) => {
