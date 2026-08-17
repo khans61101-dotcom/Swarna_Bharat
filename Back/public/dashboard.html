@@ -814,42 +814,117 @@
         <!-- TAB 0: MAIN DASHBOARD OVERVIEW -->
         <div id="overviewTab" class="tab-content active">
           
-          <!-- HORIZONTAL METRICS KPI STRIP (StarAdmin Style) -->
+          <!-- STARADMIN KPI STRIP USING OUR ACTUAL SYSTEM COUNTERS -->
           <div class="metrics-strip">
             <div class="metric-box">
-              <div class="metric-label">Bounce Rate</div>
-              <div class="metric-num">32.53%</div>
-              <div class="metric-trend trend-down">▼ -0.5%</div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">ACCOUNTS</div>
+                  <div class="metric-num" id="countUsers">0</div>
+                </div>
+                <div class="stat-icon" style="color: #2563eb; background: #eff6ff; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">👥</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Active Users</div>
             </div>
 
             <div class="metric-box">
-              <div class="metric-label">Page Views</div>
-              <div class="metric-num">7,682</div>
-              <div class="metric-trend trend-up">▲ +0.1%</div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">NEWS ARTICLES</div>
+                  <div class="metric-num" id="countNews">0</div>
+                </div>
+                <div class="stat-icon" style="color: #ea580c; background: #fff7ed; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">📰</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Published</div>
             </div>
 
             <div class="metric-box">
-              <div class="metric-label">New Sessions</div>
-              <div class="metric-num">68.8</div>
-              <div class="metric-trend trend-down">▼ -68.8</div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">EVENTS</div>
+                  <div class="metric-num" id="countEvents">0</div>
+                </div>
+                <div class="stat-icon" style="color: #8b5cf6; background: #f5f3ff; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">📅</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Scheduled</div>
             </div>
 
             <div class="metric-box">
-              <div class="metric-label">Avg. Time on Site</div>
-              <div class="metric-num">2m:35s</div>
-              <div class="metric-trend trend-up">▲ +0.8%</div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">GALLERY PHOTOS</div>
+                  <div class="metric-num" id="countGallery">0</div>
+                </div>
+                <div class="stat-icon" style="color: #10b981; background: #ecfdf5; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">🖼️</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Uploaded</div>
             </div>
 
             <div class="metric-box">
-              <div class="metric-label">Active Accounts</div>
-              <div class="metric-num" id="countUsers">0</div>
-              <div class="metric-trend trend-up">▲ +12%</div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">BLOGS</div>
+                  <div class="metric-num" id="countBlogs">0</div>
+                </div>
+                <div class="stat-icon" style="color: #f59e0b; background: #fef3c7; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">✍️</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Active Posts</div>
             </div>
 
             <div class="metric-box">
-              <div class="metric-label">Pending Enquiries</div>
-              <div class="metric-num" id="countEnquiries">0</div>
-              <div class="metric-trend trend-up">▲ +4.2%</div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">PENDING ENQUIRIES</div>
+                  <div class="metric-num" id="countEnquiries">0</div>
+                </div>
+                <div class="stat-icon" style="color: #ef4444; background: #fef2f2; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">📩</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Action Req.</div>
+            </div>
+
+            <!-- Task 12 Conditional Widgets: Wallet, Assigned Tasks, Completed Tasks, Org Completion -->
+            <div class="metric-box" id="cardWallet" style="display:none;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">WALLET BALANCE</div>
+                  <div class="metric-num" id="countWalletPts">0 Pts</div>
+                </div>
+                <div class="stat-icon" style="color: #f59e0b; background: #fef3c7; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">💰</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Points</div>
+            </div>
+
+            <div class="metric-box" id="cardAssignedTasks" style="display:none;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">ASSIGNED TASKS</div>
+                  <div class="metric-num" id="countAssignedTasks">0</div>
+                </div>
+                <div class="stat-icon" style="color: #2563eb; background: #eff6ff; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">📋</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Active</div>
+            </div>
+
+            <div class="metric-box" id="cardCompletedTasks" style="display:none;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">COMPLETED TASKS</div>
+                  <div class="metric-num" id="countCompletedTasks">0</div>
+                </div>
+                <div class="stat-icon" style="color: #10b981; background: #ecfdf5; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">✅</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Done</div>
+            </div>
+
+            <div class="metric-box" id="cardOrgCompletion" style="display:none;cursor:pointer;" onclick="switchTab('profileTab', document.querySelector('[data-tab=profileTab]'))">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  <div class="metric-label">PROFILE DONE</div>
+                  <div class="metric-num" id="countOrgPct" style="font-size:1.6rem;">0%</div>
+                </div>
+                <div class="stat-icon" id="cardOrgIcon" style="color:#dc2626; background:#fef2f2; width:38px; height:38px; font-size:1.2rem; border-radius:10px;">🏢</div>
+              </div>
+              <div class="metric-trend trend-up">▲ Progress</div>
             </div>
           </div>
 
@@ -911,10 +986,10 @@
               <div class="card-blue-summary">
                 <div>
                   <div class="blue-card-title">Status Summary</div>
-                  <div class="blue-card-sub">Closed Value</div>
+                  <div class="blue-card-sub">Pending Enquiries & Actions</div>
                 </div>
 
-                <div class="blue-card-val" id="closedStatusVal">357</div>
+                <div class="blue-card-val" id="closedStatusVal">0</div>
 
                 <svg width="100%" height="45" viewBox="0 0 200 45" style="margin-top: 10px;">
                   <path d="M 0 35 Q 50 10 100 30 T 200 15" fill="none" stroke="#38bdf8" stroke-width="3" />
@@ -936,86 +1011,6 @@
                   <div style="font-size: 0.72rem; color: #16a34a; font-weight: 700;">Visits per day</div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- SYSTEM MODULE STATS GRID -->
-          <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 1rem;">System Module Overview</h3>
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-info">
-                <h4>Accounts</h4>
-                <div class="stat-value" id="countUsers">0</div>
-              </div>
-              <div class="stat-icon" style="color: #2563eb; background: #eff6ff;">👥</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-info">
-                <h4>News Articles</h4>
-                <div class="stat-value" id="countNews">0</div>
-              </div>
-              <div class="stat-icon" style="color: #ea580c; background: #fff7ed;">📰</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-info">
-                <h4>Events</h4>
-                <div class="stat-value" id="countEvents">0</div>
-              </div>
-              <div class="stat-icon" style="color: #8b5cf6; background: #f5f3ff;">📅</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-info">
-                <h4>Gallery Photos</h4>
-                <div class="stat-value" id="countGallery">0</div>
-              </div>
-              <div class="stat-icon" style="color: #10b981; background: #ecfdf5;">🖼️</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-info">
-                <h4>Blogs</h4>
-                <div class="stat-value" id="countBlogs">0</div>
-              </div>
-              <div class="stat-icon" style="color: #f59e0b; background: #fef3c7;">✍️</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-info">
-                <h4>Pending Enquiries</h4>
-                <div class="stat-value" id="countEnquiries">0</div>
-              </div>
-              <div class="stat-icon" style="color: #ef4444; background: #fef2f2;">📩</div>
-            </div>
-
-            <!-- Task 12 Widgets: Wallet, Tasks, Profile -->
-            <div class="stat-card" id="cardWallet" style="display:none;">
-              <div class="stat-info">
-                <h4>Wallet Balance</h4>
-                <div class="stat-value" id="countWalletPts">0 Pts</div>
-              </div>
-              <div class="stat-icon" style="color: #f59e0b; background: #fef3c7;">💰</div>
-            </div>
-
-            <div class="stat-card" id="cardAssignedTasks" style="display:none;">
-              <div class="stat-info">
-                <h4>Assigned Tasks</h4>
-                <div class="stat-value" id="countAssignedTasks">0</div>
-              </div>
-              <div class="stat-icon" style="color: #2563eb; background: #eff6ff;">📋</div>
-            </div>
-
-            <div class="stat-card" id="cardCompletedTasks" style="display:none;">
-              <div class="stat-info">
-                <h4>Completed Tasks</h4>
-                <div class="stat-value" id="countCompletedTasks">0</div>
-              </div>
-              <div class="stat-icon" style="color: #10b981; background: #ecfdf5;">✅</div>
-            </div>
-
-            <div class="stat-card" id="cardOrgCompletion" style="display:none;cursor:pointer;" onclick="switchTab('profileTab', document.querySelector('[data-tab=profileTab]'))">
-              <div class="stat-info">
-                <h4>Profile Done</h4>
-                <div class="stat-value" id="countOrgPct" style="font-size:1.6rem;">0%</div>
-              </div>
-              <div class="stat-icon" id="cardOrgIcon" style="color:#dc2626;background:#fef2f2;">🏢</div>
             </div>
           </div>
 

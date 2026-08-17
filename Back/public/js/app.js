@@ -699,7 +699,9 @@ async function loadOverviewStats() {
             const enqData = await enqRes.json();
             const pendingCount = enqData.filter(item => item.status === 'Pending').length;
             const countEl = document.getElementById('countEnquiries');
-            if (countEl) countEl.textContent = pendingCount || 0;
+            if (countEl) countEl.textContent = pendingCount;
+            const closedStatusVal = document.getElementById('closedStatusVal');
+            if (closedStatusVal) closedStatusVal.textContent = pendingCount;
         }
 
         // ── Fetch Wallet Data ────────────────────────────────────────────────
