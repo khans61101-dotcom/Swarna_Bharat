@@ -1408,22 +1408,25 @@ function renderAccountsTree(usersList = null) {
 
     const roleFilter = document.getElementById('treeRoleFilter')?.value || 'All';
     let filterSet = null;
-    if (roleFilter !== 'All') {
-            ">
-                No accounts match the current filter or search criteria.
-            </div>
-        `;
+        if (roleFilter !== 'All') {
+        filterSet = new Set(fullList.filter(user => user.role_name === roleFilter).map(user => Number(user.id)));
+    }
+
+    const treeDataArray = buildUserTreeStructure(fullList, currentTreeRootId, filterSet);
+    if (!Array.isArray(treeDataArray) || treeDataArray.length === 0) {
+        treeContent.innerHTML = `<div style="color:#94a3b8; padding:3rem; text-align:center;">No accounts match the current filter or search criteria.</div>`;
         return;
     }
 
-    // Reset scale
-    // treeContent.style.transform = 'scale(1)';  
-    fitTreeToScreen();  
+    const rootData = treeDataArray.length === 1 ? treeDataArray[0] : {
+        id: 0,
+        name: 'Swarna Bharat Network',
+        role_name: 'Root System',
+        referral_code: 'ROOT-SYSTEM',
+        children: treeDataArray
+    };
 
-    // Render complete hierarchy
-    treeContent.innerHTML = treeData
-        .map(rootNode => renderTreeNodeHTML(rootNode, true))
-        .join('');
+    renderD3TreeDiagram(rootData);
 }   
 
 function buildUserTreeStructure(allUsers, rootId = null, filterSet = null) {
