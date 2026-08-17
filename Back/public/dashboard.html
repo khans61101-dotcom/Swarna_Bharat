@@ -676,8 +676,8 @@
       <div class="sidebar-brand">
         <div class="brand-logo-emblem">⚡</div>
         <div class="brand-text">
-          <h2>Star<span>Admin</span></h2>
-          <small>SwarnaIndia Portal v2.0</small>
+          <h2>Swarn<span>Admin</span></h2> 
+          <small>Swarn-India Portal v2.0</small>
         </div>
       </div>
 
@@ -765,9 +765,9 @@
             🔔 <span class="notification-dot"></span>
           </div>
 
-          <button class="btn-action-outline">‹ Share</button>
+          <!-- <button class="btn-action-outline">‹ Share</button>
           <button class="btn-action-outline">🖨 Print</button>
-          <button class="btn-export">+ Export</button>
+          <button class="btn-export">+ Export</button> --> 
 
           <label class="theme-label" style="cursor:pointer; font-size:1.1rem;" onclick="toggleTheme()" title="Toggle Dark Theme">🌙</label>
           <button class="btn-action-outline" onclick="logout()" style="color:#ef4444; border-color:#fca5a5;">🚪 Logout</button>
@@ -798,12 +798,7 @@
         </div>
 
         <!-- SUB NAV PILLS -->
-        <div class="dash-sub-nav">
-          <span class="dash-nav-pill active">Overview</span>
-          <span class="dash-nav-pill">Audiences</span>
-          <span class="dash-nav-pill">Demographics</span>
-          <span class="dash-nav-pill">More</span>
-        </div>
+        
 
         <!-- PROFILE COMPLETION NOTIFICATION BANNER -->
         <div id="profileCompletionBanner" style="display:none; background:#fff3cd; color:#856404; padding:1rem 1.5rem; border-radius:14px; margin-bottom:1.5rem; border:1px solid #ffeeba; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
@@ -935,7 +930,7 @@
               <div class="chart-header">
                 <div>
                   <div class="chart-title">Performance Line Chart</div>
-                  <div class="chart-sub">Weekly summary of portal visits, activities & user engagements</div>
+                  <div class="chart-sub" id="chartSubText">Weekly summary of portal visits, activities & user engagements</div>
                 </div>
                 <div class="chart-legend">
                   <span class="legend-this-week">● This week</span>
@@ -945,7 +940,7 @@
 
               <!-- High-end SVG Line Graph with Area Fills -->
               <div style="width: 100%; height: 210px; margin-top: 15px; position: relative;">
-                <svg width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none" style="overflow: visible;">
+                <svg id="performanceChartSvg" width="100%" height="100%" viewBox="0 0 600 200" preserveAspectRatio="none" style="overflow: visible;">
                   <defs>
                     <linearGradient id="gradBlue" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stop-color="#2563eb" stop-opacity="0.35"/>
@@ -1007,7 +1002,7 @@
 
                 <div>
                   <div style="font-size: 0.78rem; color: #64748b; font-weight: 600;">Total Visitors</div>
-                  <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-top: 2px;">9,065</div>
+                  <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-top: 2px;" id="totalVisitorsVal">9,065</div>
                   <div style="font-size: 0.72rem; color: #16a34a; font-weight: 700;">Visits per day</div>
                 </div>
               </div>
@@ -1109,7 +1104,7 @@
                 </button>
               </div>
 
-              <button class="btn" onclick="window.location.href='add-user.html'" style="background: linear-gradient(135deg, #FF9933, #FF6B00); color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 40px; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 14px rgba(255, 153, 51, 0.3);">
+              <button class="btn" onclick="window.location.href='add-user.html'" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 40px; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
                 + Add Account
               </button>
             </div>
@@ -1176,9 +1171,9 @@
       <div id="accountTreeModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:1rem;">
         <div style="background:var(--bg-card);border-radius:32px;padding:0;width:100%;max-width:540px;box-shadow:0 40px 80px -20px rgba(0,0,0,0.3);position:relative;overflow:hidden;border:1px solid var(--border);color:var(--text-primary);">
           <!-- Header bar -->
-          <div style="background:linear-gradient(135deg,#FF9933,#FF6B00);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;color:white;">
+          <div style="background:linear-gradient(135deg,#2563eb,#1d4ed8);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;color:white;">
             <div style="display:flex;align-items:center;gap:12px;">
-              <div id="modalUserAvatar" style="width:48px;height:48px;border-radius:50%;background:white;color:#FF6B00;font-weight:800;font-size:1.2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+              <div id="modalUserAvatar" style="width:48px;height:48px;border-radius:50%;background:white;color:#1d4ed8;font-weight:800;font-size:1.2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);">
                 AD
               </div>
               <div>
@@ -1223,7 +1218,7 @@
 
             <!-- Action buttons -->
             <div style="display:flex;gap:12px;justify-content:flex-end;">
-              <button id="btnFocusUserTree" onclick="focusSelectedUserTree()" style="background:linear-gradient(135deg,#FF9933,#FF6B00);color:white;border:none;padding:0.7rem 1.6rem;border-radius:50px;font-weight:700;font-size:0.88rem;cursor:pointer;box-shadow:0 4px 14px rgba(255,153,51,0.3);display:flex;align-items:center;gap:6px;">
+              <button id="btnFocusUserTree" onclick="focusSelectedUserTree()" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;padding:0.7rem 1.6rem;border-radius:50px;font-weight:700;font-size:0.88rem;cursor:pointer;box-shadow:0 4px 14px rgba(37, 99, 235,0.3);display:flex;align-items:center;gap:6px;">
                 🌳 View Downline Tree
               </button>
               <button onclick="closeAccountTreeModal()" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);padding:0.7rem 1.4rem;border-radius:50px;font-weight:600;font-size:0.88rem;cursor:pointer;">
@@ -1565,7 +1560,7 @@
                 <button type="button" class="btn" onclick="resetHeroForm()" style="background: #E2E8F0; color: #475569; border-radius: 40px;">
                   Cancel / Reset Form
                 </button>
-                <button type="submit" class="btn" style="background: linear-gradient(135deg, #FF9933, #FF6B00); padding: 0.8rem 2.8rem; font-weight: 700; border-radius: 40px; color: white;">
+                <button type="submit" class="btn" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 0.8rem 2.8rem; font-weight: 700; border-radius: 40px; color: white;">
                   💾 Save & Publish Hero Banner
                 </button>
               </div>
@@ -1582,7 +1577,7 @@
               <h3 style="margin:0; font-size:1.35rem; color:#0F172A; font-weight:800;">📄 Important Documents & Official Circulars</h3>
               <p style="color:#64748B; font-size:0.88rem; margin-top:4px;">Manage official policy documents, circulars, application forms, gazette notifications, and downloads.</p>
             </div>
-            <button class="btn btn-primary" onclick="window.location.href='add-document.html'" style="border-radius: 40px; padding: 0.65rem 1.6rem; font-weight: 700; background: linear-gradient(135deg, #FF9933, #FF6B00); color: white; border: none; cursor: pointer;">
+            <button class="btn btn-primary" onclick="window.location.href='add-document.html'" style="border-radius: 40px; padding: 0.65rem 1.6rem; font-weight: 700; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; cursor: pointer;">
               + Upload New Document
             </button>
           </div>
