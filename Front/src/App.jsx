@@ -331,6 +331,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
   const [heroList, setHeroList] = useState([]);
   const [apiNewsList, setApiNewsList] = useState([]);
   const [apiEventsList, setApiEventsList] = useState([]);
+  const [apiDocumentsList, setApiDocumentsList] = useState([]);
 
   useEffect(() => {
     fetch(`${API_URL}/hero`)
@@ -359,6 +360,15 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
         }
       })
       .catch(e => console.error('Error fetching events:', e));
+
+    fetch(`${API_URL}/documents`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (Array.isArray(d) && d.length > 0) {
+          setApiDocumentsList(d);
+        }
+      })
+      .catch(e => console.error('Error fetching documents:', e));
   }, []);
 
 
@@ -1527,6 +1537,64 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                   </div>
                 ))}
               </div>
+            </div>
+          </section>
+
+          {/* Important Documents & Circulars Section */}
+          <section className="section-bg-white" style={{ background: '#FFF', padding: '60px 0', borderTop: '1px solid #E2E8F0' }}>
+            <div className="section-container">
+              <div className="section-header">
+                <div className="section-title-wrap">
+                  <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FileText color="#FF9933" size={28} /> {lang === 'en' ? 'Important Documents & Circulars' : 'महत्वपूर्ण दस्तावेज़ एवं परिपत्र'}
+                  </h2>
+                </div>
+                <span className="view-all-link" onClick={() => setActiveTab('Documents')} style={{ cursor: 'pointer' }}>
+                  {lang === 'en' ? 'View All Documents' : 'सभी दस्तावेज़ देखें'} <ChevronRight size={16} />
+                </span>
+              </div>
+
+              {apiDocumentsList.length > 0 ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                  {apiDocumentsList.slice(0, 4).map((doc, idx) => {
+                    const downloadUrl = doc.file_url ? (doc.file_url.startsWith('http') ? doc.file_url : getMediaUrl(doc.file_url)) : '#';
+                    const displayTitle = (lang === 'hi' && doc.title_hi) ? doc.title_hi : doc.title;
+                    const dateStr = doc.created_at ? new Date(doc.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '2026';
+                    const fileType = (doc.file_type || 'PDF').toUpperCase();
+
+                    return (
+                      <div key={doc.id || idx} style={{ background: '#F8FAFC', padding: '20px', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                            <span style={{ background: '#FEF2F2', color: '#DC2626', padding: '4px 10px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 800 }}>
+                              {fileType}
+                            </span>
+                            <span style={{ fontSize: '0.78rem', color: '#64748B', background: '#FFF', padding: '4px 10px', borderRadius: '20px', border: '1px solid #E2E8F0' }}>
+                              {doc.category || 'General'}
+                            </span>
+                          </div>
+                          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-dark)', margin: '0 0 10px', lineHeight: '1.4' }}>
+                            {displayTitle}
+                          </h4>
+                        </div>
+                        <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '14px', marginTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontSize: '0.78rem', color: '#64748B' }}>📅 {dateStr} {doc.file_size ? `• ${doc.file_size}` : ''}</span>
+                          <a href={downloadUrl} target="_blank" rel="noopener noreferrer" download style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', padding: '6px 16px', borderRadius: '30px', fontSize: '0.8rem', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <Download size={14} /> {lang === 'en' ? 'Download' : 'डाउनलोड'}
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '40px', background: '#F8FAFC', borderRadius: '16px', border: '1px dashed #CBD5E1' }}>
+                  <FileText size={36} color="#94A3B8" style={{ marginBottom: '8px' }} />
+                  <p style={{ color: '#64748B', margin: 0, fontWeight: 600 }}>
+                    {lang === 'en' ? 'No documents published yet.' : 'अभी कोई दस्तावेज़ प्रकाशित नहीं हुआ है।'}
+                  </p>
+                </div>
+              )}
             </div>
           </section>
         </>
