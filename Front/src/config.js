@@ -5,7 +5,7 @@ export const API_BASE_URL = (() => {
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
     const port = window.location.port;
-    if (port === '5173' || port === '5174' || host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.')) {
+    if (port || host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.')) {
       return `http://${host}:3000`;
     }
   }

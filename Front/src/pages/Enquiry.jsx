@@ -9,38 +9,56 @@ export default function EnquiryPage() {
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorText, setErrorText] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    let success = false;
-    let errorMsg = '';
+    setErrorText('');
 
-    // Smart multi-endpoint retry list
+    const payload = {
+      name: (formData.name || '').trim(),
+      email: (formData.email || '').trim(),
+      phone: (formData.phone || '').trim(),
+      subject: (formData.subject || '').trim() || 'General Enquiry',
+      message: (formData.message || '').trim()
+    };
+
+    if (!payload.name || !payload.message) {
+      setErrorText('Please enter your name and message details.');
+      setLoading(false);
+      return;
+    }
+
     const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
     const endpoints = [
       `${API_URL}/enquiries`,
       `http://${host}:3000/api/enquiries`,
-      `http://localhost:3000/api/enquiries`
+      `http://localhost:3000/api/enquiries`,
+      `/api/enquiries`
     ];
+
+    let success = false;
+    let lastError = '';
 
     for (const url of [...new Set(endpoints)]) {
       try {
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(payload)
         });
+
         if (res.ok) {
           success = true;
           break;
         } else {
           const errData = await res.json().catch(() => ({}));
-          errorMsg = errData.error || 'Server error';
+          lastError = errData.error || `HTTP ${res.status}`;
         }
       } catch (err) {
-        errorMsg = err.message;
+        lastError = err.message;
       }
     }
 
@@ -49,7 +67,7 @@ export default function EnquiryPage() {
       setSubmitted(true);
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     } else {
-      alert('Error submitting enquiry: ' + (errorMsg || 'Failed to connect to server.'));
+      setErrorText(lastError || 'Unable to submit enquiry. Please check your connection.');
     }
   };
 
@@ -98,6 +116,12 @@ export default function EnquiryPage() {
               <h3 style={{ color: 'var(--header-bg)', fontSize: '1.3rem', marginBottom: '20px' }}>
                 {lang === 'en' ? 'Write Your Query / Suggestion' : 'अपनी क्वेरी / सुझाव लिखें'}
               </h3>
+
+              {errorText && (
+                <div style={{ background: '#FEF2F2', borderLeft: '4px solid #DC2626', color: '#DC2626', padding: '10px 14px', borderRadius: '6px', fontSize: '0.9rem', marginBottom: '15px' }}>
+                  ❌ {errorText}
+                </div>
+              )}
 
               <div style={{ marginBottom: '15px' }}>
                 <label style={labelStyle}>{q.name} *</label>
