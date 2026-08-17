@@ -363,12 +363,28 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
 
     fetch(`${API_URL}/documents`)
       .then(r => r.ok ? r.json() : null)
-      .then(d => {
+      .then(async (d) => {
         if (Array.isArray(d) && d.length > 0) {
           setApiDocumentsList(d);
+        } else if (API_URL !== 'http://localhost:3000/api') {
+          try {
+            const locRes = await fetch('http://localhost:3000/api/documents');
+            if (locRes.ok) {
+              const locData = await locRes.json();
+              if (Array.isArray(locData) && locData.length > 0) setApiDocumentsList(locData);
+            }
+          } catch(e) {}
         }
       })
-      .catch(e => console.error('Error fetching documents:', e));
+      .catch(async (e) => {
+        try {
+          const locRes = await fetch('http://localhost:3000/api/documents');
+          if (locRes.ok) {
+            const locData = await locRes.json();
+            if (Array.isArray(locData) && locData.length > 0) setApiDocumentsList(locData);
+          }
+        } catch(err) {}
+      });
   }, []);
 
 

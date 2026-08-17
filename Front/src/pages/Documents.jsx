@@ -10,26 +10,43 @@ export default function DocumentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const fetchDocuments = () => {
+  const fetchDocuments = async () => {
     setLoading(true);
-    fetch(`${API_URL}/documents`)
-      .then(res => {
-        if (!res.ok) throw new Error('API returned status ' + res.status);
-        return res.json();
-      })
-      .then(data => {
-        if (Array.isArray(data)) {
-          setDocuments(data);
+    try {
+      let res = await fetch(`${API_URL}/documents`);
+      let data = res.ok ? await res.json() : [];
+
+      if ((!Array.isArray(data) || data.length === 0) && API_URL !== 'http://localhost:3000/api') {
+        try {
+          const localRes = await fetch('http://localhost:3000/api/documents');
+          if (localRes.ok) {
+            const localData = await localRes.json();
+            if (Array.isArray(localData) && localData.length > 0) {
+              data = localData;
+            }
+          }
+        } catch (e) {
+          console.warn('Local API fallback attempt:', e);
+        }
+      }
+
+      setDocuments(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Error fetching documents from server:', err);
+      try {
+        const localRes = await fetch('http://localhost:3000/api/documents');
+        if (localRes.ok) {
+          const localData = await localRes.json();
+          setDocuments(Array.isArray(localData) ? localData : []);
         } else {
           setDocuments([]);
         }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching documents from server:', err);
+      } catch (e) {
         setDocuments([]);
-        setLoading(false);
-      });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
