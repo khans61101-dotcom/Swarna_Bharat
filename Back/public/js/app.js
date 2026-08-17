@@ -1389,111 +1389,26 @@ function populateTreeUserSelect() {
         `).join('');
 }
 
-function focusUserFromSelect(userId) {
-    if (userId) {
-        currentTreeRootId = Number(userId);
-        selectedTreeUserId = Number(userId);
-    } else {
-        currentTreeRootId = null;
-        selectedTreeUserId = null;
-    }
-    renderAccountsTree();
-}
+let d3TreeRoot = null;
 
-
-function fitTreeToScreen() {
-    const container = document.getElementById('treeContainer');
-    const treeContent = document.getElementById('treeContent');
-
-    if (!container || !treeContent) return;
-
-    // Reset first so we can measure natural size
-    treeContent.style.transform = 'scale(1)';
-    treeContent.style.transformOrigin = 'top center';
-
-    requestAnimationFrame(() => {
-        const containerWidth = container.clientWidth;
-        const containerHeight = container.clientHeight;
-
-        const treeWidth = treeContent.scrollWidth;
-        const treeHeight = treeContent.scrollHeight;
-
-        if (!treeWidth || !treeHeight) return;
-
-        const widthScale = containerWidth / treeWidth;
-        const heightScale = containerHeight / treeHeight;
-
-        // Use whichever scale is smaller
-        let scale = Math.min(widthScale, heightScale);
-
-        // Don't enlarge small trees
-        scale = Math.min(scale, 1);
-
-        // Don't make tree ridiculously tiny
-        scale = Math.max(scale, 0.35);
-
-        treeContent.style.transform = `scale(${scale})`;
-        treeContent.style.transformOrigin = 'top center';
-    });
-}
-
-    
 function renderAccountsTree(usersList = null) {
     const treeContent = document.getElementById('treeContent');
     if (!treeContent) return;
 
-    // Always use the complete user list
-    const fullList =
-        Array.isArray(cachedUsers) && cachedUsers.length > 0
-            ? cachedUsers
-            : Array.isArray(usersList)
-                ? usersList
-                : [];
+    const fullList = (Array.isArray(cachedUsers) && cachedUsers.length > 0)
+        ? cachedUsers
+        : (Array.isArray(usersList) ? usersList : []);
 
     populateTreeUserSelect();
 
     if (fullList.length === 0) {
-        treeContent.innerHTML = `
-            <div style="
-                color: var(--text-secondary);
-                padding: 3rem;
-                text-align: center;
-            ">
-                No accounts available to render tree diagram.
-            </div>
-        `;
+        treeContent.innerHTML = `<div style="color:#94a3b8; padding:3rem; text-align:center;">No accounts available to render tree diagram.</div>`;
         return;
     }
 
-    // Role filter
-    const roleFilter =
-        document.getElementById('treeRoleFilter')?.value || 'All';
-
+    const roleFilter = document.getElementById('treeRoleFilter')?.value || 'All';
     let filterSet = null;
-
     if (roleFilter !== 'All') {
-        filterSet = new Set(
-            fullList
-                .filter(user => user.role_name === roleFilter)
-                .map(user => Number(user.id))
-        );
-    }
-
-    // IMPORTANT:
-    // Always build the tree from the COMPLETE user list.
-    // Never filter fullList before passing it to buildUserTreeStructure().
-    const treeData = buildUserTreeStructure(
-        fullList,
-        currentTreeRootId,
-        filterSet
-    );
-
-    if (!Array.isArray(treeData) || treeData.length === 0) {
-        treeContent.innerHTML = `
-            <div style="
-                color: var(--text-secondary);
-                padding: 3rem;
-                text-align: center;
             ">
                 No accounts match the current filter or search criteria.
             </div>
