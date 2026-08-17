@@ -36,23 +36,23 @@ const BASE_SELECT = `
 router.get('/', verifyToken, async (req, res) => {
   try {
     if (req.userRole !== 'Admin' && req.userId) {
-      // Auto-assign any active tasks assigned to user's role that are missing for this user
+      // Auto-assign active tasks assigned to user's role that are missing for this user
       try {
         await db.query(`
           INSERT INTO task_assignments (task_id, assigned_to, assigned_by, status)
           SELECT DISTINCT t.id, ?, 1, 'Pending'
           FROM tasks t
-          JOIN task_assignments ta ON ta.task_id = t.id
-          JOIN users u_target ON ta.assigned_to = u_target.id
-          JOIN roles r_target ON u_target.role_id = r_target.id
-          JOIN users u_me ON u_me.id = ?
-          JOIN roles r_me ON u_me.role_id = r_me.id
-          WHERE r_target.id = r_me.id
-            AND t.status = 'Active'
+          WHERE t.status = 'Active'
             AND t.id NOT IN (SELECT task_id FROM task_assignments WHERE assigned_to = ?)
+            AND t.id IN (
+              SELECT ta2.task_id 
+              FROM task_assignments ta2 
+              JOIN users u2 ON ta2.assigned_to = u2.id 
+              WHERE u2.role_id = (SELECT role_id FROM users WHERE id = ?)
+            )
         `, [req.userId, req.userId, req.userId]);
       } catch (syncErr) {
-        // Ignore duplicate key or sync errors silently
+        console.error('Auto-sync error:', syncErr);
       }
     }
 
@@ -76,22 +76,14 @@ router.get('/', verifyToken, async (req, res) => {
 // ─── GET single assignment by ID ─────────────────────────────────────────────
 router.get('/:id', verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query(
-      `${BASE_SELECT} WHERE ta.id = ?`,
-      [req.params.id]
-    );
-
+    const [rows] = await db.query(`${BASE_SELECT} WHERE ta.id = ?`, [req.params.id]);
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Assignment not found' });
     }
-
     const row = rows[0];
-
-    // Non-admins can only see their own assignments
     if (req.userRole !== 'Admin' && row.assigned_to !== req.userId) {
       return res.status(403).json({ error: 'Access denied' });
     }
-
     res.json(row);
   } catch (error) {
     console.error('Error fetching assignment:', error);
@@ -99,8 +91,8 @@ router.get('/:id', verifyToken, async (req, res) => {
   }
 });
 
-// ─── GET assignments for a specific user (Admin only) ────────────────────────
-router.get('/user/:userId', verifyToken, isAdmin, async (req, res) => {
+// ─── GET assignments by user ID ─────────────────────────────────────────────
+router.get('/user/:userId', verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(
       `${BASE_SELECT} WHERE ta.assigned_to = ? ORDER BY ta.assigned_date DESC`,
@@ -113,7 +105,7 @@ router.get('/user/:userId', verifyToken, isAdmin, async (req, res) => {
   }
 });
 
-// ─── GET assignments for a specific task (Admin only) ────────────────────────
+// ─── GET assignments by task ID ─────────────────────────────────────────────
 router.get('/task/:taskId', verifyToken, isAdmin, async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -136,39 +128,34 @@ router.post('/', verifyToken, isAgencyOrNgoOrAdmin, async (req, res) => {
   }
 
   try {
-    // Verify task exists
     const [taskRows] = await db.query('SELECT id, title, points FROM tasks WHERE id = ?', [task_id]);
     if (taskRows.length === 0) {
       return res.status(404).json({ error: 'Task not found' });
     }
 
-    // Get all users in the target role
     const [users] = await db.query(`
       SELECT u.id 
       FROM users u 
       JOIN roles r ON u.role_id = r.id 
-      WHERE r.name = ?
-    `, [target_role]);
+      WHERE LOWER(r.name) = LOWER(?) OR (LOWER(?) = 'user' AND LOWER(r.name) = 'citizen')
+    `, [target_role, target_role]);
+
     if (users.length === 0) {
       return res.status(404).json({ error: `No users found in role: ${target_role}` });
     }
 
-    // Find existing active assignments for this task to avoid duplicates
     const [existing] = await db.query(`
       SELECT assigned_to FROM task_assignments
       WHERE task_id = ? AND status NOT IN ('Approved', 'Completed', 'Rejected')
     `, [task_id]);
     
     const existingUserIds = new Set(existing.map(e => e.assigned_to));
-
-    // Filter to only users who don't already have the task assigned
     const usersToAssign = users.filter(u => !existingUserIds.has(u.id));
 
     if (usersToAssign.length === 0) {
-      return res.status(400).json({ error: 'All users in this role already have this task actively assigned.' });
+      return res.json({ message: `Task "${taskRows[0].title}" already assigned to all active users in role ${target_role}.`, assigned_count: 0 });
     }
 
-    // Bulk insert assignments
     const values = usersToAssign.map(u => [task_id, u.id, req.userId, 'Pending']);
     await db.query(`
       INSERT INTO task_assignments (task_id, assigned_to, assigned_by, status)
@@ -180,7 +167,7 @@ router.post('/', verifyToken, isAgencyOrNgoOrAdmin, async (req, res) => {
       assigned_count: usersToAssign.length
     });
   } catch (error) {
-    console.error('Error assigning task to role:', error);
+    console.error('Error assigning task:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
