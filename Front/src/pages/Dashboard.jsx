@@ -97,35 +97,15 @@ export default function Dashboard({ setActiveTab, setUserState }) {
         });
         setUserMedia(data.media || []);
         
-        let list = (data.downlineUsers && data.downlineUsers.length > 0)
+        const list = (data.downlineUsers && Array.isArray(data.downlineUsers))
           ? data.downlineUsers
-          : (data.downlines && data.downlines.length > 0 ? data.downlines : []);
-
-        if (list.length === 0) {
-          try {
-            const partnersRes = await fetch(`${API_URL}/partners`);
-            if (partnersRes.ok) {
-              const partnersData = await partnersRes.json();
-              if (partnersData && Array.isArray(partnersData.partners)) {
-                list = partnersData.partners.filter(p => Number(p.id) !== Number(userId));
-              }
-            }
-          } catch(e) {}
-        }
+          : (data.downlines && Array.isArray(data.downlines) ? data.downlines : []);
 
         setDownlineUsers(list);
       }
     } catch (e) {
       console.error('Error fetching stats:', e);
-      try {
-        const partnersRes = await fetch(`${API_URL}/partners`);
-        if (partnersRes.ok) {
-          const partnersData = await partnersRes.json();
-          if (partnersData && Array.isArray(partnersData.partners)) {
-            setDownlineUsers(partnersData.partners.filter(p => Number(p.id) !== Number(userId)));
-          }
-        }
-      } catch(err) {}
+      setDownlineUsers([]);
     }
   };
 
