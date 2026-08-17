@@ -3,42 +3,9 @@ import { useLang } from '../LanguageContext';
 import { FileText, Download, Search, Filter, Calendar, File, Check, ExternalLink } from 'lucide-react';
 import { API_URL, getMediaUrl } from '../config';
 
-const defaultDocuments = [
-  {
-    id: 1,
-    title: 'National Swarna Bharat Movement Registration Guidelines 2026',
-    title_hi: 'राष्ट्रीय स्वर्ण भारत अभियान पंजीकरण दिशा-निर्देश 2026',
-    category: 'Policy Document',
-    file_url: '/uploads/documents/sample_guidelines.pdf',
-    file_type: 'pdf',
-    file_size: '2.4 MB',
-    created_at: '2026-08-01'
-  },
-  {
-    id: 2,
-    title: 'NGO & Agency Partnership Application Form',
-    title_hi: 'एनजीओ एवं एजेंसी साझेदारी आवेदन पत्र',
-    category: 'Application Form',
-    file_url: '/uploads/documents/sample_application_form.pdf',
-    file_type: 'pdf',
-    file_size: '1.1 MB',
-    created_at: '2026-07-28'
-  },
-  {
-    id: 3,
-    title: 'Official Gazette Notification on Youth Skill Initiatives',
-    title_hi: 'युवा कौशल पहल पर आधिकारिक राजपत्र अधिसूचना',
-    category: 'Gazette Notification',
-    file_url: '/uploads/documents/sample_gazette.pdf',
-    file_type: 'pdf',
-    file_size: '3.8 MB',
-    created_at: '2026-07-15'
-  }
-];
-
 export default function DocumentsPage() {
   const { lang } = useLang();
-  const [documents, setDocuments] = useState(defaultDocuments);
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -51,16 +18,16 @@ export default function DocumentsPage() {
         return res.json();
       })
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setDocuments(data);
         } else {
-          setDocuments(defaultDocuments);
+          setDocuments([]);
         }
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching documents:', err);
-        setDocuments(defaultDocuments);
+        console.error('Error fetching documents from server:', err);
+        setDocuments([]);
         setLoading(false);
       });
   };
@@ -85,9 +52,7 @@ export default function DocumentsPage() {
     return c;
   };
 
-  const activeDocList = (Array.isArray(documents) && documents.length > 0) ? documents : defaultDocuments;
-
-  const filteredDocs = activeDocList.filter(doc => {
+  const filteredDocs = (Array.isArray(documents) ? documents : []).filter(doc => {
     if (!doc) return false;
     const title = (doc.title || '').toLowerCase();
     const titleHi = (doc.title_hi || '').toLowerCase();
