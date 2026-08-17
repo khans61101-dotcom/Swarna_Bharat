@@ -391,7 +391,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            border: '4px solid #FF9933',
+            border: '4px solid #2563EB',
             borderTopColor: 'transparent',
             animation: 'spin 1s linear infinite',
             margin: '0 auto 20px'
@@ -459,7 +459,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           .dash-main-panel { margin-left: 280px !important; width: calc(100% - 280px) !important; }
         }
         .glow-btn:hover { box-shadow: 0 0 25px rgba(255, 153, 51, 0.5); }
-        .nav-item-active { background: linear-gradient(135deg, #FF9933, #FF6B00) !important; color: #FFF !important; }
+        .nav-item-active { background: linear-gradient(135deg, #2563EB, #1D4ED8) !important; color: #FFF !important; }
         .nav-item-active .nav-icon { color: #FFF !important; }
         .nav-item:hover { background: rgba(255, 153, 51, 0.1); }
       `}</style>
@@ -503,7 +503,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
             <div style={{
-              background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+              background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
               width: '44px',
               height: '44px',
               borderRadius: '14px',
@@ -513,7 +513,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
               fontWeight: 800,
               color: '#FFF',
               fontSize: '1.3rem',
-              boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+              boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
             }}>
               SB
             </div>
@@ -554,7 +554,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
               width: '56px',
               height: '56px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+              background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -562,7 +562,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
               color: '#FFF',
               overflow: 'hidden',
               flexShrink: 0,
-              boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+              boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
             }}>
               {user.profile_image ? (
                 <img src={getMediaUrl(user.profile_image)} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -573,7 +573,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 position: 'absolute',
                 bottom: 0,
                 right: 0,
-                background: '#FF9933',
+                background: '#2563EB',
                 color: '#FFF',
                 width: '20px',
                 height: '20px',
@@ -601,10 +601,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 {user.name}
               </h4>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-                <Shield size={12} color="#FF9933" />
+                <Shield size={12} color="#2563EB" />
                 <span style={{
                   fontSize: '0.72rem',
-                  color: '#FF9933',
+                  color: '#2563EB',
                   fontWeight: 600
                 }}>
                   {user.role_name}
@@ -652,13 +652,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 padding: '12px 16px',
                 borderRadius: '12px',
                 border: 'none',
-                background: activeDashTab === item.id ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'transparent',
+                background: activeDashTab === item.id ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : 'transparent',
                 color: activeDashTab === item.id ? '#FFF' : '#94A3B8',
                 fontWeight: activeDashTab === item.id ? 700 : 500,
                 fontSize: '0.9rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                boxShadow: activeDashTab === item.id ? '0 4px 15px rgba(255,153,51,0.3)' : 'none'
+                boxShadow: activeDashTab === item.id ? '0 4px 15px rgba(37, 99, 235, 0.3)' : 'none'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -883,12 +883,12 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{
-                      background: '#FFF7ED',
+                      background: '#EFF6FF',
                       padding: '10px',
                       borderRadius: '12px',
                       display: 'flex'
                     }}>
-                      <Share2 size={20} color="#FF6B00" />
+                      <Share2 size={20} color="#1D4ED8" />
                     </div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
@@ -902,7 +902,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   <button
                     onClick={handleCopyRef}
                     style={{
-                      background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFF',
                       border: 'none',
                       padding: '10px 24px',
@@ -914,7 +914,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       alignItems: 'center',
                       gap: '8px',
                       transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
                     }}
                   >
                     {copiedRef ? <Check size={16} /> : <Copy size={16} />}
@@ -939,15 +939,15 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   <span style={{
                     fontSize: '1.1rem',
                     fontWeight: 800,
-                    color: '#FF6B00',
+                    color: '#1D4ED8',
                     letterSpacing: '1px'
                   }}>
                     {user.referral_code || 'REF-USER-101'}
                   </span>
                   <span style={{
                     fontSize: '0.7rem',
-                    background: '#FFEDD5',
-                    color: '#EA580C',
+                    background: '#DBEAFE',
+                    color: '#2563EB',
                     padding: '2px 12px',
                     borderRadius: '20px',
                     fontWeight: 700
@@ -975,7 +975,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   gap: '12px'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <User size={22} color="#FF6B00" />
+                    <User size={22} color="#1D4ED8" />
                     <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
                       {lang === 'en' ? 'Personal Information' : 'व्यक्तिगत जानकारी'}
                     </h4>
@@ -983,9 +983,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   <button
                     onClick={() => setActiveDashTab('profile')}
                     style={{
-                      background: '#FFF7ED',
-                      border: '1px solid #FED7AA',
-                      color: '#EA580C',
+                      background: '#EFF6FF',
+                      border: '1px solid #DBEAFE',
+                      color: '#2563EB',
                       padding: '6px 18px',
                       borderRadius: '30px',
                       fontSize: '0.8rem',
@@ -1026,7 +1026,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       <div style={{
                         fontSize: '0.95rem',
                         fontWeight: 700,
-                        color: item.highlight ? '#FF6B00' : '#0F172A'
+                        color: item.highlight ? '#1D4ED8' : '#0F172A'
                       }}>
                         {item.value}
                       </div>
@@ -1046,8 +1046,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                     icon: Film, 
                     label: lang === 'en' ? 'Upload Media' : 'मीडिया अपलोड करें',
                     desc: lang === 'en' ? 'Add photos & videos to gallery' : 'गैलरी में फ़ोटो और वीडियो जोड़ें',
-                    color: '#EA580C',
-                    bg: '#FFF7ED',
+                    color: '#2563EB',
+                    bg: '#EFF6FF',
                     action: () => setActiveDashTab('media')
                   },
                   { 
@@ -1134,7 +1134,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 {[
                   { label: lang === 'en' ? 'Total Assigned' : 'कुल सौंपे गए', value: assignedTasks.length, color: '#2563EB', bg: '#EFF6FF' },
                   { label: lang === 'en' ? 'Pending' : 'लंबित', value: assignedTasks.filter(t => t.status === 'Pending').length, color: '#64748B', bg: '#F8FAFC' },
-                  { label: lang === 'en' ? 'In Progress' : 'प्रगति में', value: assignedTasks.filter(t => t.status === 'In Progress').length, color: '#EA580C', bg: '#FFF7ED' },
+                  { label: lang === 'en' ? 'In Progress' : 'प्रगति में', value: assignedTasks.filter(t => t.status === 'In Progress').length, color: '#2563EB', bg: '#EFF6FF' },
                   { label: lang === 'en' ? 'Submitted' : 'समीक्षाधीन', value: assignedTasks.filter(t => t.status === 'Submitted').length, color: '#7C3AED', bg: '#F5F3FF' },
                   { label: lang === 'en' ? 'Completed / Approved' : 'पूर्ण / स्वीकृत', value: assignedTasks.filter(t => ['Approved', 'Completed'].includes(t.status)).length, color: '#16A34A', bg: '#F0FDF4' },
                 ].map((s, idx) => (
@@ -1226,7 +1226,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           style={{
                             background: '#F8FAFC',
                             border: `1px solid ${isApproved ? '#86EFAC' : isRejected ? '#FCA5A5' : isSubmitted ? '#DDD6FE' : '#E2E8F0'}`,
-                            borderLeft: `5px solid ${isApproved ? '#16A34A' : isRejected ? '#DC2626' : isSubmitted ? '#7C3AED' : isInProgress ? '#EA580C' : '#2563EB'}`,
+                            borderLeft: `5px solid ${isApproved ? '#16A34A' : isRejected ? '#DC2626' : isSubmitted ? '#7C3AED' : isInProgress ? '#2563EB' : '#2563EB'}`,
                             borderRadius: '16px',
                             padding: '20px 24px',
                             display: 'flex',
@@ -1242,13 +1242,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                                   {t.task_title || t.title || 'Task Assignment'}
                                 </h4>
                                 <span style={{
-                                  background: t.task_priority === 'Urgent' ? '#FEF2F2' : t.task_priority === 'High' ? '#FFF7ED' : '#F0FDF4',
-                                  color: t.task_priority === 'Urgent' ? '#DC2626' : t.task_priority === 'High' ? '#EA580C' : '#16A34A',
+                                  background: t.task_priority === 'Urgent' ? '#FEF2F2' : t.task_priority === 'High' ? '#EFF6FF' : '#F0FDF4',
+                                  color: t.task_priority === 'Urgent' ? '#DC2626' : t.task_priority === 'High' ? '#2563EB' : '#16A34A',
                                   padding: '2px 10px',
                                   borderRadius: '20px',
                                   fontSize: '0.72rem',
                                   fontWeight: 700,
-                                  border: `1px solid ${t.task_priority === 'Urgent' ? '#FCA5A5' : t.task_priority === 'High' ? '#FED7AA' : '#86EFAC'}`
+                                  border: `1px solid ${t.task_priority === 'Urgent' ? '#FCA5A5' : t.task_priority === 'High' ? '#DBEAFE' : '#86EFAC'}`
                                 }}>
                                   {t.task_priority || 'Medium'}
                                 </span>
@@ -1277,13 +1277,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                               </div>
 
                               <span style={{
-                                background: isApproved ? '#F0FDF4' : isRejected ? '#FEF2F2' : isSubmitted ? '#F5F3FF' : isInProgress ? '#FFF7ED' : '#F8FAFC',
-                                color: isApproved ? '#16A34A' : isRejected ? '#DC2626' : isSubmitted ? '#7C3AED' : isInProgress ? '#EA580C' : '#64748B',
+                                background: isApproved ? '#F0FDF4' : isRejected ? '#FEF2F2' : isSubmitted ? '#F5F3FF' : isInProgress ? '#EFF6FF' : '#F8FAFC',
+                                color: isApproved ? '#16A34A' : isRejected ? '#DC2626' : isSubmitted ? '#7C3AED' : isInProgress ? '#2563EB' : '#64748B',
                                 padding: '6px 16px',
                                 borderRadius: '30px',
                                 fontSize: '0.8rem',
                                 fontWeight: 700,
-                                border: `1px solid ${isApproved ? '#86EFAC' : isRejected ? '#FCA5A5' : isSubmitted ? '#DDD6FE' : isInProgress ? '#FED7AA' : '#CBD5E1'}`
+                                border: `1px solid ${isApproved ? '#86EFAC' : isRejected ? '#FCA5A5' : isSubmitted ? '#DDD6FE' : isInProgress ? '#DBEAFE' : '#CBD5E1'}`
                               }}>
                                 {isApproved ? '✅ Approved & Completed' : isRejected ? '❌ Rejected' : isSubmitted ? '📤 Submitted (Pending Review)' : isInProgress ? '⚡ In Progress' : '🕐 Pending'}
                               </span>
@@ -1337,7 +1337,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                                     setProofVideoUrl('');
                                   }}
                                   style={{
-                                    background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                                    background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                                     color: '#FFF',
                                     border: 'none',
                                     padding: '8px 20px',
@@ -1348,7 +1348,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '6px',
-                                    boxShadow: '0 3px 10px rgba(255,153,51,0.3)'
+                                    boxShadow: '0 3px 10px rgba(37, 99, 235, 0.3)'
                                   }}
                                 >
                                   📤 {isRejected ? (lang === 'en' ? 'Resubmit Proof' : 'प्रमाण पुनः भेजें') : (lang === 'en' ? 'Submit Proof & Complete' : 'प्रमाण अपलोड और पूर्ण करें')}
@@ -1439,12 +1439,12 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       </p>
                     </div>
                     <div style={{
-                      background: '#FFF7ED',
+                      background: '#EFF6FF',
                       padding: '6px 18px',
                       borderRadius: '30px',
-                      border: '1px solid #FED7AA'
+                      border: '1px solid #DBEAFE'
                     }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#EA580C' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#2563EB' }}>
                         {lang === 'en' ? 'Total:' : 'कुल:'} {downlineUsers.length}
                       </span>
                     </div>
@@ -1512,7 +1512,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           <button
                             onClick={handleCopyRef}
                             style={{
-                              background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                              background: copiedRef ? '#16A34A' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                               color: '#FFF',
                               border: 'none',
                               padding: '10px 28px',
@@ -1523,7 +1523,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '8px',
-                              boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+                              boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
                             }}
                           >
                             {copiedRef ? <Check size={16} /> : <Copy size={16} />}
@@ -1573,7 +1573,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                                         width: '42px',
                                         height: '42px',
                                         borderRadius: '50%',
-                                        background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                                        background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                                         color: '#FFF',
                                         display: 'flex',
                                         alignItems: 'center',
@@ -1609,9 +1609,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                                     <button
                                       onClick={(e) => { e.stopPropagation(); setSelectedMember(m); }}
                                       style={{
-                                        background: '#FFF7ED',
-                                        border: '1px solid #FED7AA',
-                                        color: '#EA580C',
+                                        background: '#EFF6FF',
+                                        border: '1px solid #DBEAFE',
+                                        color: '#2563EB',
                                         padding: '6px 16px',
                                         borderRadius: '30px',
                                         fontSize: '0.75rem',
@@ -1653,7 +1653,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
               }}>
                 <div style={{ marginBottom: '20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <PlusCircle size={22} color="#FF6B00" />
+                    <PlusCircle size={22} color="#1D4ED8" />
                     <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
                       {lang === 'en' ? 'Upload to Gallery' : 'गैलरी में अपलोड करें'}
                     </h4>
@@ -1700,7 +1700,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                     type="submit"
                     disabled={uploadingMedia || !mediaFile}
                     style={{
-                      background: uploadingMedia || !mediaFile ? '#CBD5E1' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: uploadingMedia || !mediaFile ? '#CBD5E1' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFF',
                       border: 'none',
                       padding: '12px 28px',
@@ -1712,7 +1712,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
-                      boxShadow: uploadingMedia || !mediaFile ? 'none' : '0 4px 15px rgba(255,153,51,0.3)',
+                      boxShadow: uploadingMedia || !mediaFile ? 'none' : '0 4px 15px rgba(37, 99, 235, 0.3)',
                       width: 'fit-content'
                     }}
                   >
@@ -1753,7 +1753,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           borderRadius: '8px',
                           border: 'none',
                           background: mediaFilter === filter ? '#FFF' : 'transparent',
-                          color: mediaFilter === filter ? '#FF6B00' : '#64748B',
+                          color: mediaFilter === filter ? '#1D4ED8' : '#64748B',
                           fontWeight: 700,
                           fontSize: '0.75rem',
                           cursor: 'pointer',
@@ -1818,7 +1818,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                               position: 'absolute',
                               top: '8px',
                               left: '8px',
-                              background: isVideo ? '#3B82F6' : '#FF6B00',
+                              background: isVideo ? '#3B82F6' : '#1D4ED8',
                               color: '#FFF',
                               fontSize: '0.6rem',
                               fontWeight: 800,
@@ -2110,7 +2110,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                     type="submit"
                     disabled={submittingProof}
                     style={{
-                      background: submittingProof ? '#CBD5E1' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: submittingProof ? '#CBD5E1' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFF',
                       border: 'none',
                       padding: '10px 24px',
@@ -2118,7 +2118,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       fontWeight: 700,
                       fontSize: '0.85rem',
                       cursor: submittingProof ? 'not-allowed' : 'pointer',
-                      boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
                     }}
                   >
                     {submittingProof ? (lang === 'en' ? 'Uploading...' : 'अपलोड हो रहा...') : (lang === 'en' ? 'Submit Proof' : 'प्रमाण जमा करें')}

@@ -73,7 +73,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         <h3 style={{ fontSize: '1.4rem', color: '#1E293B', marginBottom: '16px' }}>No partner selected</h3>
         <button 
           onClick={() => setActiveTab('Partners')}
-          style={{ background: '#FF9933', color: '#FFF', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: 700, cursor: 'pointer' }}
+          style={{ background: '#2563EB', color: '#FFF', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: 700, cursor: 'pointer' }}
         >
           ← Back to Partners
         </button>
@@ -277,7 +277,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
         borderBottom: '1px solid var(--card-border)'
       }} className="md:hidden">
         <button aria-label="Go back" style={{
-          color: '#FF9933',
+          color: '#2563EB',
           background: 'none',
           border: 'none',
           cursor: 'pointer',
@@ -425,7 +425,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 ) : (
                   <div style={{
                     width: '100%', height: '100%',
-                    background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                    background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '2.5rem', fontWeight: 700, color: '#fff', letterSpacing: '1px'
                   }}>
@@ -437,7 +437,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 {isOwner && (
                   <label style={{
                     position: 'absolute', bottom: '6px', right: '6px',
-                    background: '#FF9933', color: '#FFF', width: '34px', height: '34px',
+                    background: '#2563EB', color: '#FFF', width: '34px', height: '34px',
                     borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', zIndex: 12,
                     border: '2px solid #FFF'
@@ -459,13 +459,13 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                       gap: '8px',
                       padding: '10px 22px',
                       borderRadius: '30px',
-                      background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFFFFF',
                       fontWeight: 700,
                       fontSize: '14px',
                       border: 'none',
                       cursor: 'pointer',
-                      boxShadow: '0 4px 14px rgba(255, 153, 51, 0.3)',
+                      boxShadow: '0 4px 14px rgba(37, 99, 235, 0.3)',
                       transition: 'all 0.2s ease'
                     }}
                   >
@@ -586,10 +586,10 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 justifyContent: 'center',
                 gap: '8px'
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#FF9933'; e.currentTarget.style.color = '#FF9933'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#2563EB'; e.currentTarget.style.color = '#2563EB'; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--card-border)'; e.currentTarget.style.color = 'var(--text-dark)'; }}
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#FF9933' }}>share</span>
+              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: '#2563EB' }}>share</span>
               Share Profile
             </button>
           </div>
@@ -666,8 +666,8 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 gap: '8px',
-                borderBottom: `2px solid ${activeTabMenu === 'images' ? '#FF9933' : 'transparent'}`,
-                color: activeTabMenu === 'images' ? '#FF9933' : 'var(--text-muted)',
+                borderBottom: `2px solid ${activeTabMenu === 'images' ? '#2563EB' : 'transparent'}`,
+                color: activeTabMenu === 'images' ? '#2563EB' : 'var(--text-muted)',
                 background: 'none',
                 borderTop: 'none',
                 borderLeft: 'none',
@@ -694,8 +694,8 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 gap: '8px',
-                borderBottom: `2px solid ${activeTabMenu === 'videos' ? '#FF9933' : 'transparent'}`,
-                color: activeTabMenu === 'videos' ? '#FF9933' : 'var(--text-muted)',
+                borderBottom: `2px solid ${activeTabMenu === 'videos' ? '#2563EB' : 'transparent'}`,
+                color: activeTabMenu === 'videos' ? '#2563EB' : 'var(--text-muted)',
                 background: 'none',
                 borderTop: 'none',
                 borderLeft: 'none',
@@ -850,7 +850,7 @@ const ProfilePage = ({ partner, setActiveTab }) => {
                 </button>
                 <button 
                   type="submit" 
-                  style={{ flex: 2, padding: '12px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(255, 153, 51, 0.3)' }}
+                  style={{ flex: 2, padding: '12px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFF', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(37, 99, 235, 0.3)' }}
                 >
                   Save Profile Changes
                 </button>
