@@ -37,12 +37,17 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const [userMedia, setUserMedia] = useState([]);
   const [downlineUsers, setDownlineUsers] = useState([]);
   const [networkSearch, setNetworkSearch] = useState('');
-  const [selectedMember, setSelectedMember] = useState(null);
-  const [viewMode, setViewMode] = useState('grid');
-  const [isDark, setIsDark] = useState(false);
+  const [assignedTasks, setAssignedTasks] = useState([]);
+  const [proofModal, setProofModal] = useState({ isOpen: false, task: null });
+  const [proofText, setProofText] = useState('');
+  const [proofFile, setProofFile] = useState(null);
+  const [proofVideoUrl, setProofVideoUrl] = useState('');
+  const [submittingProof, setSubmittingProof] = useState(false);
+  const [viewProofModal, setViewProofModal] = useState({ isOpen: false, task: null });
 
   useEffect(() => {
     fetchProfile();
+    fetchUserTasks();
   }, []);
 
   const fetchProfile = async () => {
@@ -82,6 +87,105 @@ export default function Dashboard({ setActiveTab, setUserState }) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUserTasks = async () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_URL}/task-assignments`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAssignedTasks(Array.isArray(data) ? data : []);
+      }
+    } catch (err) {
+      console.error('Error fetching assigned tasks:', err);
+    }
+  };
+
+  const handleStartTask = async (assignmentId) => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_URL}/task-assignments/${assignmentId}/start`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setMsg({ text: lang === 'en' ? 'Task started successfully!' : 'कार्य सफलतापूर्वक शुरू हुआ!', type: 'success' });
+        fetchUserTasks();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setMsg({ text: data.error || 'Failed to start task', type: 'error' });
+      }
+    } catch (e) {
+      setMsg({ text: 'Network error starting task', type: 'error' });
+    }
+  };
+
+  const handleSubmitProof = async (e) => {
+    e.preventDefault();
+    if (!proofModal.task) return;
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+
+    if (!proofText && !proofFile && !proofVideoUrl) {
+      alert(lang === 'en' ? 'Please write work notes, upload a proof file, or provide a video link.' : 'कृपया कार्य विवरण लिखें, फ़ाइल अपलोड करें या वीडियो लिंक दें।');
+      return;
+    }
+
+    setSubmittingProof(true);
+    try {
+      let uploadedFileUrl = '';
+      if (proofFile) {
+        const fileFormData = new FormData();
+        fileFormData.append('proof_file', proofFile);
+        const uploadRes = await fetch(`${API_URL}/upload/proof`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: fileFormData
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadRes.ok) {
+          uploadedFileUrl = uploadData.url || uploadData.publicUrl || '';
+        } else {
+          alert(uploadData.error || 'Proof file upload failed');
+          setSubmittingProof(false);
+          return;
+        }
+      }
+
+      const submitRes = await fetch(`${API_URL}/task-assignments/${proofModal.task.id}/submit`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          proof_text: proofText || null,
+          proof_file: uploadedFileUrl || null,
+          video_url: proofVideoUrl || null
+        })
+      });
+
+      if (submitRes.ok) {
+        setMsg({ text: lang === 'en' ? 'Proof submitted successfully! Awaiting review.' : 'कार्य प्रमाण जमा हो गया! समीक्षा की प्रतीक्षा है।', type: 'success' });
+        setProofModal({ isOpen: false, task: null });
+        setProofText('');
+        setProofFile(null);
+        setProofVideoUrl('');
+        fetchUserTasks();
+      } else {
+        const submitData = await submitRes.json().catch(() => ({}));
+        alert(submitData.error || 'Failed to submit proof.');
+      }
+    } catch (err) {
+      alert('Network error submitting proof.');
+    } finally {
+      setSubmittingProof(false);
     }
   };
 
@@ -1014,6 +1118,271 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             </div>
           )}
 
+          {/* MY TASKS TAB */}
+          {activeDashTab === 'tasks' && (
+            <div className="fade-in">
+              {/* Task Summary Stat Bar */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                gap: '16px',
+                marginBottom: '28px'
+              }}>
+                {[
+                  { label: lang === 'en' ? 'Total Assigned' : 'कुल सौंपे गए', value: assignedTasks.length, color: '#2563EB', bg: '#EFF6FF' },
+                  { label: lang === 'en' ? 'Pending' : 'लंबित', value: assignedTasks.filter(t => t.status === 'Pending').length, color: '#64748B', bg: '#F8FAFC' },
+                  { label: lang === 'en' ? 'In Progress' : 'प्रगति में', value: assignedTasks.filter(t => t.status === 'In Progress').length, color: '#EA580C', bg: '#FFF7ED' },
+                  { label: lang === 'en' ? 'Submitted' : 'समीक्षाधीन', value: assignedTasks.filter(t => t.status === 'Submitted').length, color: '#7C3AED', bg: '#F5F3FF' },
+                  { label: lang === 'en' ? 'Completed / Approved' : 'पूर्ण / स्वीकृत', value: assignedTasks.filter(t => ['Approved', 'Completed'].includes(t.status)).length, color: '#16A34A', bg: '#F0FDF4' },
+                ].map((s, idx) => (
+                  <div key={idx} style={{
+                    background: '#FFF',
+                    padding: '18px 20px',
+                    borderRadius: '16px',
+                    border: '1px solid #E2E8F0',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+                  }}>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: s.color }}>{s.value}</div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', marginTop: '2px' }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Tasks List Card */}
+              <div style={{
+                background: '#FFF',
+                borderRadius: '20px',
+                padding: '28px',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '16px',
+                  marginBottom: '24px'
+                }}>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}>
+                      {lang === 'en' ? 'Your Role Assigned Tasks' : 'आपकी भूमिका के लिए सौंपे गए कार्य'}
+                    </h4>
+                    <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748B' }}>
+                      {lang === 'en' ? 'Complete assigned tasks, upload work proof, and earn wallet reward points!' : 'सौंपे गए कार्य पूरा करें, कार्य का प्रमाण अपलोड करें, और वॉलेट पॉइंट कमाएं!'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={fetchUserTasks}
+                    style={{
+                      background: '#F1F5F9',
+                      border: '1px solid #CBD5E1',
+                      padding: '8px 16px',
+                      borderRadius: '30px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      color: '#334155',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <RefreshCw size={14} /> {lang === 'en' ? 'Refresh Tasks' : 'ताज़ा करें'}
+                  </button>
+                </div>
+
+                {assignedTasks.length === 0 ? (
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '60px 20px',
+                    background: '#F8FAFC',
+                    borderRadius: '16px',
+                    border: '1px dashed #CBD5E1'
+                  }}>
+                    <CheckSquare size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
+                    <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
+                      {lang === 'en' ? 'No tasks assigned to your role currently' : 'वर्तमान में आपकी भूमिका के लिए कोई कार्य नहीं है'}
+                    </h4>
+                    <p style={{ color: '#64748B', fontSize: '0.9rem', maxWidth: '480px', margin: '0 auto' }}>
+                      {lang === 'en' ? 'Admin will assign new tasks for your role soon. Check back later!' : 'एडमिन जल्द ही आपकी भूमिका के लिए नए कार्य असाइन करेंगे।'}
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {assignedTasks.map((t) => {
+                      const isPending = t.status === 'Pending';
+                      const isInProgress = t.status === 'In Progress';
+                      const isSubmitted = t.status === 'Submitted';
+                      const isApproved = t.status === 'Approved' || t.status === 'Completed';
+                      const isRejected = t.status === 'Rejected';
+
+                      return (
+                        <div
+                          key={t.id}
+                          style={{
+                            background: '#F8FAFC',
+                            border: `1px solid ${isApproved ? '#86EFAC' : isRejected ? '#FCA5A5' : isSubmitted ? '#DDD6FE' : '#E2E8F0'}`,
+                            borderLeft: `5px solid ${isApproved ? '#16A34A' : isRejected ? '#DC2626' : isSubmitted ? '#7C3AED' : isInProgress ? '#EA580C' : '#2563EB'}`,
+                            borderRadius: '16px',
+                            padding: '20px 24px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '14px',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                                <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}>
+                                  {t.task_title || t.title || 'Task Assignment'}
+                                </h4>
+                                <span style={{
+                                  background: t.task_priority === 'Urgent' ? '#FEF2F2' : t.task_priority === 'High' ? '#FFF7ED' : '#F0FDF4',
+                                  color: t.task_priority === 'Urgent' ? '#DC2626' : t.task_priority === 'High' ? '#EA580C' : '#16A34A',
+                                  padding: '2px 10px',
+                                  borderRadius: '20px',
+                                  fontSize: '0.72rem',
+                                  fontWeight: 700,
+                                  border: `1px solid ${t.task_priority === 'Urgent' ? '#FCA5A5' : t.task_priority === 'High' ? '#FED7AA' : '#86EFAC'}`
+                                }}>
+                                  {t.task_priority || 'Medium'}
+                                </span>
+                              </div>
+                              {t.task_description && (
+                                <p style={{ margin: 0, color: '#475569', fontSize: '0.9rem', lineHeight: '1.5' }}>
+                                  {t.task_description}
+                                </p>
+                              )}
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                              <div style={{
+                                background: '#FFF',
+                                border: '1px solid #E2E8F0',
+                                padding: '6px 14px',
+                                borderRadius: '30px',
+                                fontSize: '0.85rem',
+                                fontWeight: 800,
+                                color: '#2563EB',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                              }}>
+                                🎁 {t.task_points ?? t.points ?? 0} pts
+                              </div>
+
+                              <span style={{
+                                background: isApproved ? '#F0FDF4' : isRejected ? '#FEF2F2' : isSubmitted ? '#F5F3FF' : isInProgress ? '#FFF7ED' : '#F8FAFC',
+                                color: isApproved ? '#16A34A' : isRejected ? '#DC2626' : isSubmitted ? '#7C3AED' : isInProgress ? '#EA580C' : '#64748B',
+                                padding: '6px 16px',
+                                borderRadius: '30px',
+                                fontSize: '0.8rem',
+                                fontWeight: 700,
+                                border: `1px solid ${isApproved ? '#86EFAC' : isRejected ? '#FCA5A5' : isSubmitted ? '#DDD6FE' : isInProgress ? '#FED7AA' : '#CBD5E1'}`
+                              }}>
+                                {isApproved ? '✅ Approved & Completed' : isRejected ? '❌ Rejected' : isSubmitted ? '📤 Submitted (Pending Review)' : isInProgress ? '⚡ In Progress' : '🕐 Pending'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                            gap: '12px',
+                            paddingTop: '12px',
+                            borderTop: '1px solid #E2E8F0',
+                            fontSize: '0.82rem',
+                            color: '#64748B'
+                          }}>
+                            <div>
+                              📅 {lang === 'en' ? 'Due Date:' : 'अंतिम तिथि:'} <strong>{t.task_due_date ? new Date(t.task_due_date).toLocaleDateString() : 'N/A'}</strong>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                              {isPending && (
+                                <button
+                                  onClick={() => handleStartTask(t.id)}
+                                  style={{
+                                    background: '#2563EB',
+                                    color: '#FFF',
+                                    border: 'none',
+                                    padding: '8px 20px',
+                                    borderRadius: '30px',
+                                    fontWeight: 700,
+                                    fontSize: '0.82rem',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    boxShadow: '0 3px 10px rgba(37,99,235,0.25)'
+                                  }}
+                                >
+                                  ▶️ {lang === 'en' ? 'Start Task' : 'कार्य शुरू करें'}
+                                </button>
+                              )}
+
+                              {(isInProgress || isRejected) && (
+                                <button
+                                  onClick={() => {
+                                    setProofModal({ isOpen: true, task: t });
+                                    setProofText('');
+                                    setProofFile(null);
+                                    setProofVideoUrl('');
+                                  }}
+                                  style={{
+                                    background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                                    color: '#FFF',
+                                    border: 'none',
+                                    padding: '8px 20px',
+                                    borderRadius: '30px',
+                                    fontWeight: 700,
+                                    fontSize: '0.82rem',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    boxShadow: '0 3px 10px rgba(255,153,51,0.3)'
+                                  }}
+                                >
+                                  📤 {isRejected ? (lang === 'en' ? 'Resubmit Proof' : 'प्रमाण पुनः भेजें') : (lang === 'en' ? 'Submit Proof & Complete' : 'प्रमाण अपलोड और पूर्ण करें')}
+                                </button>
+                              )}
+
+                              {(t.proof_text || t.proof_file || t.video_url) && (
+                                <button
+                                  onClick={() => setViewProofModal({ isOpen: true, task: t })}
+                                  style={{
+                                    background: '#FFF',
+                                    border: '1px solid #CBD5E1',
+                                    color: '#334155',
+                                    padding: '8px 16px',
+                                    borderRadius: '30px',
+                                    fontWeight: 700,
+                                    fontSize: '0.82rem',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px'
+                                  }}
+                                >
+                                  👁️ {lang === 'en' ? 'View Submitted Proof' : 'प्रमाण देखें'}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* NETWORK */}
           {activeDashTab === 'network' && (
             <div className="fade-in">
@@ -1629,6 +1998,210 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             </div>
           )}
         </main>
+
+        {/* PROOF SUBMISSION MODAL */}
+        {proofModal.isOpen && proofModal.task && (
+          <div style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 100,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}>
+            <div style={{
+              background: '#FFF',
+              borderRadius: '24px',
+              maxWidth: '560px',
+              width: '100%',
+              padding: '28px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+              border: '1px solid #E2E8F0'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #E2E8F0', paddingBottom: '14px' }}>
+                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#0F172A' }}>
+                  📤 {lang === 'en' ? 'Submit Work Proof' : 'कार्य का प्रमाण जमा करें'}
+                </h3>
+                <button onClick={() => setProofModal({ isOpen: false, task: null })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748B' }}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <p style={{ color: '#64748B', fontSize: '0.88rem', marginBottom: '18px' }}>
+                <strong>Task: {proofModal.task.task_title || proofModal.task.title}</strong>
+              </p>
+
+              <form onSubmit={handleSubmitProof} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
+                    {lang === 'en' ? 'Work Summary / Notes *' : 'कार्य विवरण / नोट्स *'}
+                  </label>
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder={lang === 'en' ? 'Describe the work done for this task...' : 'इस कार्य के लिए किए गए कार्य का विवरण लिखें...'}
+                    value={proofText}
+                    onChange={(e) => setProofText(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      borderRadius: '12px',
+                      border: '1px solid #CBD5E1',
+                      fontSize: '0.9rem',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
+                    🖼️ {lang === 'en' ? 'Upload Proof Image / Document (PDF)' : 'प्रमाण फ़ोटो / दस्तावेज़ (PDF) अपलोड करें'}
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={(e) => setProofFile(e.target.files[0] || null)}
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: '12px',
+                      border: '2px dashed #CBD5E1',
+                      background: '#F8FAFC',
+                      fontSize: '0.85rem'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontWeight: 700, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
+                    🔗 {lang === 'en' ? 'Video / Media URL (Optional)' : 'वीडियो / मीडिया लिंक (वैकल्पिक)'}
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://youtube.com/watch?v=..."
+                    value={proofVideoUrl}
+                    onChange={(e) => setProofVideoUrl(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: '12px',
+                      border: '1px solid #CBD5E1',
+                      fontSize: '0.9rem',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '10px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setProofModal({ isOpen: false, task: null })}
+                    style={{ background: '#F1F5F9', color: '#475569', border: 'none', padding: '10px 20px', borderRadius: '30px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
+                  >
+                    {lang === 'en' ? 'Cancel' : 'रद्द करें'}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submittingProof}
+                    style={{
+                      background: submittingProof ? '#CBD5E1' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      color: '#FFF',
+                      border: 'none',
+                      padding: '10px 24px',
+                      borderRadius: '30px',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: submittingProof ? 'not-allowed' : 'pointer',
+                      boxShadow: '0 4px 15px rgba(255,153,51,0.3)'
+                    }}
+                  >
+                    {submittingProof ? (lang === 'en' ? 'Uploading...' : 'अपलोड हो रहा...') : (lang === 'en' ? 'Submit Proof' : 'प्रमाण जमा करें')}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* VIEW PROOF MODAL */}
+        {viewProofModal.isOpen && viewProofModal.task && (
+          <div style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 100,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}>
+            <div style={{
+              background: '#FFF',
+              borderRadius: '24px',
+              maxWidth: '560px',
+              width: '100%',
+              padding: '28px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+              border: '1px solid #E2E8F0'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #E2E8F0', paddingBottom: '14px' }}>
+                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#0F172A' }}>
+                  👁️ {lang === 'en' ? 'Submitted Work Proof' : 'जमा किया गया कार्य प्रमाण'}
+                </h3>
+                <button onClick={() => setViewProofModal({ isOpen: false, task: null })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748B' }}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem' }}>
+                <p style={{ margin: 0, color: '#64748B' }}>
+                  <strong>Task:</strong> {viewProofModal.task.task_title || viewProofModal.task.title}
+                </p>
+
+                {viewProofModal.task.proof_text && (
+                  <div style={{ background: '#F8FAFC', padding: '14px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                    <strong style={{ color: '#0F172A', display: 'block', marginBottom: '4px' }}>📝 Work Notes:</strong>
+                    <span style={{ color: '#475569', whiteSpace: 'pre-wrap' }}>{viewProofModal.task.proof_text}</span>
+                  </div>
+                )}
+
+                {viewProofModal.task.proof_file && (
+                  <div style={{ background: '#F8FAFC', padding: '14px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                    <strong style={{ color: '#0F172A', display: 'block', marginBottom: '8px' }}>🖼️ Proof File:</strong>
+                    <a href={getMediaUrl(viewProofModal.task.proof_file)} target="_blank" rel="noopener noreferrer" style={{ color: '#2563EB', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <ExternalLink size={16} /> Open Uploaded Proof File
+                    </a>
+                    {viewProofModal.task.proof_file.match(/\.(jpg|jpeg|png|webp|gif)$/i) && (
+                      <img src={getMediaUrl(viewProofModal.task.proof_file)} alt="Proof preview" style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '8px', marginTop: '10px' }} />
+                    )}
+                  </div>
+                )}
+
+                {viewProofModal.task.video_url && (
+                  <div style={{ background: '#F8FAFC', padding: '14px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                    <strong style={{ color: '#0F172A', display: 'block', marginBottom: '4px' }}>🔗 Video Link:</strong>
+                    <a href={viewProofModal.task.video_url} target="_blank" rel="noopener noreferrer" style={{ color: '#2563EB', fontWeight: 700 }}>
+                      {viewProofModal.task.video_url}
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                <button
+                  onClick={() => setViewProofModal({ isOpen: false, task: null })}
+                  style={{ background: '#2563EB', color: '#FFF', border: 'none', padding: '10px 24px', borderRadius: '30px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
+                >
+                  {lang === 'en' ? 'Close' : 'बंद करें'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

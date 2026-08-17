@@ -32,9 +32,30 @@ const BASE_SELECT = `
 `;
 
 // ─── GET all assignments ─────────────────────────────────────────────────────
-// Admin → all | Others → only assignments for themselves
+// Admin → all | Others → only assignments for themselves (with auto-sync for role tasks)
 router.get('/', verifyToken, async (req, res) => {
   try {
+    if (req.userRole !== 'Admin' && req.userId) {
+      // Auto-assign any active tasks assigned to user's role that are missing for this user
+      try {
+        await db.query(`
+          INSERT INTO task_assignments (task_id, assigned_to, assigned_by, status)
+          SELECT DISTINCT t.id, ?, 1, 'Pending'
+          FROM tasks t
+          JOIN task_assignments ta ON ta.task_id = t.id
+          JOIN users u_target ON ta.assigned_to = u_target.id
+          JOIN roles r_target ON u_target.role_id = r_target.id
+          JOIN users u_me ON u_me.id = ?
+          JOIN roles r_me ON u_me.role_id = r_me.id
+          WHERE r_target.id = r_me.id
+            AND t.status = 'Active'
+            AND t.id NOT IN (SELECT task_id FROM task_assignments WHERE assigned_to = ?)
+        `, [req.userId, req.userId, req.userId]);
+      } catch (syncErr) {
+        // Ignore duplicate key or sync errors silently
+      }
+    }
+
     let query, params = [];
 
     if (req.userRole === 'Admin') {
