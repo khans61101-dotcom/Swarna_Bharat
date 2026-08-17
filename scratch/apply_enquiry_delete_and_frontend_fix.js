@@ -1,4 +1,38 @@
-import React, { useState } from 'react';
+const fs = require('fs');
+const path = require('path');
+
+// 1. Update Back/public/js/app.js
+const appJsPath = path.join(__dirname, '../Back/public/js/app.js');
+let appJs = fs.readFileSync(appJsPath, 'utf8');
+
+const targetOld = `                <td>
+                    <button onclick="updateEnquiryStatus(\${e.id}, '\${e.status === 'Pending' ? 'Resolved' : 'Pending'}')" style="background:#0F172A;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
+                        \${e.status === 'Pending' ? '✅ Resolve' : '🔄 Reopen'}
+                    </button>
+                </td>`;
+
+const replacementNew = `                <td style="display:flex;gap:6px;align-items:center;">
+                    <button onclick="updateEnquiryStatus(\${e.id}, '\${e.status === 'Pending' ? 'Resolved' : 'Pending'}')" style="background:#0F172A;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
+                        \${e.status === 'Pending' ? '✅ Resolve' : '🔄 Reopen'}
+                    </button>
+                    <button onclick="deleteItem('/enquiries/\${e.id}', loadEnquiries)" style="background:#DC2626;color:white;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">
+                        🗑️ Delete
+                    </button>
+                </td>`;
+
+if (appJs.includes(targetOld)) {
+  appJs = appJs.replace(targetOld, replacementNew);
+  fs.writeFileSync(appJsPath, appJs, 'utf8');
+  console.log('Successfully added Delete button to loadEnquiries in app.js!');
+} else {
+  console.error('Target old block not found in app.js');
+}
+
+// 2. Update Front/src/pages/Enquiry.jsx
+const enquiryJsxPath = path.join(__dirname, '../Front/src/pages/Enquiry.jsx');
+let enquiryJsx = fs.readFileSync(enquiryJsxPath, 'utf8');
+
+const newEnquiryPageContent = `import React, { useState } from 'react';
 import { HelpCircle, Send, CheckCircle, Mail, Phone, MapPin } from 'lucide-react';
 import { useLang } from '../LanguageContext';
 import { API_URL } from '../config';
@@ -20,9 +54,9 @@ export default function EnquiryPage() {
     // Smart multi-endpoint retry list
     const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
     const endpoints = [
-      `${API_URL}/enquiries`,
-      `http://${host}:3000/api/enquiries`,
-      `http://localhost:3000/api/enquiries`
+      \`\${API_URL}/enquiries\`,
+      \`http://\${host}:3000/api/enquiries\`,
+      \`http://localhost:3000/api/enquiries\`
     ];
 
     for (const url of [...new Set(endpoints)]) {
@@ -173,3 +207,7 @@ export default function EnquiryPage() {
     </div>
   );
 }
+`;
+
+fs.writeFileSync(enquiryJsxPath, newEnquiryPageContent, 'utf8');
+console.log('Successfully updated Front/src/pages/Enquiry.jsx with smart fallback & royal blue theme!');
