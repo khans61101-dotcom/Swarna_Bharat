@@ -13,14 +13,19 @@ export default function EnquiryPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`${API_URL}/enquiries`, {
+      const res = await fetch(`${API_URL}/enquiries`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Server error');
+      }
       setSubmitted(true);
     } catch (err) {
-      alert('Error submitting enquiry.');
+      console.error('Enquiry submission error:', err);
+      alert('Error submitting enquiry: ' + (err.message || 'Server error'));
     }
   };
 
