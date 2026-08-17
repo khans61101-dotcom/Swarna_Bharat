@@ -32,10 +32,13 @@ export default function EnquiryPage() {
     }
 
     const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+    
+    // Order local backend server endpoints FIRST so local DB saving works instantly!
     const endpoints = [
-      `${API_URL}/enquiries`,
       `http://${host}:3000/api/enquiries`,
       `http://localhost:3000/api/enquiries`,
+      `http://127.0.0.1:3000/api/enquiries`,
+      `${API_URL}/enquiries`,
       `/api/enquiries`
     ];
 
