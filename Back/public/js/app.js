@@ -1844,7 +1844,7 @@ async function loadUsers() {
         cachedUsers = data;
 
         // Render Tree Diagram
-        renderAccountsTree(data);
+        try { renderAccountsTree(data); } catch(treeErr) { console.error('Tree render error:', treeErr); }
         
         if (tbody) {
             if (data.length === 0) {
