@@ -37,6 +37,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const [userMedia, setUserMedia] = useState([]);
   const [downlineUsers, setDownlineUsers] = useState([]);
   const [networkSearch, setNetworkSearch] = useState('');
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [viewMode, setViewMode] = useState('grid');
+  const [isDark, setIsDark] = useState(false);
   const [assignedTasks, setAssignedTasks] = useState([]);
   const [proofModal, setProofModal] = useState({ isOpen: false, task: null });
   const [proofText, setProofText] = useState('');
