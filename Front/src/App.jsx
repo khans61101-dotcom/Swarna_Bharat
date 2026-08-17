@@ -30,7 +30,9 @@ import {
   Phone,
   Mail,
   FileText,
-  Download
+  Download,
+  Menu,
+  X
 } from 'lucide-react';
 
 const IconFacebook = () => (
@@ -234,9 +236,11 @@ export default function App() {
   };
 
   const [activeTab, setActiveTabState] = useState(getTabFromLocation);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const setActiveTab = (tab) => {
     setActiveTabState(tab);
+    setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     let routeName = '';
@@ -857,8 +861,111 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
             >
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
+
+            {/* Mobile Hamburger Menu Toggle Button */}
+            <button
+              className="mobile-hamburger-btn"
+              onClick={() => setMobileMenuOpen(prev => !prev)}
+              aria-label="Toggle Navigation Menu"
+              title="Menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <div className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
+            <div className="mobile-menu-drawer" onClick={(e) => e.stopPropagation()}>
+              <div className="mobile-menu-header">
+                <div className="mobile-menu-brand">
+                  <img src={logoImg} alt="Swarna Bharat" />
+                  <span>Swarna Bharat</span>
+                </div>
+                <button className="mobile-close-btn" onClick={() => setMobileMenuOpen(false)}>
+                  <X size={22} />
+                </button>
+              </div>
+
+              <div className="mobile-menu-list">
+                <div className={`mobile-nav-item ${activeTab === 'Home' ? 'active' : ''}`} onClick={() => setActiveTab('Home')}>
+                  🏠 {t.nav.home}
+                </div>
+                <div className={`mobile-nav-item ${activeTab === 'About' ? 'active' : ''}`} onClick={() => setActiveTab('About')}>
+                  ℹ️ {t.nav.about}
+                </div>
+                <div className={`mobile-nav-item ${activeTab === 'News' ? 'active' : ''}`} onClick={() => setActiveTab('News')}>
+                  📰 {t.nav.news}
+                </div>
+                <div className={`mobile-nav-item ${activeTab === 'Events' ? 'active' : ''}`} onClick={() => setActiveTab('Events')}>
+                  📅 {t.nav.events}
+                </div>
+
+                {/* Sectors Accordion/List */}
+                <div className="mobile-nav-group">
+                  <div className="mobile-nav-group-title">
+                    🌐 {lang === 'en' ? 'Sectors & Pillars' : 'क्षेत्र और स्तंभ'}
+                  </div>
+                  <div className="mobile-nav-sublist">
+                    {sectorDataList.map((sec) => (
+                      <div
+                        key={sec.id}
+                        className={`mobile-nav-subitem ${selectedSector === sec.id && activeTab === 'SectorDetails' ? 'active' : ''}`}
+                        onClick={() => {
+                          setSelectedSector(sec.id);
+                          setActiveTab('SectorDetails');
+                        }}
+                      >
+                        ▸ {lang === 'en' ? sec.name : sec.nameHi}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Media Group */}
+                <div className="mobile-nav-group">
+                  <div className="mobile-nav-group-title">
+                    🎬 {lang === 'en' ? 'Media & Downloads' : 'मीडिया और डाउनलोड'}
+                  </div>
+                  <div className="mobile-nav-sublist">
+                    <div className={`mobile-nav-subitem ${activeTab === 'Videos' ? 'active' : ''}`} onClick={() => setActiveTab('Videos')}>
+                      🎥 {t.nav.videos}
+                    </div>
+                    <div className={`mobile-nav-subitem ${activeTab === 'Gallery' ? 'active' : ''}`} onClick={() => setActiveTab('Gallery')}>
+                      🖼️ {lang === 'en' ? 'Gallery' : 'गैलरी'}
+                    </div>
+                    <div className={`mobile-nav-subitem ${activeTab === 'Documents' ? 'active' : ''}`} onClick={() => setActiveTab('Documents')}>
+                      📄 {lang === 'en' ? 'Important Documents' : 'महत्वपूर्ण दस्तावेज़'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`mobile-nav-item ${activeTab === 'Enquiry' ? 'active' : ''}`} onClick={() => setActiveTab('Enquiry')}>
+                  📩 {t.nav.enquiry}
+                </div>
+                <div className={`mobile-nav-item ${activeTab === 'Partners' ? 'active' : ''}`} onClick={() => setActiveTab('Partners')}>
+                  🏢 {t.nav.partners || 'Partners'}
+                </div>
+                <div className={`mobile-nav-item ${activeTab === 'DownloadApp' ? 'active' : ''}`} onClick={() => setActiveTab('DownloadApp')}>
+                  📱 {t.nav.downloadApp}
+                </div>
+                <div className={`mobile-nav-item ${activeTab === 'Auth' || activeTab === 'Dashboard' ? 'active' : ''}`} onClick={() => { if (!userState && !localStorage.getItem('userToken')) setAuthMode('login'); setActiveTab(userState || localStorage.getItem('userToken') ? 'Dashboard' : 'Auth'); }}>
+                  🔐 {userState || localStorage.getItem('userToken') ? 'Dashboard' : t.nav.loginRegister}
+                </div>
+
+                <div className="mobile-menu-footer">
+                  <button onClick={toggleLang} className="mobile-lang-btn">
+                    🌐 {t.langToggle}
+                  </button>
+                  <button onClick={toggleDarkMode} className="mobile-theme-btn">
+                    {darkMode ? <Sun size={18} /> : <Moon size={18} />} {darkMode ? 'Light Mode' : 'Dark Mode'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
       )}
 

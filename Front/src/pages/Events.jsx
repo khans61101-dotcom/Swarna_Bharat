@@ -191,6 +191,7 @@ export default function EventsPage({ onSelectEvent, setSelectedEvent, setActiveT
           filteredEvents.map((evt) => (
             <div 
               key={evt.id}
+              className="event-card-grid"
               onClick={() => handleEventClick(evt)}
               style={{
                 background: 'var(--card-bg)',
@@ -198,8 +199,6 @@ export default function EventsPage({ onSelectEvent, setSelectedEvent, setActiveT
                 overflow: 'hidden',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
                 border: '1px solid var(--card-border)',
-                display: 'grid',
-                gridTemplateColumns: 'minmax(120px, 160px) 1fr minmax(200px, 280px)',
                 transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                 cursor: 'pointer'
               }}
