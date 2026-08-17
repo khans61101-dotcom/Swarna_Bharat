@@ -47,6 +47,17 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const [proofVideoUrl, setProofVideoUrl] = useState('');
   const [submittingProof, setSubmittingProof] = useState(false);
   const [viewProofModal, setViewProofModal] = useState({ isOpen: false, task: null });
+  
+  const [newTaskData, setNewTaskData] = useState({
+    title: '',
+    description: '',
+    points: 100,
+    priority: 'Medium',
+    start_date: new Date().toISOString().split('T')[0],
+    due_date: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+    target_role: 'User'
+  });
+  const [creatingTask, setCreatingTask] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -189,6 +200,87 @@ export default function Dashboard({ setActiveTab, setUserState }) {
       alert('Network error submitting proof.');
     } finally {
       setSubmittingProof(false);
+    }
+  };
+
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+
+    if (!newTaskData.title.trim()) {
+      alert(lang === 'en' ? 'Please enter task title' : 'कृपया कार्य शीर्षक दर्ज करें');
+      return;
+    }
+
+    setCreatingTask(true);
+    try {
+      // 1. Create Task Master
+      const res = await fetch(`${API_URL}/tasks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: newTaskData.title.trim(),
+          description: newTaskData.description.trim() || null,
+          points: parseInt(newTaskData.points) || 100,
+          priority: newTaskData.priority || 'Medium',
+          start_date: newTaskData.start_date,
+          due_date: newTaskData.due_date,
+          status: 'Active'
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.task) {
+        alert(data.error || 'Failed to create task master');
+        setCreatingTask(false);
+        return;
+      }
+
+      const createdTaskId = data.task.id;
+
+      // 2. Assign Task to Selected Target Role
+      const assignRes = await fetch(`${API_URL}/task-assignments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          task_id: createdTaskId,
+          target_role: newTaskData.target_role || 'User'
+        })
+      });
+
+      const assignData = await assignRes.json();
+
+      setMsg({
+        text: lang === 'en'
+          ? `Task "${newTaskData.title}" created & assigned to ${newTaskData.target_role} role successfully!`
+          : `कार्य "${newTaskData.title}" सफलतापूर्वक बनाया गया और ${newTaskData.target_role} भूमिका को सौंपा गया!`,
+        type: 'success'
+      });
+
+      setNewTaskData({
+        title: '',
+        description: '',
+        points: 100,
+        priority: 'Medium',
+        start_date: new Date().toISOString().split('T')[0],
+        due_date: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+        target_role: 'User'
+      });
+
+      fetchUserTasks();
+      setActiveDashTab('tasks');
+    } catch (err) {
+      alert('Network error creating task');
+    } finally {
+      setCreatingTask(false);
     }
   };
 
@@ -634,51 +726,60 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             {lang === 'en' ? 'Main Menu' : 'मुख्य मेनू'}
           </div>
 
-          {[
-            { id: 'overview', icon: LayoutDashboard, label: lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड' },
-            { id: 'network', icon: Users, label: lang === 'en' ? 'Network' : 'नेटवर्क', badge: downlineUsers.length },
-            { id: 'media', icon: Film, label: lang === 'en' ? 'Gallery' : 'गैलरी', badge: userMedia.length },
-            { id: 'public_profile', icon: Eye, label: lang === 'en' ? 'Public Profile' : 'सार्वजनिक प्रोफ़ाइल' },
-            { id: 'profile', icon: User, label: lang === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें' },
-          ].map((item) => (
-            <button
-              key={item.id}
-              onClick={() => { setActiveDashTab(item.id); setMobileSidebarOpen(false); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: 'none',
-                background: activeDashTab === item.id ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : 'transparent',
-                color: activeDashTab === item.id ? '#FFF' : '#94A3B8',
-                fontWeight: activeDashTab === item.id ? 700 : 500,
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: activeDashTab === item.id ? '0 4px 15px rgba(37, 99, 235, 0.3)' : 'none'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <item.icon size={18} style={{ color: activeDashTab === item.id ? '#FFF' : '#94A3B8' }} />
-                <span>{item.label}</span>
-              </div>
-              {item.badge !== undefined && (
-                <span style={{
-                  background: activeDashTab === item.id ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
-                  color: '#FFF',
-                  padding: '2px 10px',
-                  borderRadius: '20px',
-                  fontSize: '0.7rem',
-                  fontWeight: 700
-                }}>
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          ))}
+          {(() => {
+            const isAgencyOrNgoOrAdmin = user && (user.role_name === 'Agency' || user.role_name === 'NGO' || user.role_name === 'Admin');
+            const menuItems = [
+              { id: 'overview', icon: LayoutDashboard, label: lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड' },
+              { id: 'tasks', icon: CheckSquare, label: lang === 'en' ? 'My Tasks' : 'सौंपे गए कार्य', badge: assignedTasks.length },
+              ...(isAgencyOrNgoOrAdmin ? [
+                { id: 'create_task', icon: PlusCircle, label: lang === 'en' ? 'Create Task' : 'नया कार्य बनाएं' }
+              ] : []),
+              { id: 'network', icon: Users, label: lang === 'en' ? 'Network' : 'नेटवर्क', badge: downlineUsers.length },
+              { id: 'media', icon: Film, label: lang === 'en' ? 'Gallery' : 'गैलरी', badge: userMedia.length },
+              { id: 'public_profile', icon: Eye, label: lang === 'en' ? 'Public Profile' : 'सार्वजनिक प्रोफ़ाइल' },
+              { id: 'profile', icon: User, label: lang === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें' },
+            ];
+
+            return menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => { setActiveDashTab(item.id); setMobileSidebarOpen(false); }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: activeDashTab === item.id ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : 'transparent',
+                  color: activeDashTab === item.id ? '#FFF' : '#94A3B8',
+                  fontWeight: activeDashTab === item.id ? 700 : 500,
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: activeDashTab === item.id ? '0 4px 15px rgba(37, 99, 235, 0.3)' : 'none'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <item.icon size={18} style={{ color: activeDashTab === item.id ? '#FFF' : '#94A3B8' }} />
+                  <span>{item.label}</span>
+                </div>
+                {item.badge !== undefined && (
+                  <span style={{
+                    background: activeDashTab === item.id ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
+                    color: '#FFF',
+                    padding: '2px 10px',
+                    borderRadius: '20px',
+                    fontSize: '0.7rem',
+                    fontWeight: 700
+                  }}>
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            ));
+          })()}
         </nav>
 
         {/* Logout */}
@@ -755,6 +856,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 letterSpacing: '-0.3px'
               }}>
                 {activeDashTab === 'overview' && (lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड अवलोकन')}
+                {activeDashTab === 'tasks' && (lang === 'en' ? 'My Assigned Tasks' : 'सौंपे गए कार्य')}
+                {activeDashTab === 'create_task' && (lang === 'en' ? 'Create & Assign Task' : 'नया कार्य बनाएं')}
                 {activeDashTab === 'network' && (lang === 'en' ? 'My Network' : 'मेरा नेटवर्क')}
                 {activeDashTab === 'media' && (lang === 'en' ? 'Media Gallery' : 'मीडिया गैलरी')}
                 {activeDashTab === 'public_profile' && (lang === 'en' ? 'Public Profile' : 'सार्वजनिक प्रोफ़ाइल')}
@@ -1382,6 +1485,216 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                     })}
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* CREATE TASK TAB (Agency, NGO, Admin only) */}
+          {activeDashTab === 'create_task' && (
+            <div className="fade-in">
+              <div style={{
+                background: '#FFF',
+                borderRadius: '20px',
+                padding: '28px',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 15px rgba(0,0,0,0.02)',
+                maxWidth: '780px',
+                margin: '0 auto'
+              }}>
+                <div style={{ marginBottom: '24px', borderBottom: '1px solid #E2E8F0', paddingBottom: '16px' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <PlusCircle color="#2563EB" size={24} /> {lang === 'en' ? 'Create New Task & Assign to Role' : 'नया कार्य बनाएं और भूमिका को सौंपें'}
+                  </h3>
+                  <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748B' }}>
+                    {lang === 'en' ? 'Create tasks and assign them to specific roles (User, Member, Agency, NGO). Users in that role can start work & submit proof!' : 'कार्य बनाएं और विशिष्ट भूमिकाओं (User, Member, Agency, NGO) को असाइन करें।'}
+                  </p>
+                </div>
+
+                <form onSubmit={handleCreateTask} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#334155', marginBottom: '6px' }}>
+                      {lang === 'en' ? 'Task Title *' : 'कार्य का शीर्षक *'}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder={lang === 'en' ? 'e.g. Swarna Bharat Awareness Drive / Swachhata Abhiyan' : 'जैसे: स्वर्ण भारत जागरूकता अभियान / स्वच्छता अभियान'}
+                      value={newTaskData.title}
+                      onChange={(e) => setNewTaskData({ ...newTaskData, title: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        border: '1px solid #CBD5E1',
+                        fontSize: '0.92rem',
+                        outline: 'none',
+                        background: '#F8FAFC'
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#334155', marginBottom: '6px' }}>
+                      {lang === 'en' ? 'Task Description & Instructions' : 'कार्य विवरण और निर्देश'}
+                    </label>
+                    <textarea
+                      rows={3}
+                      placeholder={lang === 'en' ? 'Provide clear instructions for members to complete this task...' : 'सदस्यों के लिए स्पष्ट निर्देश प्रदान करें...'}
+                      value={newTaskData.description}
+                      onChange={(e) => setNewTaskData({ ...newTaskData, description: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        border: '1px solid #CBD5E1',
+                        fontSize: '0.92rem',
+                        outline: 'none',
+                        background: '#F8FAFC',
+                        resize: 'vertical'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#334155', marginBottom: '6px' }}>
+                      🎁 {lang === 'en' ? 'Reward Points *' : 'इनाम अंक (Points) *'}
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      min={10}
+                      max={10000}
+                      value={newTaskData.points}
+                      onChange={(e) => setNewTaskData({ ...newTaskData, points: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        border: '1px solid #CBD5E1',
+                        fontSize: '0.92rem',
+                        outline: 'none',
+                        background: '#F8FAFC'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#334155', marginBottom: '6px' }}>
+                      🎯 {lang === 'en' ? 'Priority Level *' : 'प्राथमिकता स्तर *'}
+                    </label>
+                    <select
+                      value={newTaskData.priority}
+                      onChange={(e) => setNewTaskData({ ...newTaskData, priority: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        border: '1px solid #CBD5E1',
+                        fontSize: '0.92rem',
+                        outline: 'none',
+                        background: '#F8FAFC'
+                      }}
+                    >
+                      <option value="Low">🟢 Low Priority</option>
+                      <option value="Medium">🟡 Medium Priority</option>
+                      <option value="High">🟠 High Priority</option>
+                      <option value="Urgent">🔴 Urgent Priority</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#334155', marginBottom: '6px' }}>
+                      📅 {lang === 'en' ? 'Start Date *' : 'प्रारंभ तिथि *'}
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={newTaskData.start_date}
+                      onChange={(e) => setNewTaskData({ ...newTaskData, start_date: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        border: '1px solid #CBD5E1',
+                        fontSize: '0.92rem',
+                        outline: 'none',
+                        background: '#F8FAFC'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#334155', marginBottom: '6px' }}>
+                      📅 {lang === 'en' ? 'Due Date *' : 'अंतिम तिथि *'}
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={newTaskData.due_date}
+                      onChange={(e) => setNewTaskData({ ...newTaskData, due_date: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        border: '1px solid #CBD5E1',
+                        fontSize: '0.92rem',
+                        outline: 'none',
+                        background: '#F8FAFC'
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{ display: 'block', fontWeight: 700, fontSize: '0.88rem', color: '#334155', marginBottom: '6px' }}>
+                      👥 {lang === 'en' ? 'Assign To Target Role *' : 'किस भूमिका को असाइन करें (Target Role) *'}
+                    </label>
+                    <select
+                      value={newTaskData.target_role}
+                      onChange={(e) => setNewTaskData({ ...newTaskData, target_role: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        border: '2px solid #2563EB',
+                        fontSize: '0.95rem',
+                        fontWeight: 700,
+                        outline: 'none',
+                        background: '#EFF6FF',
+                        color: '#1D4ED8'
+                      }}
+                    >
+                      <option value="User">👤 All Citizen Users (User Role)</option>
+                      <option value="Member">🎖️ Members (Member Role)</option>
+                      <option value="Agency">🏢 Agencies (Agency Role)</option>
+                      <option value="NGO">🤝 NGOs (NGO Role)</option>
+                      <option value="Agent">⭐ Agents (Agent Role)</option>
+                    </select>
+                  </div>
+
+                  <div style={{ gridColumn: 'span 2', display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
+                    <button
+                      type="submit"
+                      disabled={creatingTask}
+                      style={{
+                        background: creatingTask ? '#CBD5E1' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                        color: '#FFF',
+                        border: 'none',
+                        padding: '12px 32px',
+                        borderRadius: '30px',
+                        fontWeight: 800,
+                        fontSize: '0.95rem',
+                        cursor: creatingTask ? 'not-allowed' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        boxShadow: '0 4px 15px rgba(37,99,235,0.3)'
+                      }}
+                    >
+                      <PlusCircle size={18} />
+                      {creatingTask ? (lang === 'en' ? 'Publishing Task...' : 'प्रकाशन हो रहा है...') : (lang === 'en' ? 'Publish & Assign Task' : 'कार्य प्रकाशित और असाइन करें')}
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}

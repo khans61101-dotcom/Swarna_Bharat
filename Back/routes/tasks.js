@@ -1,13 +1,13 @@
 const express = require('express');
 const db = require('../db');
-const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
+const { verifyToken, isAdmin, isAgencyOrNgoOrAdmin } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 const VALID_PRIORITIES = ['Low', 'Medium', 'High', 'Urgent'];
 const VALID_STATUSES   = ['Active', 'Inactive'];
 
-// ─── GET all tasks (Admin only) ───────────────────────────────────────────────
-router.get('/', verifyToken, isAdmin, async (req, res) => {
+// ─── GET all tasks ───────────────────────────────────────────────────────────
+router.get('/', verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(`
       SELECT t.*, u.name AS created_by_name
@@ -22,8 +22,8 @@ router.get('/', verifyToken, isAdmin, async (req, res) => {
   }
 });
 
-// ─── GET single task by ID (Admin only) ──────────────────────────────────────
-router.get('/:id', verifyToken, isAdmin, async (req, res) => {
+// ─── GET single task by ID ──────────────────────────────────────────────────
+router.get('/:id', verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(`
       SELECT t.*, u.name AS created_by_name
@@ -43,8 +43,8 @@ router.get('/:id', verifyToken, isAdmin, async (req, res) => {
   }
 });
 
-// ─── POST create a new task (Admin only) ─────────────────────────────────────
-router.post('/', verifyToken, isAdmin, async (req, res) => {
+// ─── POST create a new task (Admin, Agency, NGO) ───────────────────────────
+router.post('/', verifyToken, isAgencyOrNgoOrAdmin, async (req, res) => {
   const { title, description, points, priority, start_date, due_date, status } = req.body;
 
   if (!title || !title.trim()) {

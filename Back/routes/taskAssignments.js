@@ -1,6 +1,6 @@
 const express = require('express');
 const db = require('../db');
-const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
+const { verifyToken, isAdmin, isAgencyOrNgoOrAdmin } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 const VALID_STATUSES = ['Pending', 'Assigned', 'In Progress', 'Submitted', 'Approved', 'Rejected', 'Completed'];
@@ -127,8 +127,8 @@ router.get('/task/:taskId', verifyToken, isAdmin, async (req, res) => {
   }
 });
 
-// ─── POST assign a task (Admin only) ─────────────────────────────────────────
-router.post('/', verifyToken, isAdmin, async (req, res) => {
+// ─── POST assign a task (Admin, Agency, NGO) ─────────────────────────────────
+router.post('/', verifyToken, isAgencyOrNgoOrAdmin, async (req, res) => {
   const { task_id, target_role } = req.body;
 
   if (!task_id || !target_role) {
