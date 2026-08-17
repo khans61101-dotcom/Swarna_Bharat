@@ -1297,6 +1297,78 @@ body.dark-mode {
   .responsive-grid, .grid-2, .grid-3, .grid-4, .auth-layout-grid, .event-card-grid {
     grid-template-columns: 1fr !important;
   }
+
+  /* Smaller header icons and buttons on mobile */
+  .logo-img-header {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  .logo-title h1 {
+    font-size: 1.05rem !important;
+  }
+  .header-lang-btn {
+    padding: 4px 10px !important;
+    font-size: 0.75rem !important;
+  }
+  .theme-toggle-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .mobile-hamburger-btn {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 8px !important;
+  }
+  .header-container {
+    padding: 8px 12px !important;
+  }
+
+  /* Single row scrollable pillars ribbon on mobile */
+  .pillars-ribbon-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    justify-content: flex-start !important;
+    gap: 16px !important;
+    padding-bottom: 12px !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+
+  .pillars-ribbon-container::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .pillars-ribbon-container::-webkit-scrollbar-thumb {
+    background: #FF9933;
+    border-radius: 4px;
+  }
+
+  .pillars-ribbon-item {
+    flex: 0 0 95px !important;
+    width: 95px !important;
+    scroll-snap-align: start;
+  }
+
+  .pillar-circle-wrap {
+    width: 56px !important;
+    height: 56px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .pillar-circle-wrap svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+.pillars-ribbon-container {
+  max-width: 1350px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px 35px;
 }
 
 .event-card-grid {

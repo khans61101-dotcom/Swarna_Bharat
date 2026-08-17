@@ -552,6 +552,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
             <img
               src={logoImg}
               alt="Swarna India Logo"
+              className="logo-img-header"
               style={{
                 width: '52px',
                 height: '52px',
@@ -563,7 +564,6 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
             />
             <div className="logo-title">
               <h1>Swarna Bharat</h1>
-              {/* <span>{lang === 'en' ? 'Welcome to Swarna Bharat' : 'सुवार्ड इंडिया में आपका स्वागत है'}</span> */}
             </div>
           </div>
 
@@ -835,6 +835,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             {/* Language Toggle Button */}
             <button
+              className="header-lang-btn"
               onClick={toggleLang}
               style={{
                 background: 'rgba(255, 153, 51, 0.1)',
@@ -1098,20 +1099,21 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
             )}
           </section>
 
-          <section className="marquee-section overflow-hidden w-full py-3" style={{ borderTop: '1px solid var(--card-border)', borderBottom: '1px solid var(--card-border)' }}>
+          {/* <section className="marquee-section overflow-hidden w-full py-3" style={{ borderTop: '1px solid var(--card-border)', borderBottom: '1px solid var(--card-border)' }}>
             <div className="animate-marquee whitespace-nowrap" style={{ fontWeight: 600 }}>
               Hello 👋 Welcome to Swarna Bharat • Youth Power & Cultural Revival • Education • Digital Empowerment 🚀
             </div>
-          </section>
+          </section> */}
 
 
 
           {/* Circular Icon Ribbon */}
-          <section className="section-bg-faf7f2" style={{ background: '#FAF7F2', padding: '40px 20px', borderBottom: '1px solid #E5E0D8' }}>
-            <div style={{ maxWidth: '1350px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '25px 35px' }}>
+          <section className="section-bg-faf7f2" style={{ background: '#FAF7F2', padding: '30px 16px', borderBottom: '1px solid #E5E0D8' }}>
+            <div className="pillars-ribbon-container">
               {t.pillars.map((title, index) => (
                 <div
                   key={index}
+                  className="pillars-ribbon-item"
                   onClick={() => {
                     setSelectedSector(sectorIds[index] || 'rural');
                     setActiveTab('SectorDetails');
@@ -1120,7 +1122,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                   onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
                   onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0px)'}
                 >
-                  <div style={{ width: '74px', height: '74px', borderRadius: '50%', border: `2px solid ${pillarIcons[index].borderColor}`, padding: '3px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FFF', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', marginBottom: '10px' }}>
+                  <div className="pillar-circle-wrap" style={{ width: '74px', height: '74px', borderRadius: '50%', border: `2px solid ${pillarIcons[index].borderColor}`, padding: '3px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FFF', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', marginBottom: '10px' }}>
                     <div style={{ width: '100%', height: '100%', borderRadius: '50%', border: `1.5px solid ${pillarIcons[index].borderColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FFF' }}>
                       {pillarIcons[index].icon}
                     </div>
