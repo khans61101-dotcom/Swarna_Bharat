@@ -3,11 +3,22 @@ export const API_BASE_URL = (() => {
     return import.meta.env.VITE_API_BASE_URL;
   }
   if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol;
     const host = window.location.hostname || 'localhost';
-    // Always target local backend API port 3000 during local development/testing
-    if (host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.') || window.location.port) {
-      return `http://${host}:3000`;
+    const port = window.location.port;
+
+    // Vite dev server running locally on port 5173/5174/3001
+    if (port === '5173' || port === '5174' || port === '3001') {
+      return `${protocol}//${host}:3000`;
     }
+
+    // Localhost or LAN IP
+    if (host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.')) {
+      return `${protocol}//${host}:3000`;
+    }
+
+    // Live / Staging domain (e.g., swarna.hopeharbor.co.in)
+    return window.location.origin;
   }
   return 'http://localhost:3000';
 })();
