@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register – SwarnaIndia Portal</title>
-  <meta name="description" content="Create your account on SwarnaIndia Portal. Use your referral link to join.">
+  <title>Create Account – SwarnaIndia Portal</title>
+  <meta name="description" content="Create your account on SwarnaIndia Portal. Select role, verify OTP, and join the network.">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script>
@@ -15,119 +15,456 @@
     })();
   </script>
   <style>
-    .register-banner {
-      background: linear-gradient(135deg, rgba(37, 99, 235,0.15), rgba(79,142,247,0.1));
-      border: 1px solid rgba(37, 99, 235,0.3);
-      border-radius: 12px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1.25rem;
+    body {
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    body.light-mode {
+      background: #f4f6fa;
+      color: #1e293b;
+    }
+    .header {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-size: 0.88rem;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(13, 17, 23, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .register-banner .ref-badge {
-      background: var(--accent);
-      color: #0D1117;
-      padding: 2px 12px;
+    body.light-mode .header {
+      background: rgba(255, 255, 255, 0.9);
+      border-bottom-color: #e2e8f0;
+    }
+    .header h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .login-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .register-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 24px;
+      padding: 2.2rem;
+      width: 100%;
+      max-width: 620px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      animation: fadeIn 0.3s ease;
+    }
+    body.light-mode .register-card {
+      background: #ffffff;
+      border-color: #e2e8f0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #f0f6fc;
+      margin-bottom: 4px;
+    }
+    body.light-mode .card-title {
+      color: #0f172a;
+    }
+    .card-sub {
+      color: #8b949e;
+      font-size: 0.88rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Referral Banner */
+    .ref-banner {
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(37, 99, 235, 0.35);
+      border-radius: 14px;
+      padding: 0.85rem 1.1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ref-badge {
+      background: #2563eb;
+      color: #ffffff;
+      padding: 3px 12px;
       border-radius: 20px;
-      font-weight: 700;
-      font-size: 0.78rem;
+      font-weight: 800;
+      font-size: 0.75rem;
       letter-spacing: 0.5px;
       flex-shrink: 0;
     }
-    .register-banner .ref-text {
-      color: var(--text-secondary);
-      line-height: 1.4;
+    .ref-text {
+      font-size: 0.85rem;
+      color: #93c5fd;
+      line-height: 1.35;
     }
-    .register-banner .ref-text strong {
-      color: var(--text-primary);
+    body.light-mode .ref-text {
+      color: #1e40af;
+    }
+    .ref-text strong {
+      color: #ffffff;
       display: block;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 0.9rem;
     }
-    .divider-link {
+    body.light-mode .ref-text strong {
+      color: #1e293b;
+    }
+
+    /* Section Headers */
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #38bdf8;
+      margin: 1.4rem 0 0.8rem 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Role Cards Selector */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin-bottom: 1.2rem;
+    }
+    .role-card {
+      background: #21262d;
+      border: 1.5px solid #30363d;
+      border-radius: 14px;
+      padding: 10px 8px;
       text-align: center;
-      margin-top: 1.25rem;
-      font-size: 0.88rem;
-      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
     }
-    .divider-link a {
-      color: var(--accent);
-      font-weight: 600;
-      text-decoration: none;
+    body.light-mode .role-card {
+      background: #f8fafc;
+      border-color: #e2e8f0;
     }
-    .divider-link a:hover {
-      text-decoration: underline;
+    .role-card:hover {
+      border-color: #38bdf8;
+      transform: translateY(-2px);
     }
-    #refCodeHidden {
+    .role-card.selected {
+      background: rgba(37, 99, 235, 0.15);
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+    }
+    body.light-mode .role-card.selected {
+      background: #eff6ff;
+      border-color: #2563eb;
+    }
+    .role-icon {
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+    .role-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #f0f6fc;
+    }
+    body.light-mode .role-name {
+      color: #0f172a;
+    }
+    .role-card.selected .role-name {
+      color: #38bdf8;
+    }
+    body.light-mode .role-card.selected .role-name {
+      color: #2563eb;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #c9d1d9;
+      margin-bottom: 6px;
+    }
+    body.light-mode .form-group label {
+      color: #334155;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid #30363d;
+      background: #0d1117;
+      color: #f0f6fc;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+    body.light-mode .form-group input, body.light-mode .form-group select {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      background: #161b22;
+    }
+    body.light-mode .form-group input:focus, body.light-mode .form-group select:focus {
+      background: #ffffff;
+    }
+
+    /* OTP Container */
+    .otp-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+    body.light-mode .otp-box {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .btn-otp {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-otp:hover {
+      background: #1d4ed8;
+    }
+    .btn-otp:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      transition: all 0.2s;
+      margin-top: 0.5rem;
+    }
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .error-msg {
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(220, 38, 38, 0.4);
+      color: #f87171;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-top: 10px;
       display: none;
+    }
+    .success-msg {
+      background: rgba(22, 163, 74, 0.15);
+      border: 1px solid rgba(22, 163, 74, 0.4);
+      color: #4ade80;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-top: 10px;
+      display: none;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
-  <div class="header" style="justify-content: space-between;">
+  <div class="header">
     <h1>⚡ SwarnaIndia CMS</h1>
-    <label class="theme-label" title="Toggle Light/Dark Mode">
-      🌙
-      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-        <div class="theme-toggle-thumb" id="themeThumb">🌙</div>
-      </div>
-      ☀️
+    <label class="theme-label" style="cursor:pointer; display:flex; align-items:center; gap:6px; font-size:0.85rem;" title="Toggle Light/Dark Mode">
+      <span id="themeToggleBtn" onclick="toggleTheme()" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:4px 12px; border-radius:20px; font-weight:700;">🌙 Theme</span>
     </label>
   </div>
 
   <div class="login-wrapper">
-    <div class="login-card">
-      <div class="profile-avatar" style="width:64px;height:64px;font-size:1.6rem;margin-bottom:1rem;">📋</div>
-      <h2>Create Account</h2>
-      <p class="login-subtitle">Register to join the SwarnaIndia network</p>
+    <div class="register-card">
+      <h2 class="card-title">Create Account</h2>
+      <p class="card-sub">Register to join SwarnaIndia network & connect your account</p>
 
-      <!-- Referral Banner (shown only if ref param exists) -->
-      <div id="refBanner" class="register-banner" style="display:none;">
-        <span class="ref-badge">🔗 Referral</span>
+      <!-- Referral Banner -->
+      <div id="refBanner" class="ref-banner" style="display:none;">
+        <span class="ref-badge">🔗 Referral Connection</span>
         <div class="ref-text">
           <strong id="refBannerCode">—</strong>
-          You're joining via a referral link. Your account will be connected automatically.
+          You are registering under this referral link. Your account will be connected automatically.
         </div>
       </div>
 
-      <form id="registerForm">
+      <form id="registerForm" novalidate>
         <input type="hidden" id="refCodeHidden" name="referral_code" value="">
 
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="regName" required placeholder="e.g. Aditya Kumar Sharma">
+        <!-- SECTION 1: SELECT ROLE -->
+        <div class="section-label">👤 1. Select Account Role</div>
+        <div class="role-grid">
+          <div class="role-card selected" onclick="selectRole('User', this)">
+            <div class="role-icon">👤</div>
+            <div class="role-name">User</div>
+          </div>
+          <div class="role-card" onclick="selectRole('Member', this)">
+            <div class="role-icon">👥</div>
+            <div class="role-name">Member</div>
+          </div>
+          <div class="role-card" onclick="selectRole('NGO', this)">
+            <div class="role-icon">❤️</div>
+            <div class="role-name">NGO</div>
+          </div>
+          <div class="role-card" onclick="selectRole('Agency', this)">
+            <div class="role-icon">🏢</div>
+            <div class="role-name">Agency</div>
+          </div>
+          <div class="role-card" onclick="selectRole('Agent', this)">
+            <div class="role-icon">🎯</div>
+            <div class="role-name">Agent</div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="regEmail" required placeholder="you@example.com">
-        </div>
-        <div class="form-group">
-          <label>Phone Number</label>
-          <input type="tel" id="regPhone" placeholder="+91 98765 43210">
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="regPassword" required placeholder="Create a strong password">
-        </div>
-        <div class="form-group">
-          <label>Referral Code <span style="color:var(--text-muted);font-size:0.8rem;">(optional)</span></label>
-          <input type="text" id="regRefCode" placeholder="REF-XXXX-XXXXX" autocomplete="off">
+        <input type="hidden" id="selectedRole" value="User">
+
+        <!-- SECTION 2: PERSONAL DETAILS -->
+        <div class="section-label">📋 2. Account Details</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+          <div class="form-group">
+            <label>Full Name <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="regName" required placeholder="e.g. Aditya Kumar">
+          </div>
+          <div class="form-group">
+            <label>Email Address <span style="color:#ef4444;">*</span></label>
+            <input type="email" id="regEmail" required placeholder="you@example.com">
+          </div>
         </div>
 
-        <button type="submit" class="btn" id="registerBtn">Create Account</button>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="regPhone" placeholder="+91 98765 43210">
+          </div>
+          <div class="form-group">
+            <label>Referral Code <span style="color:#64748b; font-weight:400;">(optional)</span></label>
+            <input type="text" id="regRefCode" placeholder="REF-XXXX-XXXXX" autocomplete="off">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+          <div class="form-group">
+            <label>Password <span style="color:#ef4444;">*</span></label>
+            <input type="password" id="regPassword" required placeholder="Create password">
+          </div>
+          <div class="form-group">
+            <label>Confirm Password <span style="color:#ef4444;">*</span></label>
+            <input type="password" id="regConfirmPassword" required placeholder="Confirm password">
+          </div>
+        </div>
+
+        <!-- SECTION 3: PROFILE IMAGE UPLOAD (OPTIONAL) -->
+        <div class="section-label">🖼️ 3. Profile Photo / Logo (Optional)</div>
+        <div class="form-group">
+          <input type="file" id="regProfileImage" accept="image/*" onchange="handleImagePreview(this)">
+          <div id="imagePreviewContainer" style="display:none; align-items:center; gap:10px; margin-top:8px; background:rgba(37,99,235,0.1); padding:8px 12px; border-radius:10px; border:1px solid rgba(37,99,235,0.3);">
+            <img id="imagePreviewImg" src="" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+            <span id="imagePreviewName" style="font-size:0.8rem; color:#93c5fd; font-weight:600;"></span>
+            <button type="button" onclick="clearImagePreview()" style="margin-left:auto; background:#dc2626; color:white; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:0.7rem;">✕</button>
+          </div>
+        </div>
+
+        <!-- SECTION 4: OTP VERIFICATION -->
+        <div class="section-label">🔑 4. Email OTP Verification</div>
+        <div class="otp-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+            <span style="font-size:0.85rem; color:#94a3b8; font-weight:600;">Send OTP to your email:</span>
+            <button type="button" class="btn-otp" id="btnSendOtp" onclick="sendOtpCode()">📩 Send OTP</button>
+          </div>
+
+          <div id="otpStatusMsg" style="font-size:0.82rem; color:#38bdf8; font-weight:600; margin-bottom:8px; display:none;"></div>
+          <div id="devOtpBox" style="display:none; background:#eff6ff; border:1.5px dashed #93c5fd; color:#1e40af; padding:8px 12px; border-radius:10px; font-size:0.85rem; font-weight:800; text-align:center; margin-bottom:10px;"></div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Enter 6-Digit OTP Code <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="regOtp" placeholder="123456" maxlength="6" style="text-align:center; font-size:1.1rem; font-weight:800; letter-spacing:4px;">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnSubmit">✨ Create Account</button>
         <div id="registerError" class="error-msg"></div>
-        <div id="registerSuccess" style="display:none;background:rgba(61,214,140,0.12);border:1px solid rgba(61,214,140,0.3);color:#3DD68C;padding:0.75rem 1rem;border-radius:8px;margin-top:0.75rem;font-size:0.9rem;line-height:1.5;"></div>
+        <div id="registerSuccess" class="success-msg"></div>
       </form>
 
-      <div class="divider-link">
-        Already have an account? <a href="index.html">Sign In</a>
+      <div style="text-align:center; margin-top:1.4rem; font-size:0.88rem; color:#8b949e;">
+        Already have an account? <a href="index.html" style="color:#38bdf8; font-weight:700; text-decoration:none;">Sign In</a>
       </div>
     </div>
   </div>
 
   <script>
     const API_URL = window.API_BASE_URL ? window.API_BASE_URL + '/api' : (window.location.origin + '/api');
+
+    let uploadedImageUrl = null;
+    let resendTimer = 0;
+    let timerInterval = null;
+
+    function selectRole(roleName, element) {
+      document.querySelectorAll('.role-card').forEach(card => card.classList.remove('selected'));
+      element.classList.add('selected');
+      document.getElementById('selectedRole').value = roleName;
+    }
+
+    function handleImagePreview(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const container = document.getElementById('imagePreviewContainer');
+        const img = document.getElementById('imagePreviewImg');
+        const name = document.getElementById('imagePreviewName');
+        img.src = URL.createObjectURL(file);
+        name.textContent = file.name;
+        container.style.display = 'flex';
+      }
+    }
+
+    function clearImagePreview() {
+      const input = document.getElementById('regProfileImage');
+      if (input) input.value = '';
+      document.getElementById('imagePreviewContainer').style.display = 'none';
+      uploadedImageUrl = null;
+    }
 
     // ── Read ?ref= from URL and pre-fill ──────────────────────────────────────
     async function initReferral() {
@@ -142,53 +479,162 @@
         hiddenInput.value = ref;
         visibleInput.value = ref;
         visibleInput.readOnly = true;
-        visibleInput.style.opacity = '0.6';
+        visibleInput.style.opacity = '0.7';
 
         codeLabel.textContent = ref;
         banner.style.display = 'flex';
 
-        // Try to look up who owns this ref code
         try {
           const res = await fetch(`${API_URL}/referrals/lookup/${encodeURIComponent(ref)}`);
           if (res.ok) {
             const data = await res.json();
             if (data.owner_name) {
-              codeLabel.textContent = `${ref} · Referred by ${data.owner_name} (${data.owner_role})`;
+              codeLabel.textContent = `${ref} · Referred by ${data.owner_name} (${data.owner_role || 'User'})`;
             }
           }
         } catch (e) {
-          // silently ignore lookup errors — banner already shown with code
+          // silently handle
         }
       }
     }
     initReferral();
 
-    // ── Registration form submit ──────────────────────────────────────────────
+    // ── Send OTP Code ────────────────────────────────────────────────────────
+    async function sendOtpCode() {
+      const email = document.getElementById('regEmail').value.trim();
+      const btn = document.getElementById('btnSendOtp');
+      const statusMsg = document.getElementById('otpStatusMsg');
+      const devBox = document.getElementById('devOtpBox');
+      const errorEl = document.getElementById('registerError');
+
+      if (!email) {
+        alert('Please enter your email address first!');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      statusMsg.style.display = 'none';
+      devBox.style.display = 'none';
+      errorEl.style.display = 'none';
+
+      try {
+        const res = await fetch(`${API_URL}/auth/send-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          statusMsg.textContent = '✅ ' + (data.message || 'OTP sent to your email successfully!');
+          statusMsg.style.display = 'block';
+
+          if (data.otpLogged) {
+            devBox.textContent = `ℹ️ Dev OTP Code: ${data.otpLogged}`;
+            devBox.style.display = 'block';
+            document.getElementById('regOtp').value = data.otpLogged;
+          }
+
+          startResendTimer(30);
+        } else {
+          alert(data.error || 'Failed to send OTP.');
+          btn.disabled = false;
+          btn.textContent = '📩 Send OTP';
+        }
+      } catch (err) {
+        alert('Network error sending OTP. Please check backend connection.');
+        btn.disabled = false;
+        btn.textContent = '📩 Send OTP';
+      }
+    }
+
+    function startResendTimer(seconds) {
+      const btn = document.getElementById('btnSendOtp');
+      resendTimer = seconds;
+      clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        resendTimer--;
+        if (resendTimer <= 0) {
+          clearInterval(timerInterval);
+          btn.disabled = false;
+          btn.textContent = '📩 Resend OTP';
+        } else {
+          btn.textContent = `Resend in ${resendTimer}s`;
+        }
+      }, 1000);
+    }
+
+    // ── Form Registration Submit ─────────────────────────────────────────────
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name     = document.getElementById('regName').value.trim();
-      const email    = document.getElementById('regEmail').value.trim();
-      const phone    = document.getElementById('regPhone').value.trim();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
       const password = document.getElementById('regPassword').value;
-      const refCode  = document.getElementById('regRefCode').value.trim()
-                    || document.getElementById('refCodeHidden').value.trim();
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+      const role = document.getElementById('selectedRole').value;
+      const otp = document.getElementById('regOtp').value.trim();
+      const refCode = document.getElementById('regRefCode').value.trim() || document.getElementById('refCodeHidden').value.trim();
 
-      const errorEl   = document.getElementById('registerError');
+      const errorEl = document.getElementById('registerError');
       const successEl = document.getElementById('registerSuccess');
-      const btn       = document.getElementById('registerBtn');
+      const btn = document.getElementById('btnSubmit');
 
-      errorEl.textContent = '';
+      errorEl.style.display = 'none';
       successEl.style.display = 'none';
+
+      if (!name || !email || !password || !otp) {
+        errorEl.textContent = '❌ Name, Email, Password, and OTP code are required.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        errorEl.textContent = '❌ Passwords do not match!';
+        errorEl.style.display = 'block';
+        return;
+      }
+
       btn.disabled = true;
-      btn.textContent = 'Creating account…';
+      btn.textContent = 'Creating account...';
 
       try {
-        const body = { name, email, password };
-        if (phone)   body.phone          = phone;
-        if (refCode) body.referral_code  = refCode;
+        // Upload image if selected
+        const imageInput = document.getElementById('regProfileImage');
+        let profile_image_url = null;
 
-        const res  = await fetch(`${API_URL}/auth/register`, {
+        if (imageInput && imageInput.files.length > 0) {
+          const imgData = new FormData();
+          imgData.append('image', imageInput.files[0]);
+          try {
+            const uploadRes = await fetch(`${API_URL}/upload`, {
+              method: 'POST',
+              body: imgData
+            });
+            const uploadData = await uploadRes.json();
+            if (uploadRes.ok && uploadData.url) {
+              profile_image_url = uploadData.url;
+            }
+          } catch (uploadErr) {
+            console.error('Image upload error:', uploadErr);
+          }
+        }
+
+        const body = {
+          name,
+          email,
+          phone,
+          password,
+          role,
+          otp,
+          referral_code: refCode,
+          profile_image: profile_image_url
+        };
+
+        const res = await fetch(`${API_URL}/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
@@ -197,38 +643,38 @@
         const data = await res.json();
 
         if (!res.ok) {
-          errorEl.textContent = data.error || 'Registration failed. Please try again.';
+          errorEl.textContent = '❌ ' + (data.error || 'Registration failed.');
+          errorEl.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = '✨ Create Account';
           return;
         }
 
-        // ── Success ──────────────────────────────────────────────────────────
         successEl.innerHTML = `
-          ✅ <strong>Account created successfully!</strong><br>
-          Your referral code: <strong>${data.referral_code || '—'}</strong><br>
-          Share your link: <code style="word-break:break-all;font-size:0.8rem;">${data.referral_link || '—'}</code><br><br>
-          Redirecting to login…
+          ✅ <strong>Account Created Successfully!</strong><br>
+          Role: <strong>${role}</strong> | Connected to Referrer: <strong>${data.referred_by ? 'Yes' : 'Direct'}</strong><br>
+          Your Referral Code: <strong>${data.referral_code || '—'}</strong><br>
+          Redirecting to login...
         `;
         successEl.style.display = 'block';
         document.getElementById('registerForm').reset();
 
         setTimeout(() => {
           window.location.href = 'index.html';
-        }, 3500);
-
+        }, 2500);
       } catch (err) {
-        errorEl.textContent = 'Network error. Please check your connection.';
-        console.error(err);
-      } finally {
+        errorEl.textContent = '❌ Network error during registration. Please try again.';
+        errorEl.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Create Account';
+        btn.textContent = '✨ Create Account';
       }
     });
 
-    // ── Theme toggle (reuse app.js pattern without importing whole file) ──────
+    // Theme toggle
     function applyTheme(mode) {
       document.body.classList.toggle('light-mode', mode === 'light');
-      const thumb = document.getElementById('themeThumb');
-      if (thumb) thumb.textContent = mode === 'light' ? '☀️' : '🌙';
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) btn.textContent = mode === 'light' ? '☀️ Light' : '🌙 Dark';
     }
     function toggleTheme() {
       const current = localStorage.getItem('theme') || 'dark';
