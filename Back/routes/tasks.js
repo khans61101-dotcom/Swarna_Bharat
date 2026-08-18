@@ -10,7 +10,10 @@ const VALID_STATUSES   = ['Active', 'Inactive'];
 router.get('/', verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(`
-      SELECT t.*, u.name AS created_by_name
+      SELECT t.*, u.name AS created_by_name,
+             (SELECT GROUP_CONCAT(DISTINCT ta.target_role SEPARATOR ', ')
+              FROM task_assignments ta 
+              WHERE ta.task_id = t.id AND ta.target_role IS NOT NULL) AS assigned_roles
       FROM tasks t
       LEFT JOIN users u ON t.created_by = u.id
       ORDER BY t.created_at DESC

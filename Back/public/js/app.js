@@ -2878,12 +2878,13 @@ function loadTasks() {
     const statsBar = document.getElementById('taskStatsBar');
     if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:#94A3B8;">⏳ Loading tasks...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:#94A3B8;">⏳ Loading tasks...</td></tr>`;
 
     // Determine user role and appropriate API endpoint
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const isAdmin = user.role === 'Admin';
-    const endpoint = isAdmin ? `${API_URL}/tasks` : `${API_URL}/task-assignments`;
+    const canCreate = (isAdmin || user.role === 'Agency' || user.role === 'NGO');
+    const endpoint = canCreate ? `${API_URL}/tasks` : `${API_URL}/task-assignments`;
 
     try {
         fetch(endpoint, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
@@ -2900,12 +2901,13 @@ function loadTasks() {
                     points: item.points ?? item.task_points,
                     priority: item.priority || item.task_priority,
                     status: item.status || item.task_status,
+                    assigned_roles: item.assigned_roles || item.target_role || null,
                     start_date: item.start_date || item.task_start_date,
                     due_date: item.due_date || item.task_due_date,
                     created_by_name: item.created_by_name || item.assigned_by_name
                 }));
 
-                // Stats bar calculations (same as before)
+                // Stats bar calculations
                 const total = tasks.length;
                 const active = tasks.filter(t => t.status === 'Active').length;
                 const inactive = tasks.filter(t => t.status === 'Inactive').length;
@@ -2925,7 +2927,7 @@ function loadTasks() {
                 }
 
                 if (tasks.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:#94A3B8;">
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:3rem;color:#94A3B8;">
                         <div style="font-size:2.5rem;margin-bottom:0.5rem;">📭</div>
                         <div style="font-weight:600;margin-bottom:0.3rem;">No tasks yet</div>
                         <div style="font-size:0.88rem;">Click "+ Add Task" to create the first task.</div>
@@ -2946,6 +2948,17 @@ function loadTasks() {
                         </td>
                         <td>${taskPriorityBadge(t.priority)}</td>
                         <td>${taskStatusBadge(t.status)}</td>
+                        <td>
+                            ${t.assigned_roles ? `
+                                <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:30px;font-size:0.75rem;font-weight:700;color:#2563eb;background:#eff6ff;">
+                                    👥 ${t.assigned_roles}
+                                </span>
+                            ` : `
+                                <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:30px;font-size:0.75rem;font-weight:600;color:#94a3b8;background:#f8fafc;">
+                                    🚫 Unassigned
+                                </span>
+                            `}
+                        </td>
                         <td style="color:#475569;font-size:0.88rem;">${formatTaskDate(t.start_date)}</td>
                         <td style="color:#475569;font-size:0.88rem;">${formatTaskDate(t.due_date)}</td>
                         <td>
@@ -3278,6 +3291,8 @@ async function confirmAssignTask() {
 
         alert(`✅ ${data.message}`);
         closeAssignTaskModal();
+        if (typeof loadTasks === 'function') loadTasks();
+        if (typeof loadMyTasks === 'function') loadMyTasks();
     } catch (error) {
         err.textContent = '❌ Network error';
         err.style.display = 'block';

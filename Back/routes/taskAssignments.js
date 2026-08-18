@@ -32,36 +32,19 @@ const BASE_SELECT = `
 `;
 
 // ─── GET all assignments ─────────────────────────────────────────────────────
-// Admin → all | Others → only assignments for themselves (with auto-sync for role tasks)
+// Admin → all | Others → only assignments for themselves matching their role
 router.get('/', verifyToken, async (req, res) => {
   try {
-    if (req.userRole !== 'Admin' && req.userId) {
-      // Auto-assign active tasks assigned to user's role that are missing for this user
-      try {
-        await db.query(`
-          INSERT INTO task_assignments (task_id, assigned_to, assigned_by, status)
-          SELECT DISTINCT t.id, ?, 1, 'Pending'
-          FROM tasks t
-          WHERE t.status = 'Active'
-            AND t.id NOT IN (SELECT task_id FROM task_assignments WHERE assigned_to = ?)
-            AND t.id IN (
-              SELECT ta2.task_id 
-              FROM task_assignments ta2 
-              JOIN users u2 ON ta2.assigned_to = u2.id 
-              WHERE u2.role_id = (SELECT role_id FROM users WHERE id = ?)
-            )
-        `, [req.userId, req.userId, req.userId]);
-      } catch (syncErr) {
-        console.error('Auto-sync error:', syncErr);
-      }
-    }
-
     let query, params = [];
 
     if (req.userRole === 'Admin') {
       query = `${BASE_SELECT} ORDER BY ta.assigned_date DESC`;
     } else {
-      query = `${BASE_SELECT} WHERE ta.assigned_to = ? ORDER BY ta.assigned_date DESC`;
+      query = `${BASE_SELECT}
+        JOIN roles r ON u_to.role_id = r.id
+        WHERE ta.assigned_to = ?
+          AND (ta.target_role IS NULL OR LOWER(ta.target_role) = LOWER(r.name) OR (LOWER(ta.target_role) = 'user' AND LOWER(r.name) = 'citizen'))
+        ORDER BY ta.assigned_date DESC`;
       params = [req.userId];
     }
 
@@ -141,30 +124,22 @@ router.post('/', verifyToken, isAgencyOrNgoOrAdmin, async (req, res) => {
     `, [target_role, target_role]);
 
     if (users.length === 0) {
-      return res.status(404).json({ error: `No users found in role: ${target_role}` });
+      return res.status(404).json({ error: `No active users found in role: ${target_role}` });
     }
 
-    const [existing] = await db.query(`
-      SELECT assigned_to FROM task_assignments
-      WHERE task_id = ? AND status NOT IN ('Approved', 'Completed', 'Rejected')
-    `, [task_id]);
-    
-    const existingUserIds = new Set(existing.map(e => e.assigned_to));
-    const usersToAssign = users.filter(u => !existingUserIds.has(u.id));
+    // Clean existing assignment rows FOR THIS SPECIFIC TASK ONLY
+    await db.query('DELETE FROM task_assignments WHERE task_id = ?', [task_id]);
 
-    if (usersToAssign.length === 0) {
-      return res.json({ message: `Task "${taskRows[0].title}" already assigned to all active users in role ${target_role}.`, assigned_count: 0 });
-    }
-
-    const values = usersToAssign.map(u => [task_id, u.id, req.userId, 'Pending']);
+    // Insert clean fresh assignments FOR THIS SPECIFIC TASK ONLY including target_role column
+    const values = users.map(u => [task_id, u.id, req.userId, target_role, 'Pending']);
     await db.query(`
-      INSERT INTO task_assignments (task_id, assigned_to, assigned_by, status)
+      INSERT INTO task_assignments (task_id, assigned_to, assigned_by, target_role, status)
       VALUES ?
     `, [values]);
 
-    res.status(201).json({
-      message: `Task "${taskRows[0].title}" assigned to ${usersToAssign.length} user(s) in role ${target_role} successfully.`,
-      assigned_count: usersToAssign.length
+    res.status(200).json({
+      message: `Task "${taskRows[0].title}" assigned to role "${target_role}" (${users.length} user(s)) successfully.`,
+      assigned_count: users.length
     });
   } catch (error) {
     console.error('Error assigning task:', error);
