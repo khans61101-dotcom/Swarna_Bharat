@@ -1429,6 +1429,8 @@ function renderAccountsTree(usersList = null) {
     renderD3TreeDiagram(rootData);
 }
 
+let currentD3RawData = null;
+
 function renderD3TreeDiagram(data) {
     const container = document.getElementById('treeContent');
     if (!container) return;
@@ -1443,6 +1445,8 @@ function renderD3TreeDiagram(data) {
         container.innerHTML = `<div style="color:#94a3b8; padding:2rem; text-align:center;">No tree data available.</div>`;
         return;
     }
+
+    currentD3RawData = data;
 
     try {
         const root = d3.hierarchy(data, d => Array.isArray(d.children) && d.children.length > 0 ? d.children : null);
@@ -1494,7 +1498,7 @@ function renderD3TreeDiagram(data) {
             .attr('transform', d => `translate(${d.y},${d.x})`)
             .style('cursor', 'pointer')
             .on('click', (event, d) => {
-                if (d.data.children) {
+                if (d.data.children || d.data._children) {
                     if (d.data._children) {
                         d.data.children = d.data._children;
                         d.data._children = null;
@@ -1539,40 +1543,46 @@ function renderD3TreeDiagram(data) {
 }
 
 function expandAllD3Nodes() {
-    if (!d3TreeRoot) return;
-    function expand(d) {
-        if (d._children) {
-            d.children = d._children;
-            d._children = null;
+    if (!currentD3RawData) return;
+    function expand(node) {
+        if (node._children) {
+            node.children = node._children;
+            node._children = null;
         }
-        if (d.children) d.children.forEach(expand);
+        if (Array.isArray(node.children)) {
+            node.children.forEach(expand);
+        }
     }
-    expand(d3TreeRoot);
-    renderAccountsTree();
+    expand(currentD3RawData);
+    renderD3TreeDiagram(currentD3RawData);
 }
 window.expandAllD3Nodes = expandAllD3Nodes;
 
 function collapseAllD3Nodes() {
-    if (!d3TreeRoot) return;
-    function collapse(d) {
-        if (d.children) {
-            d._children = d.children;
-            d.children = null;
+    if (!currentD3RawData) return;
+    function collapse(node) {
+        if (Array.isArray(node.children) && node.children.length > 0) {
+            node.children.forEach(collapse);
+            node._children = node.children;
+            node.children = null;
         }
-        if (d._children) d._children.forEach(collapse);
     }
-    if (d3TreeRoot.children) {
-        d3TreeRoot.children.forEach(collapse);
+    if (Array.isArray(currentD3RawData.children)) {
+        currentD3RawData.children.forEach(collapse);
     }
-    renderAccountsTree();
+    renderD3TreeDiagram(currentD3RawData);
 }
 window.collapseAllD3Nodes = collapseAllD3Nodes;
 
 function resetD3TreeRoot() {
     currentTreeRootId = null;
     selectedTreeUserId = null;
-    const select = document.getElementById('treeFocusUserSelect');
-    if (select) select.value = '';
+    const focusSelect = document.getElementById('treeFocusUserSelect');
+    if (focusSelect) focusSelect.value = '';
+    const roleSelect = document.getElementById('treeRoleFilter');
+    if (roleSelect) roleSelect.value = 'All';
+    const searchInput = document.getElementById('treeSearchInput');
+    if (searchInput) searchInput.value = '';
     renderAccountsTree();
 }
 window.resetD3TreeRoot = resetD3TreeRoot;
