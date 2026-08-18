@@ -27,9 +27,15 @@ const ProfilePage = ({ partner, setActiveTab }) => {
   const [editForm, setEditForm] = useState({
     name: activePartner?.name || '',
     phone: activePartner?.phone || '',
+    dob: activePartner?.dob ? activePartner.dob.split('T')[0] : '',
     city: activePartner?.city || '',
     state: activePartner?.state || '',
-    address: activePartner?.address || ''
+    pincode: activePartner?.pincode || '',
+    address: activePartner?.address || '',
+    bank_name: activePartner?.bank_name || '',
+    account_no: activePartner?.account_no || '',
+    ifsc_code: activePartner?.ifsc_code || '',
+    upi_id: activePartner?.upi_id || ''
   });
 
   useEffect(() => {
@@ -55,9 +61,15 @@ const ProfilePage = ({ partner, setActiveTab }) => {
     setEditForm({
       name: target.name || '',
       phone: target.phone || '',
+      dob: target.dob ? target.dob.split('T')[0] : '',
       city: target.city || '',
       state: target.state || '',
-      address: target.address || ''
+      pincode: target.pincode || '',
+      address: target.address || '',
+      bank_name: target.bank_name || '',
+      account_no: target.account_no || '',
+      ifsc_code: target.ifsc_code || '',
+      upi_id: target.upi_id || ''
     });
 
     setLoadingDetails(true);
@@ -788,56 +800,123 @@ const ProfilePage = ({ partner, setActiveTab }) => {
               </button>
             </div>
 
-            <form onSubmit={handleSaveProfile} style={{ display: 'grid', gap: '16px' }}>
+            <form onSubmit={handleSaveProfile} style={{ display: 'grid', gap: '16px', maxHeight: '75vh', overflowY: 'auto', paddingRight: '4px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>Full Name</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>Full Name</label>
                 <input 
                   type="text" 
                   value={editForm.name} 
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>Phone Number</label>
-                <input 
-                  type="text" 
-                  value={editForm.phone} 
-                  onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                  style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>City</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>Phone Number</label>
+                  <input 
+                    type="text" 
+                    value={editForm.phone} 
+                    onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>Date of Birth</label>
+                  <input 
+                    type="date" 
+                    value={editForm.dob} 
+                    onChange={(e) => setEditForm({ ...editForm, dob: e.target.value })}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>City</label>
                   <input 
                     type="text" 
                     value={editForm.city} 
                     onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
-                    style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>State</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>State</label>
                   <input 
                     type="text" 
                     value={editForm.state} 
                     onChange={(e) => setEditForm({ ...editForm, state: e.target.value })}
-                    style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '6px' }}>Address / Location Bio</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>Pincode</label>
+                <input 
+                  type="text" 
+                  value={editForm.pincode} 
+                  onChange={(e) => setEditForm({ ...editForm, pincode: e.target.value })}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>Full Address</label>
                 <textarea 
-                  rows="3"
+                  rows="2"
                   value={editForm.address} 
                   onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-                  style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none', resize: 'vertical' }}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none', resize: 'vertical' }}
                 />
+              </div>
+
+              <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '12px' }}>
+                <h5 style={{ margin: '0 0 10px', fontSize: '0.85rem', fontWeight: 800, color: '#1E293B' }}>Bank & Payment Details</h5>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>Bank Name</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. State Bank of India"
+                      value={editForm.bank_name} 
+                      onChange={(e) => setEditForm({ ...editForm, bank_name: e.target.value })}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>Account Number</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. 123456789012"
+                      value={editForm.account_no} 
+                      onChange={(e) => setEditForm({ ...editForm, account_no: e.target.value })}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>IFSC Code</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. SBIN0001234"
+                      value={editForm.ifsc_code} 
+                      onChange={(e) => setEditForm({ ...editForm, ifsc_code: e.target.value })}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', color: '#64748B', fontWeight: 600, marginBottom: '4px' }}>UPI ID</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. name@upi"
+                      value={editForm.upi_id} 
+                      onChange={(e) => setEditForm({ ...editForm, upi_id: e.target.value })}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', outline: 'none' }}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>

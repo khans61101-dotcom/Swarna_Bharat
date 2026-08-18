@@ -1111,8 +1111,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                     { label: lang === 'en' ? 'Email' : 'ईमेल', value: user.email || 'N/A', icon: Mail },
                     { label: lang === 'en' ? 'Phone' : 'फोन', value: user.phone || 'N/A', icon: Phone },
                     { label: lang === 'en' ? 'Role' : 'भूमिका', value: user.role_name || 'Member', icon: Shield, highlight: true },
-                    { label: lang === 'en' ? 'City' : 'शहर', value: user.city || 'N/A', icon: MapPin },
-                    { label: lang === 'en' ? 'State' : 'राज्य', value: user.state || 'N/A', icon: MapPin },
+                    { label: lang === 'en' ? 'Date of Birth' : 'जन्म तिथि', value: user.dob ? user.dob.split('T')[0] : 'N/A', icon: Calendar },
+                    { label: lang === 'en' ? 'City / State' : 'शहर / राज्य', value: user.city || user.state ? `${user.city || ''}${user.city && user.state ? ', ' : ''}${user.state || ''} ${user.pincode ? '(' + user.pincode + ')' : ''}` : 'N/A', icon: MapPin },
+                    { label: lang === 'en' ? 'Bank Account' : 'बैंक खाता', value: user.bank_name ? `${user.bank_name} (${user.account_no || 'N/A'})` : 'N/A', icon: Wallet },
+                    { label: lang === 'en' ? 'UPI ID' : 'UPI आईडी', value: user.upi_id || 'N/A', icon: Zap },
                   ].map((item, idx) => (
                     <div key={idx} style={{
                       background: '#F8FAFC',
@@ -2243,71 +2245,157 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   </button>
                 </div>
 
-                <form onSubmit={handleSave} style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '16px'
-                }}>
-                  {[
-                    { label: lang === 'en' ? 'Full Name' : 'पूरा नाम', key: 'name', type: 'text' },
-                    { label: lang === 'en' ? 'Phone' : 'फोन', key: 'phone', type: 'text' },
-                    { label: lang === 'en' ? 'City' : 'शहर', key: 'city', type: 'text' },
-                    { label: lang === 'en' ? 'State' : 'राज्य', key: 'state', type: 'text' },
-                  ].map((field) => (
-                    <div key={field.key}>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '0.8rem',
-                        fontWeight: 600,
-                        color: '#64748B',
-                        marginBottom: '4px'
-                      }}>
-                        {field.label}
-                      </label>
-                      <input
-                        type={field.type}
-                        value={formData[field.key] || ''}
-                        onChange={(e) => setFormData({...formData, [field.key]: e.target.value})}
-                        style={{
-                          width: '100%',
-                          padding: '10px 14px',
-                          borderRadius: '10px',
-                          border: '1px solid #E2E8F0',
-                          background: '#FFF',
-                          color: '#1E293B',
-                          outline: 'none',
-                          fontSize: '0.9rem',
-                          transition: 'all 0.2s ease'
-                        }}
-                      />
+                <form onSubmit={handleSave} style={{ display: 'grid', gap: '20px' }}>
+                  {/* 1. Personal Information */}
+                  <div style={{ background: '#F8FAFC', padding: '18px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                    <h5 style={{ margin: '0 0 14px', fontSize: '0.9rem', fontWeight: 800, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <User size={16} color="#2563EB" /> {lang === 'en' ? 'Personal Information' : 'व्यक्तिगत जानकारी'}
+                    </h5>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'Full Name' : 'पूरा नाम'}
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.name || ''}
+                          onChange={(e) => setFormData({...formData, name: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'Phone Number' : 'फोन नंबर'}
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.phone || ''}
+                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'Date of Birth' : 'जन्म तिथि'}
+                        </label>
+                        <input
+                          type="date"
+                          value={formData.dob || ''}
+                          onChange={(e) => setFormData({...formData, dob: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
                     </div>
-                  ))}
-                  <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      color: '#64748B',
-                      marginBottom: '4px'
-                    }}>
-                      {lang === 'en' ? 'Address' : 'पता'}
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.address || ''}
-                      onChange={(e) => setFormData({...formData, address: e.target.value})}
-                      style={{
-                        width: '100%',
-                        padding: '10px 14px',
-                        borderRadius: '10px',
-                        border: '1px solid #E2E8F0',
-                        background: '#FFF',
-                        color: '#1E293B',
-                        outline: 'none',
-                        fontSize: '0.9rem',
-                        transition: 'all 0.2s ease'
-                      }}
-                    />
+                  </div>
+
+                  {/* 2. Address & Location */}
+                  <div style={{ background: '#F8FAFC', padding: '18px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                    <h5 style={{ margin: '0 0 14px', fontSize: '0.9rem', fontWeight: 800, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <MapPin size={16} color="#2563EB" /> {lang === 'en' ? 'Address & Location' : 'पता और स्थान'}
+                    </h5>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
+                      <div style={{ gridColumn: 'span 2' }}>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'Full Address' : 'पूरा पता'}
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.address || ''}
+                          onChange={(e) => setFormData({...formData, address: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'City' : 'शहर'}
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.city || ''}
+                          onChange={(e) => setFormData({...formData, city: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'State' : 'राज्य'}
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.state || ''}
+                          onChange={(e) => setFormData({...formData, state: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'Pincode' : 'पिनकोड'}
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.pincode || ''}
+                          onChange={(e) => setFormData({...formData, pincode: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. Bank & Payment Details */}
+                  <div style={{ background: '#F8FAFC', padding: '18px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                    <h5 style={{ margin: '0 0 14px', fontSize: '0.9rem', fontWeight: 800, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Wallet size={16} color="#2563EB" /> {lang === 'en' ? 'Bank & Payment Details' : 'बैंक एवं भुगतान विवरण'}
+                    </h5>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'Bank Name' : 'बैंक का नाम'}
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. State Bank of India"
+                          value={formData.bank_name || ''}
+                          onChange={(e) => setFormData({...formData, bank_name: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'Account Number' : 'खाता संख्या'}
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 123456789012"
+                          value={formData.account_no || ''}
+                          onChange={(e) => setFormData({...formData, account_no: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'IFSC Code' : 'IFSC कोड'}
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. SBIN0001234"
+                          value={formData.ifsc_code || ''}
+                          onChange={(e) => setFormData({...formData, ifsc_code: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginBottom: '4px' }}>
+                          {lang === 'en' ? 'UPI ID' : 'UPI आईडी'}
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. name@upi"
+                          value={formData.upi_id || ''}
+                          onChange={(e) => setFormData({...formData, upi_id: e.target.value})}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </form>
               </div>
