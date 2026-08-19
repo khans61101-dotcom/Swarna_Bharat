@@ -23,6 +23,8 @@ const rolePermissions = {
     Agency: [
         "overviewTab",
         "usersTab",
+        "tasksTab",
+        "myTasksTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -33,6 +35,8 @@ const rolePermissions = {
     NGO: [
         "overviewTab",
         "usersTab",
+        "tasksTab",
+        "myTasksTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -42,6 +46,7 @@ const rolePermissions = {
     ],
     Agent: [
         "usersTab",
+        "myTasksTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -53,12 +58,14 @@ const rolePermissions = {
     User: [
         "usersTab",
         "overviewTab",
+        "myTasksTab",
         "galleryTab",
         "blogsTab",
         "profileTab"
     ],
     Member: [
         "overviewTab",
+        "myTasksTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
