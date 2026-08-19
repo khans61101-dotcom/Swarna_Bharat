@@ -2011,13 +2011,72 @@
     </div>
   </div>
 
+  <!-- ================================================================
+       VIEW PROOF MODAL (Admin Task Review)
+       ================================================================ -->
+  <div id="viewProofModal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.65);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:1rem;">
+    <div style="background:white;border-radius:28px;padding:0;width:100%;max-width:600px;box-shadow:0 30px 60px -15px rgba(0,0,0,0.3);position:relative;overflow:hidden;animation:spModalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);">
+      <!-- Header bar -->
+      <div style="background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);padding:1.4rem 2rem;color:white;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:1.25rem;font-weight:700;display:flex;align-items:center;gap:8px;">📄 Task Proof & Review</div>
+          <div id="viewProofTaskTitle" style="font-size:0.85rem;color:#94a3b8;margin-top:2px;"></div>
+        </div>
+        <button onclick="closeViewProofModal()" style="background:rgba(255,255,255,0.15);border:none;width:34px;height:34px;border-radius:50%;color:white;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.2s;">×</button>
+      </div>
+
+      <!-- Content body -->
+      <div style="padding:1.8rem 2rem;max-height:75vh;overflow-y:auto;">
+        <!-- User Info Card -->
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:0.75rem;color:#64748b;font-weight:600;text-transform:uppercase;">Assigned User</div>
+            <div id="viewProofUserName" style="font-size:1rem;font-weight:700;color:#0f172a;margin-top:2px;">-</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="viewProofUserRole" style="background:#eff6ff;color:#2563eb;font-size:0.78rem;font-weight:700;padding:4px 12px;border-radius:20px;">-</span>
+            <span id="viewProofStatusBadge"></span>
+          </div>
+        </div>
+
+        <!-- Description / Text Proof -->
+        <div style="margin-bottom:1.2rem;">
+          <label style="font-size:0.82rem;font-weight:700;color:#334155;display:block;margin-bottom:6px;">📝 Proof Notes / Description</label>
+          <div id="viewProofText" style="background:#f1f5f9;border-radius:14px;padding:0.9rem 1.1rem;font-size:0.9rem;color:#1e293b;min-height:50px;white-space:pre-wrap;border:1px solid #cbd5e1;"></div>
+        </div>
+
+        <!-- Uploaded Document / Image -->
+        <div style="margin-bottom:1.2rem;">
+          <label style="font-size:0.82rem;font-weight:700;color:#334155;display:block;margin-bottom:6px;">📁 Uploaded Document / Image</label>
+          <div id="viewProofFileContainer" style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:14px;padding:1.2rem;text-align:center;">
+          </div>
+        </div>
+
+        <!-- Video Proof Link -->
+        <div id="viewProofVideoGroup" style="margin-bottom:1.2rem;display:none;">
+          <label style="font-size:0.82rem;font-weight:700;color:#334155;display:block;margin-bottom:6px;">🎥 Video Proof Link</label>
+          <div style="background:#f1f5f9;border-radius:14px;padding:0.8rem 1.1rem;border:1px solid #cbd5e1;">
+            <a id="viewProofVideoLink" href="#" target="_blank" style="color:#2563eb;font-weight:600;font-size:0.9rem;word-break:break-all;"></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div id="viewProofFooter" style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:1.2rem 2rem;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
+        <button onclick="closeViewProofModal()" style="background:#e2e8f0;color:#475569;border:none;padding:0.65rem 1.5rem;border-radius:50px;font-size:0.88rem;cursor:pointer;font-weight:600;">Close</button>
+        <button id="viewProofRejectBtn" style="background:#ef4444;color:white;border:none;padding:0.65rem 1.5rem;border-radius:50px;font-size:0.88rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(239,68,68,0.25);">❌ Reject</button>
+        <button id="viewProofApproveBtn" style="background:#16a34a;color:white;border:none;padding:0.65rem 1.8rem;border-radius:50px;font-size:0.88rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(22,163,74,0.25);">✅ Approve</button>
+      </div>
+    </div>
+  </div>
+
   <style>
     @keyframes spModalIn {
       0% { opacity: 0; transform: scale(0.92) translateY(20px); }
       100% { opacity: 1; transform: scale(1) translateY(0); }
     }
-    #submitProofModal { display: none; }
-    #submitProofModal.open { display: flex; }
+    #submitProofModal, #viewProofModal { display: none; }
+    #submitProofModal.open, #viewProofModal.open { display: flex; }
   </style>
 
   <script src="js/app.js"></script>

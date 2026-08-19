@@ -2728,20 +2728,33 @@ function loadMyTasks() {
                     <td>
                         <div style="display:flex;gap:6px;flex-wrap:wrap;">
                             ${(() => {
-                                const tid   = t.id;
-                                const ttl   = (t.title || '').replace(/'/g, "\\'");
-                                if (t.status === 'Pending') {
-                                    return `<button onclick="startTask(${tid})" style="background:#EEF4FD;color:#1a4b6d;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">▶️ Start</button>`;
-                                } else if (t.status === 'In Progress') {
-                                    return `<button onclick="openSubmitProofModal(${tid},'${ttl}')" style="background:#FFF7ED;color:#EA580C;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">📤 Submit Proof</button>`;
-                                } else if (t.status === 'Submitted') {
-                                    return `<button disabled style="background:#F1F5F9;color:#64748B;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:not-allowed;opacity:0.75;">⏳ Awaiting Review</button>`;
-                                } else if (t.status === 'Approved') {
-                                    return `<button disabled style="background:#F0FDF4;color:#16A34A;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:not-allowed;">✅ Approved</button>`;
-                                } else if (t.status === 'Rejected') {
-                                    return `<button onclick="openSubmitProofModal(${tid},'${ttl}')" style="background:#FEF2F2;color:#DC2626;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">🔄 Resubmit</button>`;
+                                const tid = t.id;
+                                const ttl = (t.title || '').replace(/'/g, "\\'");
+                                if (isAdmin) {
+                                    if (t.status === 'Submitted') {
+                                        return `<button onclick="openViewProofModal(${tid})" style="background:#ea580c;color:white;border:none;padding:5px 14px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:700;box-shadow:0 2px 8px rgba(234,88,12,0.3);">🔍 Review Proof</button>`;
+                                    } else if (t.status === 'Approved') {
+                                        return `<button onclick="openViewProofModal(${tid})" style="background:#f0fdf4;color:#16a34a;border:none;padding:5px 14px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">✅ View Proof</button>`;
+                                    } else if (t.status === 'Rejected') {
+                                        return `<button onclick="openViewProofModal(${tid})" style="background:#fef2f2;color:#dc2626;border:none;padding:5px 14px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">❌ View Proof</button>`;
+                                    } else {
+                                        return `<button onclick="openViewProofModal(${tid})" style="background:#eef4fd;color:#1a4b6d;border:none;padding:5px 14px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">📄 View Details</button>`;
+                                    }
                                 } else {
-                                    return '';
+                                    if (t.status === 'Pending') {
+                                        return `<button onclick="startTask(${tid})" style="background:#EEF4FD;color:#1a4b6d;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">▶️ Start</button>
+                                                <button onclick="openSubmitProofModal(${tid},'${ttl}')" style="background:#FFF7ED;color:#EA580C;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">📤 Upload Proof</button>`;
+                                    } else if (t.status === 'In Progress') {
+                                        return `<button onclick="openSubmitProofModal(${tid},'${ttl}')" style="background:#FFF7ED;color:#EA580C;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">📤 Submit Proof</button>`;
+                                    } else if (t.status === 'Submitted') {
+                                        return `<button onclick="openSubmitProofModal(${tid},'${ttl}')" style="background:#F1F5F9;color:#64748B;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:pointer;">⏳ Submitted (Edit/View)</button>`;
+                                    } else if (t.status === 'Approved') {
+                                        return `<button disabled style="background:#F0FDF4;color:#16A34A;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:not-allowed;">✅ Approved</button>`;
+                                    } else if (t.status === 'Rejected') {
+                                        return `<button onclick="openSubmitProofModal(${tid},'${ttl}')" style="background:#FEF2F2;color:#DC2626;border:none;padding:5px 12px;border-radius:30px;font-size:0.78rem;cursor:pointer;font-weight:600;">🔄 Resubmit Proof</button>`;
+                                    } else {
+                                        return '';
+                                    }
                                 }
                             })()}
                         </div>
@@ -3608,6 +3621,147 @@ document.getElementById('submitProofModal')?.addEventListener('click', function(
     if (e.target === this) closeSubmitProofModal();
 });
 
+// ─── Admin View Proof Modal & Actions ─────────────────────────────────────
+async function openViewProofModal(assignmentId) {
+    try {
+        const res = await fetch(`${API_URL}/task-assignments/${assignmentId}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        if (!res.ok) throw new Error('Failed to fetch proof details');
+        const data = await res.json();
+
+        document.getElementById('viewProofTaskTitle').textContent = data.task_title ? `Task: ${data.task_title}` : '';
+        document.getElementById('viewProofUserName').textContent = data.assigned_to_name || 'N/A';
+        document.getElementById('viewProofUserRole').textContent = data.target_role || data.assigned_to_role || 'User';
+
+        const badgeEl = document.getElementById('viewProofStatusBadge');
+        if (badgeEl) {
+            badgeEl.innerHTML = taskStatusBadge(data.status);
+        }
+
+        // Text proof
+        const textEl = document.getElementById('viewProofText');
+        textEl.textContent = data.proof_text || 'No text description submitted.';
+
+        // File proof
+        const fileContainer = document.getElementById('viewProofFileContainer');
+        if (data.proof_file) {
+            const url = data.proof_file.startsWith('http') ? data.proof_file : (window.location.origin + data.proof_file);
+            const lowerUrl = url.toLowerCase();
+            const isImage = lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg') || lowerUrl.endsWith('.png') || lowerUrl.endsWith('.webp') || lowerUrl.endsWith('.gif');
+            const isPdf = lowerUrl.endsWith('.pdf');
+
+            if (isImage) {
+                fileContainer.innerHTML = `
+                    <div style="margin-bottom:8px;">
+                        <img src="${url}" style="max-width:100%;max-height:260px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.12);" alt="Proof Image">
+                    </div>
+                    <a href="${url}" target="_blank" download style="display:inline-flex;align-items:center;gap:6px;color:#2563eb;font-weight:600;font-size:0.85rem;">
+                        📥 Download Image
+                    </a>
+                `;
+            } else if (isPdf) {
+                fileContainer.innerHTML = `
+                    <div style="font-size:2.5rem;margin-bottom:6px;">📄</div>
+                    <div style="font-weight:600;color:#0f172a;margin-bottom:8px;">PDF Document Proof</div>
+                    <a href="${url}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#2563eb;padding:8px 18px;border-radius:30px;font-weight:700;font-size:0.85rem;text-decoration:none;">
+                        🔗 View / Open PDF Document
+                    </a>
+                `;
+            } else {
+                fileContainer.innerHTML = `
+                    <div style="font-size:2.5rem;margin-bottom:6px;">📎</div>
+                    <div style="font-weight:600;color:#0f172a;margin-bottom:8px;">Attached File Proof</div>
+                    <a href="${url}" target="_blank" download style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#2563eb;padding:8px 18px;border-radius:30px;font-weight:700;font-size:0.85rem;text-decoration:none;">
+                        📥 Download File
+                    </a>
+                `;
+            }
+        } else {
+            fileContainer.innerHTML = `<span style="color:#94a3b8;font-size:0.88rem;">🚫 No file attached</span>`;
+        }
+
+        // Video link
+        const videoGroup = document.getElementById('viewProofVideoGroup');
+        const videoLink = document.getElementById('viewProofVideoLink');
+        if (data.video_url) {
+            videoGroup.style.display = 'block';
+            videoLink.href = data.video_url;
+            videoLink.textContent = data.video_url;
+        } else {
+            videoGroup.style.display = 'none';
+        }
+
+        // Action Buttons
+        const approveBtn = document.getElementById('viewProofApproveBtn');
+        const rejectBtn  = document.getElementById('viewProofRejectBtn');
+
+        if (approveBtn) approveBtn.onclick = () => approveTaskAssignment(assignmentId);
+        if (rejectBtn)  rejectBtn.onclick  = () => rejectTaskAssignment(assignmentId);
+
+        // Open modal
+        const modal = document.getElementById('viewProofModal');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    } catch (err) {
+        alert('❌ Error loading proof details: ' + err.message);
+    }
+}
+
+function closeViewProofModal() {
+    const modal = document.getElementById('viewProofModal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+async function approveTaskAssignment(assignmentId) {
+    if (!confirm('Are you sure you want to approve this task assignment? Points will be awarded.')) return;
+    try {
+        const res = await fetch(`${API_URL}/task-assignments/${assignmentId}/approve`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert('✅ Task Approved Successfully!');
+            closeViewProofModal();
+            loadMyTasks();
+            if (typeof loadTasks === 'function') loadTasks();
+        } else {
+            alert('❌ ' + (data.error || 'Failed to approve task'));
+        }
+    } catch (e) {
+        alert('❌ Network error while approving task');
+    }
+}
+
+async function rejectTaskAssignment(assignmentId) {
+    if (!confirm('Are you sure you want to reject this task assignment?')) return;
+    try {
+        const res = await fetch(`${API_URL}/task-assignments/${assignmentId}/reject`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert('❌ Task Assignment Rejected');
+            closeViewProofModal();
+            loadMyTasks();
+            if (typeof loadTasks === 'function') loadTasks();
+        } else {
+            alert('❌ ' + (data.error || 'Failed to reject task'));
+        }
+    } catch (e) {
+        alert('❌ Network error while rejecting task');
+    }
+}
+
 // Expose globally
 window.openAssignTaskModal     = openAssignTaskModal;
 window.closeAssignTaskModal    = closeAssignTaskModal;
@@ -3616,6 +3770,10 @@ window.startTask               = startTask;
 window.openSubmitProofModal    = openSubmitProofModal;
 window.closeSubmitProofModal   = closeSubmitProofModal;
 window.confirmSubmitProof      = confirmSubmitProof;
+window.openViewProofModal      = openViewProofModal;
+window.closeViewProofModal     = closeViewProofModal;
+window.approveTaskAssignment   = approveTaskAssignment;
+window.rejectTaskAssignment    = rejectTaskAssignment;
 window.completeTask            = completeTask;
 window.handleProofDrop         = handleProofDrop;
 window.handleProofFileSelect   = handleProofFileSelect;
