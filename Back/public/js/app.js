@@ -2936,7 +2936,7 @@ function loadTasks() {
                     points: item.points ?? item.task_points,
                     priority: item.priority || item.task_priority,
                     status: item.status || item.task_status,
-                    assigned_roles: item.assigned_roles || item.target_role || null,
+                    assigned_roles: item.assigned_roles || item.target_role || item.assigned_to_role || null,
                     start_date: item.start_date || item.task_start_date,
                     due_date: item.due_date || item.task_due_date,
                     created_by_name: item.created_by_name || item.assigned_by_name
