@@ -42,11 +42,7 @@ router.get('/', verifyToken, async (req, res) => {
     if (req.userRole === 'Admin') {
       query = `${BASE_SELECT} ORDER BY ta.assigned_date DESC`;
     } else {
-      query = `${BASE_SELECT}
-        WHERE ta.assigned_to = ?
-          AND ta.target_role IS NOT NULL
-          AND (LOWER(ta.target_role) = LOWER(r_to.name) OR (LOWER(ta.target_role) = 'user' AND LOWER(r_to.name) = 'citizen'))
-        ORDER BY ta.assigned_date DESC`;
+      query = `${BASE_SELECT} WHERE ta.assigned_to = ? ORDER BY ta.assigned_date DESC`;
       params = [req.userId];
     }
 
