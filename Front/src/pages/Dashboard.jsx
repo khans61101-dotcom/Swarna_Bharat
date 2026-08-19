@@ -64,6 +64,12 @@ export default function Dashboard({ setActiveTab, setUserState }) {
     fetchUserTasks();
   }, []);
 
+  useEffect(() => {
+    if (activeDashTab === 'tasks') {
+      fetchUserTasks();
+    }
+  }, [activeDashTab, user]);
+
   const fetchProfile = async () => {
     const token = localStorage.getItem('userToken');
     if (!token) {
@@ -72,8 +78,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
     }
     
     try {
-      const res = await fetch(`${API_URL}/auth/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const res = await fetch(`${API_URL}/auth/me?t=${Date.now()}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Cache-Control': 'no-cache'
+        }
       });
       if (res.ok) {
         const data = await res.json();
@@ -108,8 +117,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
     const token = localStorage.getItem('userToken');
     if (!token) return;
     try {
-      const res = await fetch(`${API_URL}/task-assignments`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const res = await fetch(`${API_URL}/task-assignments?t=${Date.now()}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Cache-Control': 'no-cache, no-store, must-revalidate'
+        }
       });
       if (res.ok) {
         const data = await res.json();
