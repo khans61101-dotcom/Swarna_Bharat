@@ -7,28 +7,28 @@ export default function AboutPage() {
 
   const pillars = [
     {
-      icon: <User size={30} color="#FF9933" />,
+      icon: <User size={30} color="#2563EB" />,
       title: lang === 'en' ? 'Inclusive Governance' : 'समावेशी शासन',
       desc: lang === 'en'
         ? 'Ensuring every citizen has access to government services and information through Digital India.'
         : 'डिजिटल इंडिया के माध्यम से प्रत्येक नागरिक को सरकारी सेवाओं और सूचनाओं तक पहुंच सुनिश्चित करना।'
     },
     {
-      icon: <Award size={30} color="#FF9933" />,
+      icon: <Award size={30} color="#2563EB" />,
       title: lang === 'en' ? 'Transparent Administration' : 'पारदर्शी प्रशासन',
       desc: lang === 'en'
         ? 'Promoting open governance, RTI compliance and proactive disclosure of government activities.'
         : 'खुले शासन, आरटीआई अनुपालन और सरकारी गतिविधियों के सक्रिय प्रकटीकरण को बढ़ावा देना।'
     },
     {
-      icon: <Flag size={30} color="#FF9933" />,
+      icon: <Flag size={30} color="#2563EB" />,
       title: lang === 'en' ? 'Digital Empowerment' : 'डिजिटल सशक्तिकरण',
       desc: lang === 'en'
         ? 'Leveraging technology to democratise access to public services and government schemes.'
         : 'सार्वजनिक सेवाओं और सरकारी योजनाओं तक पहुंच को लोकतांत्रिक बनाने के लिए प्रौद्योगिकी का उपयोग।'
     },
     {
-      icon: <Globe size={30} color="#FF9933" />,
+      icon: <Globe size={30} color="#2563EB" />,
       title: lang === 'en' ? 'Global Leadership' : 'वैश्विक नेतृत्व',
       desc: lang === 'en'
         ? 'Representing India on international platforms while fostering strong diplomatic relationships.'
@@ -54,7 +54,7 @@ export default function AboutPage() {
             />
           </div>
           <div>
-            <span style={{ color: '#FF9933', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.85rem' }}>
+            <span style={{ color: '#2563EB', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.85rem' }}>
               {t.about.subtitle}
             </span>
             <h3 style={{ fontSize: '1.8rem', color: 'var(--header-bg)', margin: '10px 0 15px' }}>
@@ -73,7 +73,7 @@ export default function AboutPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginTop: '40px' }}>
           {pillars.map((pillar, i) => (
-            <div key={i} className="dark-date-box" style={{ background: '#F8F9FA', padding: '20px', borderRadius: '8px', borderLeft: '4px solid #FF9933' }}>
+            <div key={i} className="dark-date-box" style={{ background: '#F8F9FA', padding: '20px', borderRadius: '8px', borderLeft: '4px solid #2563EB' }}>
               {pillar.icon}
               <h4 style={{ margin: '10px 0 5px', color: 'var(--header-bg)' }}>{pillar.title}</h4>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{pillar.desc}</p>

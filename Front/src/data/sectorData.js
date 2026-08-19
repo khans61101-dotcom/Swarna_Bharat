@@ -179,7 +179,7 @@ export const sectorDataList = [
     id: 'women',
     name: 'Women Empowerment',
     nameHi: 'महिला सशक्तिकरण',
-    borderColor: '#EA580C',
+    borderColor: '#2563EB',
     iconName: 'Users',
     bgImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80',
     tagline: 'Women-Led Development, Self-Help Groups (SHGs), Lakhpati Didis & Financial Independence',

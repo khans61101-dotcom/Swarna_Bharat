@@ -148,7 +148,7 @@ export default function VideosPage() {
       <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
         <div className="section-title-wrap">
           <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Video color="#FF9933" size={28} /> {vp.title}
+            <Video color="#2563EB" size={28} /> {vp.title}
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginTop: '6px' }}>
             {lang === 'en' ? 'Official Videos & Speeches of Vishwaguru Bharat Abhiyan' : 'विश्वगुरु भारत अभियान के आधिकारिक वीडियो और संबोधन'}
@@ -219,7 +219,7 @@ export default function VideosPage() {
                 }}
               />
               <div className="mini-play-btn">
-                <Play size={16} fill="#FF9933" />
+                <Play size={16} fill="#2563EB" />
               </div>
             </div>
             <div className="video-card-info">

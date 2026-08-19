@@ -8,28 +8,28 @@ export default function DownloadAppPage() {
 
   const features = [
     {
-      icon: <Bell size={32} color="#FF9933" style={{ marginBottom: '15px' }} />,
+      icon: <Bell size={32} color="#2563EB" style={{ marginBottom: '15px' }} />,
       title: lang === 'en' ? 'Instant News Notifications' : 'तत्काल समाचार अधिसूचना',
       desc: lang === 'en'
         ? "First-hand notifications on Swarna Bharat's speeches, cabinet decisions, and international visits."
         : 'Swarna Bharat के भाषणों, कैबिनेट निर्णयों और अंतर्राष्ट्रीय दौरों पर प्रत्यक्ष अधिसूचनाएं।'
     },
     {
-      icon: <Zap size={32} color="#FF9933" style={{ marginBottom: '15px' }} />,
+      icon: <Zap size={32} color="#2563EB" style={{ marginBottom: '15px' }} />,
       title: lang === 'en' ? 'Mann Ki Baat Audio & Text' : 'मन की बात ऑडियो और टेक्स्ट',
       desc: lang === 'en'
         ? 'Listen to live audio broadcasts or read full transcripts in multiple regional languages.'
         : 'लाइव ऑडियो प्रसारण सुनें या कई क्षेत्रीय भाषाओं में पूर्ण प्रतिलेखन पढ़ें।'
     },
     {
-      icon: <Globe size={32} color="#FF9933" style={{ marginBottom: '15px' }} />,
+      icon: <Globe size={32} color="#2563EB" style={{ marginBottom: '15px' }} />,
       title: lang === 'en' ? 'Viksit Bharat Volunteer Desk' : 'विकसित भारत स्वयंसेवक डेस्क',
       desc: lang === 'en'
         ? 'Participate in national tasks, share suggestions, and earn digital certificates.'
         : 'राष्ट्रीय कार्यों में भाग लें, सुझाव साझा करें और डिजिटल प्रमाण पत्र अर्जित करें।'
     },
     {
-      icon: <ShieldCheck size={32} color="#FF9933" style={{ marginBottom: '15px' }} />,
+      icon: <ShieldCheck size={32} color="#2563EB" style={{ marginBottom: '15px' }} />,
       title: lang === 'en' ? 'Secure & Direct Feedback' : 'सुरक्षित और सीधी प्रतिक्रिया',
       desc: lang === 'en'
         ? "Direct platform to convey your ideas and views directly to the Prime Minister's Office."
@@ -42,7 +42,7 @@ export default function DownloadAppPage() {
       <div className="section-header">
         <div className="section-title-wrap">
           <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Smartphone color="#FF9933" size={28} /> {dp.title}
+            <Smartphone color="#2563EB" size={28} /> {dp.title}
           </h2>
         </div>
       </div>
@@ -56,7 +56,7 @@ export default function DownloadAppPage() {
         boxShadow: '0 10px 30px rgba(0,0,0,0.2)', marginBottom: '40px'
       }}>
         <div>
-          <span style={{ background: '#FF9933', color: '#FFF', padding: '4px 12px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase' }}>
+          <span style={{ background: '#2563EB', color: '#FFF', padding: '4px 12px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase' }}>
             {lang === 'en' ? 'Official Mobile Application' : 'आधिकारिक मोबाइल एप्लिकेशन'}
           </span>
           <h3 style={{ fontSize: '2.2rem', margin: '15px 0', lineHeight: '1.25', fontWeight: 800 }}>
@@ -72,14 +72,14 @@ export default function DownloadAppPage() {
               style={{ background: '#000', border: '1px solid #334155', padding: '12px 24px', borderRadius: '8px' }}
               onClick={() => alert(lang === 'en' ? 'Redirecting to Google Play Store...' : 'Google Play Store पर रीडायरेक्ट हो रहा है...')}
             >
-              <Download size={20} color="#FF9933" /> {dp.playStore}
+              <Download size={20} color="#2563EB" /> {dp.playStore}
             </button>
             <button 
               className="btn-primary"
               style={{ background: '#000', border: '1px solid #334155', padding: '12px 24px', borderRadius: '8px' }}
               onClick={() => alert(lang === 'en' ? 'Redirecting to Apple App Store...' : 'Apple App Store पर रीडायरेक्ट हो रहा है...')}
             >
-              <Download size={20} color="#FF9933" /> {dp.appStore}
+              <Download size={20} color="#2563EB" /> {dp.appStore}
             </button>
           </div>
         </div>

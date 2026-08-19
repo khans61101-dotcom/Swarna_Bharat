@@ -89,7 +89,7 @@ export default function DocumentsPage() {
     if (ft.includes('pdf') || url.endsWith('.pdf')) return { bg: '#FEF2F2', color: '#DC2626', label: 'PDF' };
     if (ft.includes('doc') || url.endsWith('.doc') || url.endsWith('.docx')) return { bg: '#EFF6FF', color: '#2563EB', label: 'DOC' };
     if (ft.includes('xls') || url.endsWith('.xls') || url.endsWith('.xlsx')) return { bg: '#F0FDF4', color: '#16A34A', label: 'XLS' };
-    if (ft.includes('zip') || url.endsWith('.zip')) return { bg: '#FFF7ED', color: '#EA580C', label: 'ZIP' };
+    if (ft.includes('zip') || url.endsWith('.zip')) return { bg: '#eff6ff', color: '#2563EB', label: 'ZIP' };
     if (ft.includes('jpg') || ft.includes('png') || ft.includes('jpeg') || ft.includes('webp') || url.match(/\.(jpg|jpeg|png|webp)$/i)) {
       return { bg: '#FDF4FF', color: '#C026D3', label: (ft || 'IMG').toUpperCase() };
     }
@@ -105,13 +105,13 @@ export default function DocumentsPage() {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '10px',
-          background: 'rgba(255, 153, 51, 0.12)',
+          background: 'rgba(37, 99, 235, 0.12)',
           padding: '8px 20px',
           borderRadius: '50px',
           marginBottom: '16px'
         }}>
-          <FileText size={20} color="#FF9933" />
-          <span style={{ color: '#FF9933', fontWeight: 700, fontSize: '0.9rem' }}>
+          <FileText size={20} color="#2563EB" />
+          <span style={{ color: '#2563EB', fontWeight: 700, fontSize: '0.9rem' }}>
             {lang === 'en' ? 'Official Downloads Portal' : 'आधिकारिक डाउनलोड पोर्टल'}
           </span>
         </div>
@@ -174,13 +174,13 @@ export default function DocumentsPage() {
                   padding: '8px 18px',
                   borderRadius: '30px',
                   border: 'none',
-                  background: isActive ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : 'var(--bg-alt)',
+                  background: isActive ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : 'var(--bg-alt)',
                   color: isActive ? '#FFF' : 'var(--text-muted)',
                   fontWeight: 700,
                   fontSize: '0.85rem',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  boxShadow: isActive ? '0 4px 12px rgba(255,153,51,0.3)' : 'none'
+                  boxShadow: isActive ? '0 4px 12px rgba(37, 99, 235,0.3)' : 'none'
                 }}
               >
                 {cat}
@@ -265,7 +265,7 @@ export default function DocumentsPage() {
 
                 <div style={{ borderTop: '1px solid var(--card-border)', paddingTop: '16px', marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Calendar size={14} color="#FF9933" /> {dateStr} {doc.file_size ? `• ${doc.file_size}` : ''}
+                    <Calendar size={14} color="#2563EB" /> {dateStr} {doc.file_size ? `• ${doc.file_size}` : ''}
                   </div>
 
                   <a
@@ -274,7 +274,7 @@ export default function DocumentsPage() {
                     rel="noopener noreferrer"
                     download
                     style={{
-                      background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFF',
                       padding: '8px 18px',
                       borderRadius: '30px',
@@ -284,7 +284,7 @@ export default function DocumentsPage() {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '6px',
-                      boxShadow: '0 4px 12px rgba(255,153,51,0.25)',
+                      boxShadow: '0 4px 12px rgba(37, 99, 235,0.25)',
                       transition: 'all 0.2s ease'
                     }}
                   >

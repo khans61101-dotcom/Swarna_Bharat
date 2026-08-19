@@ -105,7 +105,7 @@ export default function NewsPage() {
     padding: '0.5rem 0 2rem',
   };
 
-  const badgeStyle = (color = '#FF9933') => ({
+  const badgeStyle = (color = '#2563EB') => ({
     display: 'inline-block',
     fontSize: '0.7rem',
     fontWeight: 700,
@@ -133,7 +133,7 @@ export default function NewsPage() {
       <div className="section-header">
         <div className="section-title-wrap">
           <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Newspaper color="#FF9933" size={28} /> {t.newsPage.title}
+            <Newspaper color="#2563EB" size={28} /> {t.newsPage.title}
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginTop: '6px' }}>{t.newsPage.subtitle}</p>
         </div>

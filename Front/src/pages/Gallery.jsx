@@ -190,7 +190,7 @@ export default function GalleryPage() {
       <div className="section-header">
         <div className="section-title-wrap">
           <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {mediaType === 'image' ? <ImageIcon color="#FF9933" size={28} /> : <VideoIcon color="#FF9933" size={28} />}
+            {mediaType === 'image' ? <ImageIcon color="#2563EB" size={28} /> : <VideoIcon color="#2563EB" size={28} />}
             {lang === 'en' ? (mediaType === 'image' ? 'Photo Gallery' : 'Video Gallery') : (mediaType === 'image' ? 'फोटो गैलरी' : 'वीडियो गैलरी')}
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginTop: '6px' }}>
@@ -214,7 +214,7 @@ export default function GalleryPage() {
             padding: '12px 28px',
             borderRadius: '40px',
             border: 'none',
-            background: mediaType === 'image' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : '#F1F5F9',
+            background: mediaType === 'image' ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : '#F1F5F9',
             color: mediaType === 'image' ? '#FFF' : '#334155',
             fontWeight: 700,
             fontSize: '1rem',
@@ -222,7 +222,7 @@ export default function GalleryPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: mediaType === 'image' ? '0 6px 20px rgba(255, 153, 51, 0.35)' : 'none',
+            boxShadow: mediaType === 'image' ? '0 6px 20px rgba(37, 99, 235, 0.35)' : 'none',
             transition: 'all 0.3s ease'
           }}
         >
@@ -235,7 +235,7 @@ export default function GalleryPage() {
             padding: '12px 28px',
             borderRadius: '40px',
             border: 'none',
-            background: mediaType === 'video' ? 'linear-gradient(135deg, #FF9933, #FF6B00)' : '#F1F5F9',
+            background: mediaType === 'video' ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : '#F1F5F9',
             color: mediaType === 'video' ? '#FFF' : '#334155',
             fontWeight: 700,
             fontSize: '1rem',
@@ -243,7 +243,7 @@ export default function GalleryPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: mediaType === 'video' ? '0 6px 20px rgba(255, 153, 51, 0.35)' : 'none',
+            boxShadow: mediaType === 'video' ? '0 6px 20px rgba(37, 99, 235, 0.35)' : 'none',
             transition: 'all 0.3s ease'
           }}
         >
@@ -279,7 +279,7 @@ export default function GalleryPage() {
               onClick={() => setSelectedCategory(cat)}
               style={{
                 padding: '7px 14px', borderRadius: '20px', border: 'none',
-                background: selectedCategory === cat ? '#FF9933' : '#F1F5F9',
+                background: selectedCategory === cat ? '#2563EB' : '#F1F5F9',
                 color: selectedCategory === cat ? '#FFF' : '#475569',
                 fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
                 transition: 'all 0.2s ease'
@@ -336,7 +336,7 @@ export default function GalleryPage() {
                   onMouseEnter={(e) => e.currentTarget.style.opacity = 1}
                   onMouseLeave={(e) => e.currentTarget.style.opacity = 0}
                 >
-                  <span style={{ color: '#FF9933', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+                  <span style={{ color: '#2563EB', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
                     {lang === 'en' ? img.category : (img.categoryHi || img.category)}
                   </span>
                   <h4 style={{ color: '#FFF', fontSize: '0.95rem', fontWeight: 700, lineHeight: '1.3' }}>
@@ -393,16 +393,16 @@ export default function GalleryPage() {
                   }}>
                     <div style={{
                       width: '54px', height: '54px', borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      boxShadow: '0 6px 20px rgba(255, 153, 51, 0.5)'
+                      boxShadow: '0 6px 20px rgba(37, 99, 235, 0.5)'
                     }}>
                       <Play size={24} color="#FFF" fill="#FFF" style={{ marginLeft: '3px' }} />
                     </div>
                   </div>
                   <span style={{
                     position: 'absolute', top: '12px', left: '12px',
-                    background: '#FF9933', color: '#FFF', fontSize: '0.75rem',
+                    background: '#2563EB', color: '#FFF', fontSize: '0.75rem',
                     fontWeight: 700, padding: '4px 10px', borderRadius: '4px', textTransform: 'uppercase'
                   }}>
                     {lang === 'en' ? vid.category : (vid.categoryHi || vid.category)}
@@ -473,7 +473,7 @@ export default function GalleryPage() {
               <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>
                 {lang === 'en' ? filtered[lightboxIndex].title : (filtered[lightboxIndex].titleHi || filtered[lightboxIndex].title)}
               </h3>
-              <span style={{ color: '#FF9933', fontSize: '0.85rem', fontWeight: 600 }}>
+              <span style={{ color: '#2563EB', fontSize: '0.85rem', fontWeight: 600 }}>
                 {lang === 'en' ? filtered[lightboxIndex].category : (filtered[lightboxIndex].categoryHi || filtered[lightboxIndex].category)}
               </span>
             </div>
@@ -545,7 +545,7 @@ export default function GalleryPage() {
             </div>
 
             <div style={{ padding: '24px', color: '#FFF' }}>
-              <span style={{ background: '#FF9933', color: '#FFF', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
+              <span style={{ background: '#2563EB', color: '#FFF', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
                 {lang === 'en' ? activeVideoModal.category : (activeVideoModal.categoryHi || activeVideoModal.category)}
               </span>
               <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginTop: '10px' }}>

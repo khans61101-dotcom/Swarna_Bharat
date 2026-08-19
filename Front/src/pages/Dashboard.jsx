@@ -562,10 +562,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           .dash-sidebar { transform: translateX(0) !important; }
           .dash-main-panel { margin-left: 280px !important; width: calc(100% - 280px) !important; }
         }
-        .glow-btn:hover { box-shadow: 0 0 25px rgba(255, 153, 51, 0.5); }
+        .glow-btn:hover { box-shadow: 0 0 25px rgba(37, 99, 235, 0.5); }
         .nav-item-active { background: linear-gradient(135deg, #2563EB, #1D4ED8) !important; color: #FFF !important; }
         .nav-item-active .nav-icon { color: #FFF !important; }
-        .nav-item:hover { background: rgba(255, 153, 51, 0.1); }
+        .nav-item:hover { background: rgba(37, 99, 235, 0.1); }
       `}</style>
 
       {mobileSidebarOpen && (

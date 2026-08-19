@@ -95,7 +95,7 @@ const getPillarIcons = () => [
   { borderColor: '#16A34A', icon: <Heart size={26} color="#16A34A" /> },
   { borderColor: '#DC2626', icon: <BookOpen size={26} color="#DC2626" /> },
   { borderColor: '#0284C7', icon: <Award size={26} color="#0284C7" /> },
-  { borderColor: '#EA580C', icon: <Users size={26} color="#EA580C" /> },
+  { borderColor: '#2563EB', icon: <Users size={26} color="#2563EB" /> },
   { borderColor: '#0369A1', icon: <Shield size={26} color="#0369A1" /> },
   { borderColor: '#D97706', icon: <Palette size={26} color="#D97706" /> },
   { borderColor: '#15803D', icon: <Trees size={26} color="#15803D" /> },
@@ -584,8 +584,8 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                 height: '52px',
                 borderRadius: '50%',
                 objectFit: 'cover',
-                boxShadow: '0 4px 12px rgba(255, 153, 51, 0.4)',
-                border: '2px solid #FF9933'
+                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)',
+                border: '2px solid #2563EB'
               }}
             />
             <div className="logo-title">
@@ -763,7 +763,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
           cursor: 'pointer',
           color:
             activeTab === 'Videos'
-              ? '#FF9933'
+              ? '#2563EB'
               : 'var(--text-dark)',
           fontWeight:
             activeTab === 'Videos' ? 700 : 500,
@@ -791,7 +791,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
           cursor: 'pointer',
           color:
             activeTab === 'Gallery'
-              ? '#FF9933'
+              ? '#2563EB'
               : 'var(--text-dark)',
           fontWeight:
             activeTab === 'Gallery' ? 700 : 500,
@@ -819,7 +819,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
           cursor: 'pointer',
           color:
             activeTab === 'Documents'
-              ? '#FF9933'
+              ? '#2563EB'
               : 'var(--text-dark)',
           fontWeight:
             activeTab === 'Documents' ? 700 : 500,
@@ -864,9 +864,9 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
               className="header-lang-btn"
               onClick={toggleLang}
               style={{
-                background: 'rgba(255, 153, 51, 0.1)',
-                border: '1px solid #FF9933',
-                color: '#FF9933',
+                background: 'rgba(37, 99, 235, 0.1)',
+                border: '1px solid #2563EB',
+                color: '#2563EB',
                 padding: '6px 14px',
                 borderRadius: '20px',
                 fontWeight: 700,
@@ -1054,7 +1054,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
             <div className="banner-overlay" style={{ background: 'linear-gradient(180deg, rgba(11, 43, 74, 0.75) 0%, rgba(11, 43, 74, 0.88) 100%)', zIndex: 1 }}></div>
 
             <div className="section-container banner-content" style={{ position: 'relative', zIndex: 2, padding: '60px 20px', textAlign: 'center', maxWidth: '920px', margin: '0 auto', color: '#FFF' }}>
-              <span className="banner-tag" style={{ background: 'rgba(255, 153, 51, 0.25)', color: '#FF9933', border: '1px solid rgba(255, 153, 51, 0.5)', padding: '6px 20px', borderRadius: '30px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-block', marginBottom: '18px' }}>
+              <span className="banner-tag" style={{ background: 'rgba(37, 99, 235, 0.25)', color: '#2563EB', border: '1px solid rgba(37, 99, 235, 0.5)', padding: '6px 20px', borderRadius: '30px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-block', marginBottom: '18px' }}>
                 {heroBadge}
               </span>
               <h2 className="banner-title" style={{ fontSize: '2.5rem', fontWeight: 800, lineHeight: 1.25, marginBottom: '18px', textShadow: '0 4px 20px rgba(0,0,0,0.5)', color: '#FFFFFF' }}>
@@ -1067,7 +1067,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                 <button
                   className="btn-primary"
                   onClick={() => setActiveTab(heroBtn1Link)}
-                  style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', border: 'none', padding: '14px 34px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(255, 153, 51, 0.4)' }}
+                  style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFF', border: 'none', padding: '14px 34px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)' }}
                 >
                   {heroBtn1Text} <ChevronRight size={18} />
                 </button>
@@ -1113,7 +1113,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                         height: '10px',
                         borderRadius: '5px',
                         border: 'none',
-                        background: (currentSlide % activeBanners.length) === idx ? '#FF9933' : 'rgba(255,255,255,0.5)',
+                        background: (currentSlide % activeBanners.length) === idx ? '#2563EB' : 'rgba(255,255,255,0.5)',
                         cursor: 'pointer',
                         transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
                       }}
@@ -1167,7 +1167,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
               <div className="section-header">
                 <div className="section-title-wrap">
                   <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <BookOpen color="#FF9933" size={28} /> {lang === 'en' ? 'About Vishwaguru Bharat Abhiyan' : 'विश्वगुरु भारत अभियान के बारे में'}
+                    <BookOpen color="#2563EB" size={28} /> {lang === 'en' ? 'About Vishwaguru Bharat Abhiyan' : 'विश्वगुरु भारत अभियान के बारे में'}
                   </h2>
                 </div>
                 <span className="view-all-link" onClick={() => setActiveTab('About')}>
@@ -1183,12 +1183,12 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                       alt="Vishwaguru Bharat Abhiyan" 
                       style={{ width: '100%', borderRadius: '16px', boxShadow: '0 12px 30px rgba(0,0,0,0.12)', border: '1px solid #E2E8F0' }}
                     />
-                    <span style={{ position: 'absolute', top: '15px', left: '15px', background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', fontSize: '0.8rem', fontWeight: 700, padding: '6px 16px', borderRadius: '30px', boxShadow: '0 4px 12px rgba(255,107,0,0.3)' }}>
+                    <span style={{ position: 'absolute', top: '15px', left: '15px', background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFF', fontSize: '0.8rem', fontWeight: 700, padding: '6px 16px', borderRadius: '30px', boxShadow: '0 4px 12px rgba(29, 78, 216,0.3)' }}>
                       🚩 {lang === 'en' ? 'National Movement' : 'राष्ट्रीय महाअभियान'}
                     </span>
                   </div>
                   <div>
-                    <span style={{ color: '#FF9933', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.88rem', letterSpacing: '0.5px' }}>
+                    <span style={{ color: '#2563EB', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.88rem', letterSpacing: '0.5px' }}>
                       {lang === 'en' ? 'Rebuilding Golden Bharat' : 'स्वर्णिम भारत का पुनः निर्माण'}
                     </span>
                     <h3 style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--text-dark)', margin: '12px 0 16px', lineHeight: 1.3 }}>
@@ -1199,7 +1199,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                         ? 'Vishwaguru Bharat Abhiyan is a nationwide transformative movement committed to youth empowerment, cultural heritage, digital education, and inclusive development across all sectors.'
                         : 'विश्वगुरु भारत अभियान एक देशव्यापी परिवर्तनकारी अभियान है जो युवा सशक्तिकरण, सांस्कृतिक विरासत, डिजिटल शिक्षा और सभी क्षेत्रों में समावेशी विकास के लिए समर्पित है।'}
                     </p>
-                    <div style={{ background: '#FFF7ED', borderLeft: '4px solid #FF9933', padding: '14px 18px', borderRadius: '8px', marginBottom: '22px' }}>
+                    <div style={{ background: '#eff6ff', borderLeft: '4px solid #2563EB', padding: '14px 18px', borderRadius: '8px', marginBottom: '22px' }}>
                       <p style={{ color: '#C2410C', fontWeight: 700, fontSize: '0.92rem', margin: 0, fontStyle: 'italic' }}>
                         "{lang === 'en' ? 'Sabka Saath, Sabka Vikas, Sabka Vishwas, Sabka Prayas' : 'सबका साथ, सबका विकास, सबका विश्वास, सबका प्रयास'}"
                       </p>
@@ -1207,7 +1207,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                     <button
                       className="btn-primary"
                       onClick={() => setActiveTab('About')}
-                      style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', border: 'none', padding: '12px 28px', borderRadius: '40px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 18px rgba(255, 153, 51, 0.35)' }}
+                      style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFF', border: 'none', padding: '12px 28px', borderRadius: '40px', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 18px rgba(37, 99, 235, 0.35)' }}
                     >
                       {lang === 'en' ? 'Explore Full Vision' : 'पूरा दृष्टिकोण देखें'} <ChevronRight size={18} />
                     </button>
@@ -1218,27 +1218,27 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginTop: '40px', paddingTop: '30px', borderTop: '1px solid #F1F5F9' }}>
                   {[
                     {
-                      icon: <User size={26} color="#FF9933" />,
+                      icon: <User size={26} color="#2563EB" />,
                       title: lang === 'en' ? 'Inclusive Governance' : 'समावेशी शासन',
                       desc: lang === 'en' ? 'Ensuring direct access to government schemes & welfare.' : 'प्रत्येक नागरिक को सरकारी योजनाओं तक सीधी पहुँच।'
                     },
                     {
-                      icon: <Award size={26} color="#FF9933" />,
+                      icon: <Award size={26} color="#2563EB" />,
                       title: lang === 'en' ? 'Transparent Admin' : 'पारदर्शी प्रशासन',
                       desc: lang === 'en' ? 'Promoting accountability and open public governance.' : 'जवाबदेही और पारदर्शी सार्वजनिक व्यवस्था।'
                     },
                     {
-                      icon: <BookOpen size={26} color="#FF9933" />,
+                      icon: <BookOpen size={26} color="#2563EB" />,
                       title: lang === 'en' ? 'Digital Empowerment' : 'डिजिटल सशक्तिकरण',
                       desc: lang === 'en' ? 'Bridging digital gap with accessible tech & skills.' : 'तकनीक और कौशल से डिजिटल क्रांति।'
                     },
                     {
-                      icon: <Globe size={26} color="#FF9933" />,
+                      icon: <Globe size={26} color="#2563EB" />,
                       title: lang === 'en' ? 'Global Leadership' : 'वैश्विक नेतृत्व',
                       desc: lang === 'en' ? 'Positioning Bharat as a premier world benchmark.' : 'विश्व मंच पर भारत के नेतृत्व को सुदृढ़ करना।'
                     }
                   ].map((p, idx) => (
-                    <div key={idx} style={{ background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0', borderLeft: '4px solid #FF9933' }}>
+                    <div key={idx} style={{ background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0', borderLeft: '4px solid #2563EB' }}>
                       <div style={{ marginBottom: '10px' }}>{p.icon}</div>
                       <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-dark)', marginBottom: '6px' }}>{p.title}</h4>
                       <p style={{ fontSize: '0.84rem', color: '#64748B', lineHeight: '1.4', margin: 0 }}>{p.desc}</p>
@@ -1267,7 +1267,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
               <div className="section-header">
                 <div className="section-title-wrap">
                   <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Calendar color="#FF9933" size={28} /> {t.eventsSection}
+                    <Calendar color="#2563EB" size={28} /> {t.eventsSection}
                   </h2>
                 </div>
                 <span className="view-all-link" onClick={() => setActiveTab('Events')}>
@@ -1333,7 +1333,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                           alt={featuredEvt.title} 
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                         />
-                        <span style={{ position: 'absolute', top: '15px', left: '15px', background: '#FF9933', color: '#FFF', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                        <span style={{ position: 'absolute', top: '15px', left: '15px', background: '#2563EB', color: '#FFF', fontSize: '0.75rem', fontWeight: 700, padding: '4px 12px', borderRadius: '4px', textTransform: 'uppercase' }}>
                           {lang === 'en' ? (featuredEvt.category || 'National Conclave') : (featuredEvt.category_hi || featuredEvt.category || 'राष्ट्रीय सम्मेलन')}
                         </span>
                       </div>
@@ -1350,7 +1350,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                           <p style={{ color: '#64748B', fontSize: '0.88rem', marginBottom: '12px', lineHeight: '1.5' }}>
                             {lang === 'en' ? (featuredEvt.desc || featuredEvt.snippet || '') : (featuredEvt.desc_hi || featuredEvt.desc || '')}
                           </p>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#FF9933', fontSize: '0.82rem', fontWeight: 600 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#2563EB', fontSize: '0.82rem', fontWeight: 600 }}>
                             <MapPin size={15} /> {lang === 'en' ? (featuredEvt.location || 'New Delhi') : (featuredEvt.location_hi || featuredEvt.location || 'नई दिल्ली')}
                           </div>
                         </div>
@@ -1379,7 +1379,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                                 {lang === 'en' ? evt.title : (evt.title_hi || evt.title)}
                               </h4>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#64748B', fontSize: '0.8rem' }}>
-                                <MapPin size={14} color="#FF9933" /> {lang === 'en' ? (evt.location || 'New Delhi') : (evt.location_hi || evt.location || 'नई दिल्ली')}
+                                <MapPin size={14} color="#2563EB" /> {lang === 'en' ? (evt.location || 'New Delhi') : (evt.location_hi || evt.location || 'नई दिल्ली')}
                               </div>
                             </div>
                           </div>
@@ -1409,7 +1409,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
               <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
                 <div className="section-title-wrap">  
                   <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Video color="#FF9933" size={28} /> {t.videoSectionTitle}
+                    <Video color="#2563EB" size={28} /> {t.videoSectionTitle}
                   </h2>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -1432,7 +1432,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                   >
                     <Video size={16} /> @विश्वगुरुभारतअभियान
                   </a>
-                  <span className="view-all-link" style={{ color: '#FF9933', cursor: 'pointer' }} onClick={() => setActiveTab('Videos')}>
+                  <span className="view-all-link" style={{ color: '#2563EB', cursor: 'pointer' }} onClick={() => setActiveTab('Videos')}>
                     {t.viewAllVideos} <ExternalLink size={16} />
                   </span>
                 </div>
@@ -1501,7 +1501,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                         }}
                       />
                       <div className="mini-play-btn">
-                        <Play size={16} fill="#FF9933" />
+                        <Play size={16} fill="#2563EB" />
                       </div>
                     </div>
                     <div className="video-card-info">
@@ -1523,7 +1523,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
               <div className="section-header">
                 <div className="section-title-wrap">
                   <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Newspaper color="#FF9933" size={28} /> {t.newsSectionTitle}
+                    <Newspaper color="#2563EB" size={28} /> {t.newsSectionTitle}
                   </h2>
                 </div>
                 <span className="view-all-link" onClick={() => setActiveTab('News')}>
@@ -1562,7 +1562,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
               <div className="section-header">
                 <div className="section-title-wrap">
                   <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FileText color="#FF9933" size={28} /> {lang === 'en' ? 'Important Documents & Circulars' : 'महत्वपूर्ण दस्तावेज़ एवं परिपत्र'}
+                    <FileText color="#2563EB" size={28} /> {lang === 'en' ? 'Important Documents & Circulars' : 'महत्वपूर्ण दस्तावेज़ एवं परिपत्र'}
                   </h2>
                 </div>
                 <span className="view-all-link" onClick={() => setActiveTab('Documents')} style={{ cursor: 'pointer' }}>
@@ -1595,7 +1595,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                         </div>
                         <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '14px', marginTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ fontSize: '0.78rem', color: '#64748B' }}>📅 {dateStr} {doc.file_size ? `• ${doc.file_size}` : ''}</span>
-                          <a href={downloadUrl} target="_blank" rel="noopener noreferrer" download style={{ background: 'linear-gradient(135deg, #FF9933, #FF6B00)', color: '#FFF', padding: '6px 16px', borderRadius: '30px', fontSize: '0.8rem', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <a href={downloadUrl} target="_blank" rel="noopener noreferrer" download style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFF', padding: '6px 16px', borderRadius: '30px', fontSize: '0.8rem', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                             <Download size={14} /> {lang === 'en' ? 'Download' : 'डाउनलोड'}
                           </a>
                         </div>
@@ -1618,7 +1618,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
 
       {/* ── HIGH-END MODERN FOOTER WITH SOCIAL MEDIA ─────────────────────── */}
       {activeTab !== 'Dashboard' && (
-        <footer style={{ background: '#0F172A', color: '#94A3B8', borderTop: '4px solid #FF9933', fontFamily: "'Outfit', sans-serif" }}>
+        <footer style={{ background: '#0F172A', color: '#94A3B8', borderTop: '4px solid #2563EB', fontFamily: "'Outfit', sans-serif" }}>
           {/* Main Footer Body Container */}
           <div style={{ maxWidth: '1600px', width: '94%', margin: '0 auto', padding: '60px 20px 40px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '40px' }}>
             
@@ -1628,11 +1628,11 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                 <img
                   src={logoImg}
                   alt="Swarna Bharat Logo"
-                  style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #FF9933', boxShadow: '0 4px 12px rgba(255,153,51,0.4)', objectFit: 'cover' }}
+                  style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #2563EB', boxShadow: '0 4px 12px rgba(37, 99, 235,0.4)', objectFit: 'cover' }}
                 />
                 <div>
                   <h3 style={{ margin: 0, color: '#FFF', fontSize: '1.3rem', fontWeight: 800 }}>Swarna Bharat</h3>
-                  <span style={{ fontSize: '0.75rem', color: '#FF9933', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#2563EB', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
                     {lang === 'en' ? 'Vishwaguru Bharat Abhiyan' : 'विश्वगुरु भारत अभियान'}
                   </span>
                 </div>
@@ -1671,7 +1671,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
 
             {/* Col 2: Quick Links */}
             <div>
-              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(255,153,51,0.3)' }}>
+              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(37, 99, 235,0.3)' }}>
                 {lang === 'en' ? 'QUICK NAVIGATION' : 'त्वरित नेविगेशन'}
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -1687,7 +1687,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
 
             {/* Col 3: Focus Sectors */}
             <div>
-              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(255,153,51,0.3)' }}>
+              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(37, 99, 235,0.3)' }}>
                 {lang === 'en' ? 'NATIONAL PILLARS' : 'प्रमुख स्तंभ'}
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -1701,24 +1701,24 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
 
             {/* Col 4: Contact & Helpline */}
             <div>
-              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(255,153,51,0.3)' }}>
+              <h4 style={{ color: '#FFF', fontSize: '1.05rem', fontWeight: 800, marginBottom: '20px', position: 'relative', paddingBottom: '10px', borderBottom: '2px solid rgba(37, 99, 235,0.3)' }}>
                 {lang === 'en' ? 'CITIZEN HELPDESK' : 'नागरिक सहायता केंद्र'}
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: '#CBD5E1' }}>
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                  <MapPin size={18} color="#FF9933" style={{ flexShrink: 0, marginTop: '3px' }} />
+                  <MapPin size={18} color="#2563EB" style={{ flexShrink: 0, marginTop: '3px' }} />
                   <span>Swarna Bharat Bhawan, Central Secretariat, New Delhi - 110001</span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Phone size={18} color="#FF9933" style={{ flexShrink: 0 }} />
+                  <Phone size={18} color="#2563EB" style={{ flexShrink: 0 }} />
                   <span>1800-11-2026 (Toll Free Helpline)</span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Mail size={18} color="#FF9933" style={{ flexShrink: 0 }} />
+                  <Mail size={18} color="#2563EB" style={{ flexShrink: 0 }} />
                   <span>support@swarnabharat.org</span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Globe size={18} color="#FF9933" style={{ flexShrink: 0 }} />
+                  <Globe size={18} color="#2563EB" style={{ flexShrink: 0 }} />
                   <span>www.swarnabharat.gov.in</span>
                 </li>
               </ul>

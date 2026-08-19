@@ -46,9 +46,9 @@ export default function PartnersPage({
 
   const getRoleColor = (roleName) => {
     switch(roleName) {
-      case 'Agency': return { bg: '#FFF7ED', color: '#EA580C', border: '#FDBA74', hover: '#FFEDD5' };
+      case 'Agency': return { bg: '#eff6ff', color: '#2563EB', border: '#FDBA74', hover: '#dbeafe' };
       case 'NGO': return { bg: '#FDF2F8', color: '#DB2777', border: '#F9A8D4', hover: '#FCE7F3' };
-      default: return { bg: '#FFF7ED', color: '#EA580C', border: '#FDBA74', hover: '#FFEDD5' };
+      default: return { bg: '#eff6ff', color: '#2563EB', border: '#FDBA74', hover: '#dbeafe' };
     }
   };
 
@@ -88,7 +88,7 @@ export default function PartnersPage({
           transform: 'translateX(-50%)',
           width: '80px',
           height: '80px',
-          background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+          background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
           borderRadius: '50%',
           opacity: '0.08',
           filter: 'blur(20px)'
@@ -98,13 +98,13 @@ export default function PartnersPage({
           display: 'inline-flex',
           alignItems: 'center',
           gap: '12px',
-          background: 'rgba(255, 153, 51, 0.15)',
+          background: 'rgba(37, 99, 235, 0.15)',
           padding: '8px 20px',
           borderRadius: '50px',
           marginBottom: '20px'
         }}>
-          <Globe size={20} color="#FF9933" />
-          <span style={{ color: '#FF9933', fontWeight: 600, fontSize: '0.9rem' }}>
+          <Globe size={20} color="#2563EB" />
+          <span style={{ color: '#2563EB', fontWeight: 600, fontSize: '0.9rem' }}>
             {lang === 'en' ? 'Global Network' : 'वैश्विक नेटवर्क'}
           </span>
         </div>
@@ -216,7 +216,7 @@ export default function PartnersPage({
             height: '60px',
             borderRadius: '50%',
             border: '4px solid var(--card-border)',
-            borderTopColor: '#FF9933',
+            borderTopColor: '#2563EB',
             animation: 'spin 0.8s linear infinite'
           }} />
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>

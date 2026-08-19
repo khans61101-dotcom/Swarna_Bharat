@@ -122,7 +122,7 @@ export default function EventsPage({ onSelectEvent, setSelectedEvent, setActiveT
       <div className="section-header">
         <div className="section-title-wrap">
           <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Calendar color="#FF9933" size={28} /> {ep.title}
+            <Calendar color="#2563EB" size={28} /> {ep.title}
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginTop: '6px' }}>{ep.subtitle}</p>
         </div>
@@ -171,7 +171,7 @@ export default function EventsPage({ onSelectEvent, setSelectedEvent, setActiveT
                 padding: '7px 14px',
                 borderRadius: '20px',
                 border: 'none',
-                background: selectedCategory === cat ? '#FF9933' : '#F1F5F9',
+                background: selectedCategory === cat ? '#2563EB' : '#F1F5F9',
                 color: selectedCategory === cat ? '#FFF' : '#475569',
                 fontWeight: 600,
                 fontSize: '0.82rem',
@@ -235,7 +235,7 @@ export default function EventsPage({ onSelectEvent, setSelectedEvent, setActiveT
 
               {/* Event Content Details */}
               <div style={{ padding: '25px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <span style={{ color: '#FF9933', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
+                <span style={{ color: '#2563EB', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
                   {(lang === 'hi' && evt.categoryHi) ? evt.categoryHi : evt.category}
                 </span>
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-dark)', marginBottom: '10px', lineHeight: '1.35' }}>
@@ -247,11 +247,11 @@ export default function EventsPage({ onSelectEvent, setSelectedEvent, setActiveT
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600 }}>
-                    <MapPin size={16} color="#FF9933" /> {(lang === 'hi' && evt.locationHi) ? evt.locationHi : evt.location}
+                    <MapPin size={16} color="#2563EB" /> {(lang === 'hi' && evt.locationHi) ? evt.locationHi : evt.location}
                   </div>
 
                   <span style={{
-                    color: '#FF9933',
+                    color: '#2563EB',
                     fontSize: '0.88rem',
                     fontWeight: 700,
                     display: 'inline-flex',

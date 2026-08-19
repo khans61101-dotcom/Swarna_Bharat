@@ -347,7 +347,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           top: '50%', 
           left: '15%', 
           height: '3px', 
-          background: 'linear-gradient(to right, #FF9933, #FF6B00)',
+          background: 'linear-gradient(to right, #2563EB, #1D4ED8)',
           transform: 'translateY(-50%)',
           zIndex: 0,
           width: `${((currentStep - 1) / (steps.length - 1)) * 70}%`,
@@ -367,7 +367,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
               height: '44px',
               borderRadius: '50%',
               background: currentStep >= step.number 
-                ? 'linear-gradient(135deg, #FF9933, #FF6B00)' 
+                ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' 
                 : '#F1F5F9',
               color: currentStep >= step.number ? '#FFF' : '#94A3B8',
               display: 'flex',
@@ -376,9 +376,9 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
               fontWeight: 700,
               fontSize: '0.85rem',
               transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-              border: `3px solid ${currentStep >= step.number ? '#FF9933' : '#E2E8F0'}`,
+              border: `3px solid ${currentStep >= step.number ? '#2563EB' : '#E2E8F0'}`,
               boxShadow: currentStep >= step.number 
-                ? '0 4px 15px rgba(255, 153, 51, 0.3)' 
+                ? '0 4px 15px rgba(37, 99, 235, 0.3)' 
                 : 'none',
               transform: currentStep === step.number ? 'scale(1.1)' : 'scale(1)'
             }}>
@@ -387,7 +387,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
             <span style={{ 
               marginTop: '8px', 
               fontSize: '0.7rem', 
-              color: currentStep >= step.number ? '#FF9933' : '#94A3B8',
+              color: currentStep >= step.number ? '#2563EB' : '#94A3B8',
               fontWeight: 700,
               textTransform: 'uppercase',
               letterSpacing: '0.5px',
@@ -412,7 +412,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
       transition: 'all 0.3s ease',
       background: '#FAFBFC',
       color: '#1A2238',
-      caretColor: '#FF9933'
+      caretColor: '#2563EB'
     }; 
 
     switch(currentStep) {
@@ -434,7 +434,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   defaultValue={formRef.current.name}
                   onInput={(e) => formRef.current.name = e.target.value}
                   style={inputStyle}
-                  onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                  onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                   onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                 />
               </div>
@@ -599,7 +599,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                     defaultValue={formRef.current.referral_code}
                     onInput={(e) => formRef.current.referral_code = e.target.value.toUpperCase()}
                     style={inputStyle}
-                    onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                    onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                     onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                   />
                 </div>
@@ -629,7 +629,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   defaultValue={formRef.current.email}
                   onInput={(e) => formRef.current.email = e.target.value}
                   style={inputStyle}
-                  onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                  onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                   onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                 />
               </div>
@@ -650,7 +650,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   defaultValue={formRef.current.phone}
                   onInput={(e) => formRef.current.phone = e.target.value}
                   style={inputStyle}
-                  onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                  onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                   onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                 />
               </div>
@@ -676,7 +676,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   defaultValue={formRef.current.password}
                   onInput={(e) => formRef.current.password = e.target.value}
                   style={inputStyle}
-                  onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                  onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                   onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                 />
               </div>
@@ -697,7 +697,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   defaultValue={formRef.current.confirmPassword}
                   onInput={(e) => formRef.current.confirmPassword = e.target.value}
                   style={inputStyle}
-                  onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                  onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                   onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                 />
               </div>
@@ -713,13 +713,13 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                 width: '54px',
                 height: '54px',
                 margin: '0 auto 10px',
-                background: '#FFF7ED',
+                background: '#eff6ff',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#FF9933',
-                border: '2px solid #FED7AA'
+                color: '#2563EB',
+                border: '2px solid #bfdbfe'
               }}>
                 <ShieldCheck size={28} />
               </div>
@@ -743,12 +743,12 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                 fontWeight: 700,
                 color: '#0F172A'
               }}>
-                <Mail size={14} color="#FF9933" />
+                <Mail size={14} color="#2563EB" />
                 <span>{formRef.current.email}</span>
                 <button
                   type="button"
                   onClick={() => setCurrentStep(2)}
-                  style={{ background: 'none', border: 'none', color: '#FF9933', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, textDecoration: 'underline', marginLeft: '4px' }}
+                  style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, textDecoration: 'underline', marginLeft: '4px' }}
                 >
                   {lang === 'en' ? 'Edit' : 'बदलें'}
                 </button>
@@ -793,7 +793,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                     letterSpacing: '4px',
                     textAlign: 'center'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                  onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                   onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                 />
               </div>
@@ -812,7 +812,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#FF9933',
+                    color: '#2563EB',
                     fontSize: '0.82rem',
                     fontWeight: 700,
                     cursor: 'pointer',
@@ -848,7 +848,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           marginBottom: '12px'
         }}>
           <div style={{
-            background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+            background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
             padding: '10px',
             borderRadius: '12px',
             color: '#FFF'
@@ -858,7 +858,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           <h2 style={{
             fontSize: '1.8rem',
             fontWeight: 800,
-            background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+            background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             margin: 0
@@ -892,7 +892,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           border: '1px solid #E2E8F0',
           textAlign: 'center'
         }}>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#FF9933' }}>50+</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#2563EB' }}>50+</div>
           <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '4px' }}>
             {lang === 'en' ? 'Active Services' : 'सक्रिय सेवाएं'}
           </div>
@@ -913,11 +913,11 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
 
       {/* Features */}
       <div style={{
-        background: 'linear-gradient(135deg, #FFF7ED, #FFEDD5)',
+        background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
         borderRadius: '16px',
         padding: '20px',
         marginBottom: '24px',
-        border: '1px solid #FED7AA'
+        border: '1px solid #bfdbfe'
       }}>
         <h4 style={{
           fontSize: '0.9rem',
@@ -928,7 +928,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           alignItems: 'center',
           gap: '8px'
         }}>
-          <Key size={18} color="#FF9933" />
+          <Key size={18} color="#2563EB" />
           {lang === 'en' ? 'Why Login?' : 'क्यों लॉगिन करें?'}
         </h4>
         <div style={{ display: 'grid', gap: '10px' }}>
@@ -941,7 +941,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
               background: 'rgba(255, 255, 255, 0.6)',
               borderRadius: '8px'
             }}>
-              <div style={{ color: '#FF9933' }}>{feature.icon}</div>
+              <div style={{ color: '#2563EB' }}>{feature.icon}</div>
               <span style={{ fontSize: '0.85rem', color: '#1E293B', fontWeight: 500 }}>
                 {feature.text}
               </span>
@@ -972,8 +972,8 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
         }}
         onMouseEnter={(e) => {
-          e.target.style.borderColor = '#FF9933';
-          e.target.style.boxShadow = '0 4px 16px rgba(255, 153, 51, 0.15)';
+          e.target.style.borderColor = '#2563EB';
+          e.target.style.boxShadow = '0 4px 16px rgba(37, 99, 235, 0.15)';
           e.target.style.transform = 'translateY(-2px)';
         }}
         onMouseLeave={(e) => {
@@ -1021,7 +1021,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           marginBottom: '12px'
         }}>
           <div style={{
-            background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+            background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
             padding: '10px',
             borderRadius: '12px',
             color: '#FFF'
@@ -1031,7 +1031,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           <h2 style={{
             fontSize: '1.8rem',
             fontWeight: 800,
-            background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+            background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             margin: 0
@@ -1053,11 +1053,11 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
 
       {/* Role Description */}
       <div style={{
-        background: 'linear-gradient(135deg, #FFF7ED, #FFEDD5)',
+        background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
         borderRadius: '16px',
         padding: '24px',
         marginBottom: '24px',
-        border: '1px solid #FED7AA'
+        border: '1px solid #bfdbfe'
       }}>
         <div style={{
           display: 'flex',
@@ -1066,7 +1066,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           marginBottom: '12px'
         }}>
           <div style={{
-            background: `linear-gradient(135deg, ${roleOptions.find(r => r.value === role)?.color || '#FF9933'}, ${roleOptions.find(r => r.value === role)?.color || '#FF6B00'})`,
+            background: `linear-gradient(135deg, ${roleOptions.find(r => r.value === role)?.color || '#2563EB'}, ${roleOptions.find(r => r.value === role)?.color || '#1D4ED8'})`,
             padding: '8px',
             borderRadius: '10px',
             color: '#FFF'
@@ -1152,8 +1152,8 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
           boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
         }}
         onMouseEnter={(e) => {
-          e.target.style.borderColor = '#FF9933';
-          e.target.style.boxShadow = '0 4px 16px rgba(255, 153, 51, 0.15)';
+          e.target.style.borderColor = '#2563EB';
+          e.target.style.boxShadow = '0 4px 16px rgba(37, 99, 235, 0.15)';
           e.target.style.transform = 'translateY(-2px)';
         }}
         onMouseLeave={(e) => {
@@ -1222,7 +1222,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
             color: '#1A2238', 
             fontSize: '1.6rem',
             fontWeight: 800,
-            background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+            background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             marginBottom: '8px'
@@ -1255,14 +1255,14 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '8px',
-                      background: '#FFF7ED',
+                      background: '#eff6ff',
                       padding: '8px 20px',
                       borderRadius: '30px',
-                      border: '1px solid #FED7AA',
+                      border: '1px solid #bfdbfe',
                       marginBottom: '12px'
                     }}>
-                      <Key size={20} color="#FF9933" />
-                      <span style={{ color: '#FF9933', fontSize: '0.9rem', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                      <Key size={20} color="#2563EB" />
+                      <span style={{ color: '#2563EB', fontSize: '0.9rem', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
                         {lang === 'en' ? 'Forgot Password' : 'पासवर्ड भूल गए'}
                       </span>
                     </div>
@@ -1295,7 +1295,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                           transition: 'all 0.3s ease',
                           background: '#FAFBFC'
                         }}
-                        onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                        onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                         onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                       />
                     </div>
@@ -1310,7 +1310,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       padding: '14px',
                       borderRadius: '12px',
                       border: 'none',
-                      background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFF',
                       cursor: isForgotLoading ? 'wait' : 'pointer',
                       fontWeight: 700,
@@ -1320,7 +1320,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       justifyContent: 'center',
                       gap: '8px',
                       transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 15px rgba(255, 153, 51, 0.3)'
+                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
                     }}
                   >
                     {isForgotLoading 
@@ -1346,14 +1346,14 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '8px',
-                      background: '#FFF7ED',
+                      background: '#eff6ff',
                       padding: '6px 16px',
                       borderRadius: '30px',
-                      border: '1px solid #FED7AA',
+                      border: '1px solid #bfdbfe',
                       marginBottom: '10px'
                     }}>
-                      <ShieldCheck size={18} color="#FF9933" />
-                      <span style={{ color: '#FF9933', fontSize: '0.85rem', fontWeight: 800 }}>
+                      <ShieldCheck size={18} color="#2563EB" />
+                      <span style={{ color: '#2563EB', fontSize: '0.85rem', fontWeight: 800 }}>
                         {lang === 'en' ? 'Set New Password' : 'नया पासवर्ड सेट करें'}
                       </span>
                     </div>
@@ -1373,12 +1373,12 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       fontWeight: 700,
                       color: '#0F172A'
                     }}>
-                      <Mail size={14} color="#FF9933" />
+                      <Mail size={14} color="#2563EB" />
                       <span>{forgotEmail}</span>
                       <button
                         type="button"
                         onClick={() => setForgotStep(1)}
-                        style={{ background: 'none', border: 'none', color: '#FF9933', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, textDecoration: 'underline', marginLeft: '4px' }}
+                        style={{ background: 'none', border: 'none', color: '#2563EB', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, textDecoration: 'underline', marginLeft: '4px' }}
                       >
                         {lang === 'en' ? 'Edit' : 'बदलें'}
                       </button>
@@ -1427,7 +1427,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                           letterSpacing: '3px',
                           background: '#FAFBFC'
                         }}
-                        onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                        onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                         onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                       />
                     </div>
@@ -1457,7 +1457,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                           fontSize: '0.92rem',
                           background: '#FAFBFC'
                         }}
-                        onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                        onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                         onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                       />
                     </div>
@@ -1487,7 +1487,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                           fontSize: '0.92rem',
                           background: '#FAFBFC'
                         }}
-                        onFocus={(e) => e.target.style.borderColor = '#FF9933'}
+                        onFocus={(e) => e.target.style.borderColor = '#2563EB'}
                         onBlur={(e) => e.target.style.borderColor = '#E2E8F0'}
                       />
                     </div>
@@ -1502,7 +1502,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       padding: '13px',
                       borderRadius: '12px',
                       border: 'none',
-                      background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFF',
                       cursor: isForgotLoading ? 'wait' : 'pointer',
                       fontWeight: 700,
@@ -1512,7 +1512,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       justifyContent: 'center',
                       gap: '8px',
                       transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 15px rgba(255, 153, 51, 0.3)'
+                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
                     }}
                   >
                     <Sparkles size={18} /> {isForgotLoading 
@@ -1562,8 +1562,8 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       transition: 'all 0.3s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.borderColor = '#FF9933';
-                      e.target.style.color = '#FF9933';
+                      e.target.style.borderColor = '#2563EB';
+                      e.target.style.color = '#2563EB';
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.borderColor = '#E2E8F0';
@@ -1582,7 +1582,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       padding: '12px 20px',
                       borderRadius: '10px',
                       border: 'none',
-                      background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFF',
                       cursor: isSendingOtp ? 'wait' : 'pointer',
                       display: 'flex',
@@ -1592,18 +1592,18 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       flex: currentStep === 1 ? '1' : '2',
                       justifyContent: 'center',
                       transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 15px rgba(255, 153, 51, 0.3)',
+                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)',
                       opacity: isSendingOtp ? 0.8 : 1
                     }}
                     onMouseEnter={(e) => {
                       if (!isSendingOtp) {
                         e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 6px 20px rgba(255, 153, 51, 0.4)';
+                        e.target.style.boxShadow = '0 6px 20px rgba(37, 99, 235, 0.4)';
                       }
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(255, 153, 51, 0.3)';
+                      e.target.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.3)';
                     }}
                   >
                     {currentStep === 3 ? (
@@ -1622,7 +1622,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       padding: '14px 20px',
                       borderRadius: '10px',
                       border: 'none',
-                      background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                      background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                       color: '#FFF',
                       cursor: 'pointer',
                       fontWeight: 700,
@@ -1632,15 +1632,15 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       justifyContent: 'center',
                       gap: '8px',
                       transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 15px rgba(255, 153, 51, 0.3)'
+                      boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 6px 20px rgba(255, 153, 51, 0.4)';
+                      e.target.style.boxShadow = '0 6px 20px rgba(37, 99, 235, 0.4)';
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 4px 15px rgba(255, 153, 51, 0.3)';
+                      e.target.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.3)';
                     }}
                   >
                     <Sparkles size={18} /> {lang === 'en' ? 'Verify OTP & Register' : 'ओटीपी सत्यापित करें और पंजीकरण करें'}
@@ -1663,15 +1663,15 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  background: '#FFF7ED',
+                  background: '#eff6ff',
                   padding: '8px 20px',
                   borderRadius: '30px',
-                  border: '1px solid #FED7AA',
+                  border: '1px solid #bfdbfe',
                   marginBottom: '12px'
                 }}>
-                  <Crown size={20} color="#FF9933" />
+                  <Crown size={20} color="#2563EB" />
                   <span style={{ 
-                    color: '#FF9933', 
+                    color: '#2563EB', 
                     fontSize: '0.9rem', 
                     fontWeight: 800,
                     letterSpacing: '0.5px',
@@ -1710,8 +1710,8 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       background: '#FAFBFC'
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = '#FF9933';
-                      e.target.style.boxShadow = '0 0 0 4px rgba(255, 153, 51, 0.12)';
+                      e.target.style.borderColor = '#2563EB';
+                      e.target.style.boxShadow = '0 0 0 4px rgba(37, 99, 235, 0.12)';
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = '#E2E8F0';
@@ -1746,8 +1746,8 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                       background: '#FAFBFC'
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = '#FF9933';
-                      e.target.style.boxShadow = '0 0 0 4px rgba(255, 153, 51, 0.12)';
+                      e.target.style.borderColor = '#2563EB';
+                      e.target.style.boxShadow = '0 0 0 4px rgba(37, 99, 235, 0.12)';
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = '#E2E8F0';
@@ -1760,7 +1760,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   <button
                     type="button"
                     onClick={() => { setMode('forgot-password'); setForgotStep(1); }}
-                    style={{ background: 'none', border: 'none', color: '#FF9933', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
+                    style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
                   >
                     {lang === 'en' ? 'Forgot Password?' : 'पासवर्ड भूल गए?'}
                   </button>
@@ -1774,7 +1774,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   padding: '14px',
                   borderRadius: '12px',
                   border: 'none',
-                  background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                  background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                   color: '#FFF',
                   cursor: 'pointer',
                   fontWeight: 700,
@@ -1784,15 +1784,15 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   justifyContent: 'center',
                   gap: '8px',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: '0 4px 15px rgba(255, 153, 51, 0.3)'
+                  boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 8px 24px rgba(255, 153, 51, 0.4)';
+                  e.target.style.boxShadow = '0 8px 24px rgba(37, 99, 235, 0.4)';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 15px rgba(255, 153, 51, 0.3)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.3)';
                 }}
               >
                 <LogIn size={20} /> {a.loginBtn}
@@ -1822,7 +1822,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
         right: '-100px',
         width: '400px',
         height: '400px',
-        background: 'radial-gradient(circle, rgba(255,153,51,0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(37, 99, 235,0.08) 0%, transparent 70%)',
         borderRadius: '50%'
       }} />
       <div style={{
@@ -1831,7 +1831,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
         left: '-150px',
         width: '500px',
         height: '500px',
-        background: 'radial-gradient(circle, rgba(255,107,0,0.06) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(29, 78, 216,0.06) 0%, transparent 70%)',
         borderRadius: '50%'
       }} />
 
@@ -1880,11 +1880,11 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                 padding: '18px',
                 border: 'none',
                 background: (mode === 'login' || mode === 'forgot-password') ? '#FFF' : 'transparent',
-                color: (mode === 'login' || mode === 'forgot-password') ? '#FF9933' : '#64748B',
+                color: (mode === 'login' || mode === 'forgot-password') ? '#2563EB' : '#64748B',
                 fontWeight: 700,
                 fontSize: '1rem',
                 cursor: 'pointer',
-                borderBottom: (mode === 'login' || mode === 'forgot-password') ? '3px solid #FF9933' : '3px solid transparent',
+                borderBottom: (mode === 'login' || mode === 'forgot-password') ? '3px solid #2563EB' : '3px solid transparent',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1901,7 +1901,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   right: '-2px',
                   width: '8px',
                   height: '8px',
-                  background: '#FF9933',
+                  background: '#2563EB',
                   borderRadius: '50%'
                 }} />
               )}
@@ -1912,11 +1912,11 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                 padding: '18px',
                 border: 'none',
                 background: mode === 'register' ? '#FFF' : 'transparent',
-                color: mode === 'register' ? '#FF9933' : '#64748B',
+                color: mode === 'register' ? '#2563EB' : '#64748B',
                 fontWeight: 700,
                 fontSize: '1rem',
                 cursor: 'pointer',
-                borderBottom: mode === 'register' ? '3px solid #FF9933' : '3px solid transparent',
+                borderBottom: mode === 'register' ? '3px solid #2563EB' : '3px solid transparent',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1933,7 +1933,7 @@ export default function AuthPage({ initialMode = 'login', onAuthSuccess }) {
                   right: '-2px',
                   width: '8px',
                   height: '8px',
-                  background: '#FF9933',
+                  background: '#2563EB',
                   borderRadius: '50%'
                 }} />
               )}

@@ -17,7 +17,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
           onClick={() => setActiveTab ? setActiveTab('Events') : (onBack && onBack())}
           style={{
             marginTop: '20px',
-            background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+            background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
             color: '#FFF',
             border: 'none',
             padding: '10px 24px',
@@ -107,7 +107,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
           <button
             onClick={handleShare}
             style={{
-              background: copied ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+              background: copied ? '#16A34A' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
               color: '#FFF',
               border: 'none',
               padding: '8px 20px',
@@ -155,7 +155,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
               {/* Category Pill Overlay */}
               <div style={{ position: 'absolute', top: '24px', left: '24px', display: 'flex', gap: '10px' }}>
                 <span style={{
-                  background: 'rgba(255, 153, 51, 0.92)',
+                  background: 'rgba(37, 99, 235, 0.92)',
                   backdropFilter: 'blur(8px)',
                   color: '#FFF',
                   padding: '6px 16px',
@@ -176,13 +176,13 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
             <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
               {/* Date Box */}
               <div style={{
-                background: 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                 color: '#FFF',
                 padding: '16px 22px',
                 borderRadius: '20px',
                 textAlign: 'center',
                 minWidth: '95px',
-                boxShadow: '0 6px 18px rgba(255,153,51,0.25)',
+                boxShadow: '0 6px 18px rgba(37, 99, 235,0.25)',
                 flexShrink: 0
               }}>
                 <div style={{ fontSize: '1.8rem', fontWeight: 900, lineHeight: 1 }}>{event.day || '15'}</div>
@@ -198,11 +198,11 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
 
                 <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 500 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <MapPin size={18} color="#FF9933" />
+                    <MapPin size={18} color="#2563EB" />
                     <span>{location || 'India'}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Calendar size={18} color="#FF9933" />
+                    <Calendar size={18} color="#2563EB" />
                     <span>{event.day} {event.month} {event.year}</span>
                   </div>
                 </div>
@@ -227,7 +227,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
               boxShadow: '0 4px 20px rgba(0,0,0,0.02)'
             }}>
               <h3 style={{ margin: '0 0 18px', fontSize: '1.35rem', color: 'var(--text-dark)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ width: '4px', height: '22px', background: '#FF9933', borderRadius: '4px' }} />
+                <span style={{ width: '4px', height: '22px', background: '#2563EB', borderRadius: '4px' }} />
                 {lang === 'en' ? 'About This Event' : 'कार्यक्रम विवरण'}
               </h3>
               
@@ -252,7 +252,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px' }}>
                   <h3 style={{ margin: 0, fontSize: '1.35rem', color: 'var(--text-dark)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <ImageIcon size={22} color="#FF9933" />
+                    <ImageIcon size={22} color="#2563EB" />
                     {lang === 'en' ? 'Event Photo Gallery' : 'कार्यक्रम फ़ोटो गैलरी'}
                   </h3>
                   <span style={{ fontSize: '0.85rem', color: '#64748B', fontWeight: 600 }}>
@@ -335,7 +335,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
                 
                 <div style={{ display: 'flex', gap: '14px', alignItems: 'center', background: 'var(--bg-alt)', padding: '12px 16px', borderRadius: '14px' }}>
-                  <Calendar size={22} color="#FF9933" />
+                  <Calendar size={22} color="#2563EB" />
                   <div>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>{lang === 'en' ? 'Date' : 'दिनांक'}</span>
                     <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-dark)' }}>{event.day} {event.month} {event.year}</div>
@@ -343,7 +343,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
                 </div>
 
                 <div style={{ display: 'flex', gap: '14px', alignItems: 'center', background: 'var(--bg-alt)', padding: '12px 16px', borderRadius: '14px' }}>
-                  <MapPin size={22} color="#FF9933" />
+                  <MapPin size={22} color="#2563EB" />
                   <div>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>{lang === 'en' ? 'Venue / Location' : 'स्थान'}</span>
                     <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-dark)' }}>{location || 'India'}</div>
@@ -351,7 +351,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
                 </div>
 
                 <div style={{ display: 'flex', gap: '14px', alignItems: 'center', background: 'var(--bg-alt)', padding: '12px 16px', borderRadius: '14px' }}>
-                  <Tag size={22} color="#FF9933" />
+                  <Tag size={22} color="#2563EB" />
                   <div>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>{lang === 'en' ? 'Category' : 'श्रेणी'}</span>
                     <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-dark)' }}>{category || 'National Event'}</div>
@@ -366,7 +366,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
                 disabled={registered}
                 style={{
                   width: '100%',
-                  background: registered ? '#16A34A' : 'linear-gradient(135deg, #FF9933, #FF6B00)',
+                  background: registered ? '#16A34A' : 'linear-gradient(135deg, #2563EB, #1D4ED8)',
                   color: '#FFF',
                   border: 'none',
                   padding: '14px',
@@ -374,7 +374,7 @@ export default function EventDetailsPage({ event, setActiveTab, onBack }) {
                   fontWeight: 800,
                   fontSize: '1rem',
                   cursor: registered ? 'default' : 'pointer',
-                  boxShadow: registered ? 'none' : '0 6px 20px rgba(255,153,51,0.3)',
+                  boxShadow: registered ? 'none' : '0 6px 20px rgba(37, 99, 235,0.3)',
                   transition: 'all 0.2s ease',
                   display: 'flex',
                   alignItems: 'center',
