@@ -694,10 +694,10 @@
         <span class="icon">👥</span> <span>Accounts</span>
       </div>
       <div class="sidebar-item" id="sidebarTasksItem" data-tab="tasksTab" onclick="switchTab('tasksTab', this)">
-        <span class="icon">✅</span> <span>Tasks</span>
+        <span class="icon">✅</span> <span>Create & Manage Tasks</span>
       </div>
-      <div class="sidebar-item" id="sidebarMyTasksItem" style="display: none;" data-tab="myTasksTab" onclick="switchTab('myTasksTab', this)">
-        <span class="icon">🎯</span> <span>My Tasks</span>
+      <div class="sidebar-item" id="sidebarMyTasksItem" data-tab="myTasksTab" onclick="switchTab('myTasksTab', this)">
+        <span class="icon">🎯</span> <span>Assigned Tasks</span>
       </div>
 
       <div class="sidebar-divider"></div>
@@ -1285,8 +1285,8 @@
         <div class="card">
           <div class="table-header">
             <div>
-              <h3>🎯 My Assigned Tasks</h3>
-              <p style="color:#64748B;font-size:0.88rem;margin-top:4px;">Tasks assigned to your role. Complete them to earn points.</p>
+              <h3>🎯 Assigned Tasks</h3>
+              <p style="color:#64748B;font-size:0.88rem;margin-top:4px;" id="myTasksSubText">Showing assigned tasks.</p>
             </div>
           </div>
           
@@ -1297,7 +1297,8 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Title</th>
+                  <th>Task Title</th>
+                  <th>Assigned To</th>
                   <th>Points</th>
                   <th>Priority</th>
                   <th>Status</th>

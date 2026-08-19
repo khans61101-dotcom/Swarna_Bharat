@@ -9,6 +9,7 @@ const rolePermissions = {
         "overviewTab",
         "usersTab",
         "tasksTab",
+        "myTasksTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -2640,15 +2641,22 @@ function loadMyTasks() {
     const statsBar = document.getElementById('myTaskStatsBar');
     if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:#94A3B8;">⏳ Loading your tasks...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:#94A3B8;">⏳ Loading assigned tasks...</td></tr>`;
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const isAdmin = user.role === 'Admin';
-    // Non-admins view assignments
+
+    const subTextEl = document.getElementById('myTasksSubText');
+    if (subTextEl) {
+        subTextEl.textContent = isAdmin 
+            ? "Showing all task assignments across all roles & accounts." 
+            : "Showing tasks specifically assigned to your logged-in role & account.";
+    }
+
     const endpoint = `${API_URL}/task-assignments`;
     fetch(endpoint, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } })
         .then(res => {
-            if (!res.ok) throw new Error('Failed to fetch your tasks');
+            if (!res.ok) throw new Error('Failed to fetch assigned tasks');
             return res.json();
         })
         .then(data => {
@@ -2659,6 +2667,8 @@ function loadMyTasks() {
                 points: item.task_points,
                 priority: item.task_priority,
                 status: item.status,
+                assigned_to_name: item.assigned_to_name,
+                target_role: item.target_role || item.assigned_to_role,
                 assigned_date: item.assigned_date,
                 due_date: item.task_due_date || item.due_date,
             }));
@@ -2685,10 +2695,10 @@ function loadMyTasks() {
             }
 
             if (tasks.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:3rem;color:#94A3B8;">
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:3rem;color:#94A3B8;">
                     <div style="font-size:2.5rem;margin-bottom:0.5rem;">📭</div>
-                    <div style="font-weight:600;">No tasks assigned to you yet.</div>
-                    <div style="font-size:0.88rem;">Check back later or contact admin.</div>
+                    <div style="font-weight:600;">No assigned tasks found.</div>
+                    <div style="font-size:0.88rem;">Check back later or assign tasks from Task Management.</div>
                 </td></tr>`;
                 return;
             }
@@ -2699,6 +2709,10 @@ function loadMyTasks() {
                     <td>
                         <div style="font-weight:600;color:#0b2b4a;">${t.title || 'N/A'}</div>
                         ${t.description ? `<div style="font-size:0.8rem;color:#94A3B8;margin-top:2px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.description}</div>` : ''}
+                    </td>
+                    <td>
+                        <div style="font-weight:600;color:#0b2b4a;">${t.assigned_to_name || 'N/A'}</div>
+                        ${t.target_role ? `<span style="font-size:0.75rem;padding:2px 8px;border-radius:12px;background:#eff6ff;color:#2563eb;font-weight:700;">🏷️ ${t.target_role}</span>` : ''}
                     </td>
                     <td>
                         <span style="font-weight:700;color:#1a4b6d;font-size:1rem;">${t.points ?? 0}</span>
@@ -2734,7 +2748,7 @@ function loadMyTasks() {
         })
         .catch(err => {
             console.error('Error loading my tasks:', err);
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2rem;color:#DC2626;">❌ Failed to load tasks.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:2rem;color:#DC2626;">❌ Failed to load tasks.</td></tr>`;
         });
 }
 // Expose globally
@@ -2762,11 +2776,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Sidebar My Tasks visibility
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const isAdmin = user.role === 'Admin';
     const myTasksItem = document.getElementById('sidebarMyTasksItem');
     if (myTasksItem) {
-        myTasksItem.style.display = isAdmin ? 'none' : 'block';
+        myTasksItem.style.display = 'block';
     }
     // Load appropriate data
     if (isAdmin) {
