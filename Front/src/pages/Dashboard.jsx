@@ -1412,34 +1412,59 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
                             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                               {isPending && (
-                                <button
-                                  onClick={() => handleStartTask(t.id)}
-                                  style={{
-                                    background: '#2563EB',
-                                    color: '#FFF',
-                                    border: 'none',
-                                    padding: '8px 20px',
-                                    borderRadius: '30px',
-                                    fontWeight: 700,
-                                    fontSize: '0.82rem',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    boxShadow: '0 3px 10px rgba(37,99,235,0.25)'
-                                  }}
-                                >
-                                  ▶️ {lang === 'en' ? 'Start Task' : 'कार्य शुरू करें'}
-                                </button>
+                                <>
+                                  <button
+                                    onClick={() => handleStartTask(t.id)}
+                                    style={{
+                                      background: '#EFF6FF',
+                                      color: '#2563EB',
+                                      border: '1px solid #BFDBFE',
+                                      padding: '8px 18px',
+                                      borderRadius: '30px',
+                                      fontWeight: 700,
+                                      fontSize: '0.82rem',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '6px'
+                                    }}
+                                  >
+                                    ▶️ {lang === 'en' ? 'Start Task' : 'कार्य शुरू करें'}
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setProofModal({ isOpen: true, task: t });
+                                      setProofText(t.proof_text || '');
+                                      setProofFile(null);
+                                      setProofVideoUrl(t.video_url || '');
+                                    }}
+                                    style={{
+                                      background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                                      color: '#FFF',
+                                      border: 'none',
+                                      padding: '8px 20px',
+                                      borderRadius: '30px',
+                                      fontWeight: 700,
+                                      fontSize: '0.82rem',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '6px',
+                                      boxShadow: '0 3px 10px rgba(37, 99, 235, 0.3)'
+                                    }}
+                                  >
+                                    📤 {lang === 'en' ? 'Upload Proof' : 'प्रमाण अपलोड करें'}
+                                  </button>
+                                </>
                               )}
 
-                              {(isInProgress || isRejected) && (
+                              {(isInProgress || isRejected || isSubmitted) && (
                                 <button
                                   onClick={() => {
                                     setProofModal({ isOpen: true, task: t });
-                                    setProofText('');
+                                    setProofText(t.proof_text || '');
                                     setProofFile(null);
-                                    setProofVideoUrl('');
+                                    setProofVideoUrl(t.video_url || '');
                                   }}
                                   style={{
                                     background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
@@ -1456,7 +1481,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                                     boxShadow: '0 3px 10px rgba(37, 99, 235, 0.3)'
                                   }}
                                 >
-                                  📤 {isRejected ? (lang === 'en' ? 'Resubmit Proof' : 'प्रमाण पुनः भेजें') : (lang === 'en' ? 'Submit Proof & Complete' : 'प्रमाण अपलोड और पूर्ण करें')}
+                                  📤 {isRejected ? (lang === 'en' ? 'Resubmit Proof' : 'प्रमाण पुनः भेजें') : isSubmitted ? (lang === 'en' ? 'Edit / Update Proof' : 'प्रमाण संपादित करें') : (lang === 'en' ? 'Submit Proof & Complete' : 'प्रमाण अपलोड और पूर्ण करें')}
                                 </button>
                               )}
 
@@ -2445,8 +2470,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   </label>
                   <textarea
                     rows={4}
-                    required
-                    placeholder={lang === 'en' ? 'Describe the work done for this task...' : 'इस कार्य के लिए किए गए कार्य का विवरण लिखें...'}
+                    placeholder={lang === 'en' ? 'Describe the work done for this task (optional if file or video link is provided)...' : 'इस कार्य के लिए किए गए कार्य का विवरण लिखें...'}
                     value={proofText}
                     onChange={(e) => setProofText(e.target.value)}
                     style={{
@@ -2462,11 +2486,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
                 <div>
                   <label style={{ display: 'block', fontWeight: 700, fontSize: '0.85rem', color: '#334155', marginBottom: '6px' }}>
-                    🖼️ {lang === 'en' ? 'Upload Proof Image / Document (PDF)' : 'प्रमाण फ़ोटो / दस्तावेज़ (PDF) अपलोड करें'}
+                    🖼️ {lang === 'en' ? 'Upload Proof Image / Document (PDF) / Video' : 'प्रमाण फ़ोटो / दस्तावेज़ (PDF) / वीडियो अपलोड करें'}
                   </label>
                   <input
                     type="file"
-                    accept="image/*,application/pdf"
+                    accept="image/*,application/pdf,video/*"
                     onChange={(e) => setProofFile(e.target.files[0] || null)}
                     style={{
                       width: '100%',
