@@ -9,7 +9,7 @@ const VALID_STATUSES = ['Pending', 'Assigned', 'In Progress', 'Submitted', 'Appr
 const BASE_SELECT = `
   SELECT
     ta.id, ta.task_id, ta.assigned_to, ta.assigned_by,
-    ta.status, ta.assigned_date, ta.completed_at,
+    ta.target_role, ta.status, ta.assigned_date, ta.completed_at,
     ta.proof_file, ta.proof_text,
     ta.video_url, ta.submitted_at,
     ta.approved_by, ta.approved_at, ta.earned_points,
@@ -22,11 +22,13 @@ const BASE_SELECT = `
     t.status       AS task_status,
     u_to.name      AS assigned_to_name,
     u_to.email     AS assigned_to_email,
+    r_to.name      AS assigned_to_role,
     u_by.name      AS assigned_by_name,
     u_appr.name    AS approved_by_name
   FROM task_assignments ta
   JOIN tasks t        ON ta.task_id     = t.id
   JOIN users u_to     ON ta.assigned_to = u_to.id
+  JOIN roles r_to     ON u_to.role_id   = r_to.id
   JOIN users u_by     ON ta.assigned_by = u_by.id
   LEFT JOIN users u_appr ON ta.approved_by = u_appr.id
 `;
@@ -41,9 +43,8 @@ router.get('/', verifyToken, async (req, res) => {
       query = `${BASE_SELECT} ORDER BY ta.assigned_date DESC`;
     } else {
       query = `${BASE_SELECT}
-        JOIN roles r ON u_to.role_id = r.id
         WHERE ta.assigned_to = ?
-          AND (ta.target_role IS NULL OR LOWER(ta.target_role) = LOWER(r.name) OR (LOWER(ta.target_role) = 'user' AND LOWER(r.name) = 'citizen'))
+          AND (ta.target_role IS NULL OR LOWER(ta.target_role) = LOWER(r_to.name) OR (LOWER(ta.target_role) = 'user' AND LOWER(r_to.name) = 'citizen'))
         ORDER BY ta.assigned_date DESC`;
       params = [req.userId];
     }

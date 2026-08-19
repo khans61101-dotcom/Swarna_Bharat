@@ -497,6 +497,9 @@ function switchTab(tabId, element) {
             case 'tasksTab':
                 loadTasks();
                 break;
+            case 'myTasksTab':
+                loadMyTasks();
+                break;
             case 'newsTab':
                 loadNews();
                 break;
