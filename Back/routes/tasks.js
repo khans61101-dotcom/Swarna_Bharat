@@ -11,9 +11,11 @@ router.get('/', verifyToken, async (req, res) => {
   try {
     const [rows] = await db.query(`
       SELECT t.*, u.name AS created_by_name,
-             (SELECT GROUP_CONCAT(DISTINCT ta.target_role SEPARATOR ', ')
-              FROM task_assignments ta 
-              WHERE ta.task_id = t.id AND ta.target_role IS NOT NULL) AS assigned_roles
+             (SELECT GROUP_CONCAT(DISTINCT COALESCE(ta.target_role, r.name) SEPARATOR ', ')
+              FROM task_assignments ta
+              LEFT JOIN users u_to ON ta.assigned_to = u_to.id
+              LEFT JOIN roles r ON u_to.role_id = r.id
+              WHERE ta.task_id = t.id) AS assigned_roles
       FROM tasks t
       LEFT JOIN users u ON t.created_by = u.id
       ORDER BY t.created_at DESC
