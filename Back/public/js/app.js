@@ -491,11 +491,20 @@ function switchTab(tabId, element) {
         // Allow viewing, but keep banner prominent
     }
 
-    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.display = 'none';
+    });
     document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
 
-    document.getElementById(tabId).classList.add('active');
-    element.classList.add('active');
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.display = 'block';
+    }
+    if (element) {
+        element.classList.add('active');
+    }
 
     // Load tab content
     showLoading(`Loading ${tabId.replace('Tab', '')}...`);
