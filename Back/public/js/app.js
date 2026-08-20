@@ -726,15 +726,14 @@ async function loadOverviewStats() {
 
         // ── Render Dynamic Performance Chart from System Records ─────────────
         try {
-            let uList = [], nList = [], eList = [], gList = [], bList = [], enqList = [];
-            if (uRes && uRes.ok) uList = await uRes.clone().json().catch(() => []);
-            if (nRes && nRes.ok) nList = await nRes.clone().json().catch(() => []);
-            if (eRes && eRes.ok) eList = await eRes.clone().json().catch(() => []);
-            if (gRes && gRes.ok) gList = await gRes.clone().json().catch(() => []);
-            if (bRes && bRes.ok) bList = await bRes.clone().json().catch(() => []);
-            if (enqRes && enqRes.ok) enqList = await enqRes.clone().json().catch(() => []);
-
-            const allItems = [...(Array.isArray(uList)?uList:[]), ...(Array.isArray(nList)?nList:[]), ...(Array.isArray(eList)?eList:[]), ...(Array.isArray(gList)?gList:[]), ...(Array.isArray(bList)?bList:[]), ...(Array.isArray(enqList)?enqList:[])];
+            const allItems = [
+                ...(Array.isArray(uData) ? uData : []),
+                ...(Array.isArray(nData) ? nData : []),
+                ...(Array.isArray(eData) ? eData : []),
+                ...(Array.isArray(gData) ? gData : []),
+                ...(Array.isArray(bData) ? bData : []),
+                ...(Array.isArray(enqData) ? enqData : [])
+            ];
             renderDynamicPerformanceChart(allItems);
         } catch (chartErr) {
             console.error('Performance chart rendering error:', chartErr);
@@ -2813,6 +2812,8 @@ document.addEventListener("DOMContentLoaded", () => {
         myTasksItem.style.display = 'block';
     }
     // Load appropriate data
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const isAdmin = user && user.role === 'Admin';
     if (isAdmin) {
         loadTasks();
     } else {
@@ -3741,9 +3742,17 @@ async function approveTaskAssignment(assignmentId) {
                 'Authorization': `Bearer ${token}`
             }
         });
-        const data = await res.json();
+        
+        let data;
+        const rawText = await res.text();
+        try {
+            data = JSON.parse(rawText);
+        } catch(err) {
+            data = { error: rawText || `HTTP ${res.status} ${res.statusText}` };
+        }
+
         if (res.ok) {
-            alert(`✅ Task Approved Successfully!\n${data.earned_points || ''} Points credited to user wallet balance.`);
+            alert(`✅ Task Approved Successfully!\n${data.earned_points != null ? data.earned_points + ' ' : ''}Points credited to user wallet balance.`);
             closeViewProofModal();
             loadMyTasks();
             if (typeof loadTasks === 'function') loadTasks();

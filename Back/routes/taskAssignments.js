@@ -291,7 +291,7 @@ router.patch('/:id/approve', verifyToken, isAdmin, async (req, res) => {
     res.json({ message: 'Task assignment approved successfully and points credited to wallet', status: 'Approved', earned_points: points });
   } catch (error) {
     console.error('Error approving assignment:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Database/Server Error: ' + (error.message || 'Internal server error') });
   }
 });
 
