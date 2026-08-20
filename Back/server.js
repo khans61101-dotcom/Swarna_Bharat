@@ -19,6 +19,7 @@ const walletRoutes = require('./routes/wallet');
 const partnersRoutes = require('./routes/partners');
 const heroRoutes = require('./routes/hero');
 const documentsRoutes = require('./routes/documents');
+const referralPointsRoutes = require('./routes/referralPoints');
 const app = express();
 
 // Middleware
@@ -40,6 +41,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/organization', organizationRoutes);
 app.use('/api/referrals', referralRoutes);
+app.use('/api/referral-points', referralPointsRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/task-assignments', taskAssignmentsRoutes);
 app.use('/api/wallet', walletRoutes);

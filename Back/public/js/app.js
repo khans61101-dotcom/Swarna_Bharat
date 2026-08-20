@@ -11,6 +11,7 @@ const rolePermissions = {
         "tasksTab",
         "myTasksTab",
         "walletTab",
+        "referralPointsTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -524,6 +525,9 @@ function switchTab(tabId, element) {
                 break;
             case 'walletTab':
                 loadWalletData();
+                break;
+            case 'referralPointsTab':
+                loadReferralPointsData();
                 break;
             case 'newsTab':
                 loadNews();
@@ -3868,6 +3872,113 @@ window.openViewProofModal      = openViewProofModal;
 window.closeViewProofModal     = closeViewProofModal;
 window.approveTaskAssignment   = approveTaskAssignment;
 window.rejectTaskAssignment    = rejectTaskAssignment;
+window.loadWalletData          = loadWalletData;
+window.loadReferralPointsData  = loadReferralPointsData;
+window.openEditReferralPointModal  = openEditReferralPointModal;
+window.closeEditReferralPointModal = closeEditReferralPointModal;
+window.saveReferralPointSetting    = saveReferralPointSetting;
+
+// ─── Referral Role Points Management ──────────────────────────────────────────
+async function loadReferralPointsData() {
+    const tbody = document.querySelector('#referralPointsTable tbody');
+    if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8;">⏳ Loading role referral points...</td></tr>`;
+
+    try {
+        const token = localStorage.getItem('token') || localStorage.getItem('userToken');
+        const res = await fetch(`${API_URL}/referral-points`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to fetch referral points');
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+            if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8;">🚫 No referral points settings configured yet.</td></tr>`;
+            return;
+        }
+
+        if (tbody) {
+            tbody.innerHTML = data.map((item, idx) => `
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:1rem;font-weight:600;color:#64748b;">${idx + 1}</td>
+                    <td style="padding:1rem;">
+                        <span style="background:#e0f2fe;color:#0369a1;padding:4px 14px;border-radius:20px;font-weight:700;font-size:0.85rem;display:inline-block;">
+                            ${item.role_name}
+                        </span>
+                    </td>
+                    <td style="padding:1rem;font-weight:800;color:#16a34a;font-size:1.1rem;">
+                        🎁 ${item.points} pts
+                    </td>
+                    <td style="padding:1rem;color:#475569;font-size:0.88rem;">
+                        ${item.description || '-'}
+                    </td>
+                    <td style="padding:1rem;color:#64748b;font-size:0.82rem;">
+                        ${formatTaskDate(item.updated_at)}
+                    </td>
+                    <td style="padding:1rem;">
+                        <button onclick="openEditReferralPointModal(${item.id}, '${item.role_name}', ${item.points}, '${(item.description || '').replace(/'/g, "\\'")}')" 
+                                style="background:#2563eb;color:#fff;border:none;padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;box-shadow:0 3px 10px rgba(37,99,235,0.25);">
+                            ✏️ Edit Points
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (err) {
+        console.error('Error loading referral points data:', err);
+        if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:#dc2626;">❌ Failed to load referral points.</td></tr>`;
+    }
+}
+
+function openEditReferralPointModal(id, roleName, currentPoints, description) {
+    document.getElementById('editRefId').value = id;
+    document.getElementById('editRefRoleName').value = roleName;
+    document.getElementById('editRefPoints').value = currentPoints;
+    document.getElementById('editRefDesc').value = description || '';
+    const subTitle = document.getElementById('editRefRoleSubtitle');
+    if (subTitle) subTitle.textContent = `Set referral points awarded when a new ${roleName} joins.`;
+    
+    const modal = document.getElementById('editReferralPointModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeEditReferralPointModal() {
+    const modal = document.getElementById('editReferralPointModal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function saveReferralPointSetting() {
+    const id = document.getElementById('editRefId').value;
+    const points = parseInt(document.getElementById('editRefPoints').value);
+    const description = document.getElementById('editRefDesc').value;
+
+    if (isNaN(points) || points < 0) {
+        alert('Please enter a valid positive number for points.');
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('token') || localStorage.getItem('userToken');
+        const res = await fetch(`${API_URL}/referral-points/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ points, description })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            alert('✅ Referral role points updated successfully!');
+            closeEditReferralPointModal();
+            loadReferralPointsData();
+        } else {
+            alert('❌ ' + (data.error || 'Failed to update referral points'));
+        }
+    } catch (err) {
+        console.error('Error saving referral points setting:', err);
+        alert('❌ Error updating referral points: ' + err.message);
+    }
+}
 window.loadWalletData          = loadWalletData;
 window.completeTask            = completeTask;
 window.handleProofDrop         = handleProofDrop;

@@ -343,6 +343,29 @@ const roleId = roleRows[0].id;
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [roleId, referredById, name, email, hashedPassword, phone || null, newRefCode, newRefLink, referredById, profile_image || null]);
 
+    // Credit referral reward points to referrer's wallet
+    if (referredById) {
+      try {
+        const [ptsRows] = await db.query(
+          'SELECT points FROM referral_role_points WHERE role_id = ?',
+          [roleId]
+        );
+        const pts = (ptsRows.length > 0) ? ptsRows[0].points : 50;
+        if (pts > 0) {
+          await db.query(`
+            INSERT INTO wallet_transactions (user_id, points, transaction_type, remarks)
+            VALUES (?, ?, 'Credit', ?)
+          `, [
+            referredById,
+            pts,
+            `Referral reward points for inviting ${name} (${selectedRole})`
+          ]);
+        }
+      } catch (refErr) {
+        console.error('Error crediting referral points:', refErr);
+      }
+    }
+
     res.status(201).json({
       message: 'User registered successfully!',
       id: result.insertId,
