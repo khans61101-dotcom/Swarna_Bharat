@@ -10,6 +10,7 @@ const rolePermissions = {
         "usersTab",
         "tasksTab",
         "myTasksTab",
+        "walletTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -25,6 +26,7 @@ const rolePermissions = {
         "usersTab",
         "tasksTab",
         "myTasksTab",
+        "walletTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -37,6 +39,7 @@ const rolePermissions = {
         "usersTab",
         "tasksTab",
         "myTasksTab",
+        "walletTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -47,6 +50,7 @@ const rolePermissions = {
     Agent: [
         "usersTab",
         "myTasksTab",
+        "walletTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -59,6 +63,7 @@ const rolePermissions = {
         "usersTab",
         "overviewTab",
         "myTasksTab",
+        "walletTab",
         "galleryTab",
         "blogsTab",
         "profileTab"
@@ -66,6 +71,7 @@ const rolePermissions = {
     Member: [
         "overviewTab",
         "myTasksTab",
+        "walletTab",
         "newsTab",
         "eventsTab",
         "galleryTab",
@@ -506,6 +512,9 @@ function switchTab(tabId, element) {
                 break;
             case 'myTasksTab':
                 loadMyTasks();
+                break;
+            case 'walletTab':
+                loadWalletData();
                 break;
             case 'newsTab':
                 loadNews();
@@ -3724,24 +3733,82 @@ function closeViewProofModal() {
 async function approveTaskAssignment(assignmentId) {
     if (!confirm('Are you sure you want to approve this task assignment? Points will be awarded.')) return;
     try {
+        const token = localStorage.getItem('token') || localStorage.getItem('userToken');
         const res = await fetch(`${API_URL}/task-assignments/${assignmentId}/approve`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             }
         });
         const data = await res.json();
         if (res.ok) {
-            alert('✅ Task Approved Successfully!');
+            alert(`✅ Task Approved Successfully!\n${data.earned_points || ''} Points credited to user wallet balance.`);
             closeViewProofModal();
             loadMyTasks();
             if (typeof loadTasks === 'function') loadTasks();
+            if (typeof loadWalletData === 'function') loadWalletData();
         } else {
             alert('❌ ' + (data.error || 'Failed to approve task'));
         }
     } catch (e) {
-        alert('❌ Network error while approving task');
+        console.error('Error in approveTaskAssignment:', e);
+        alert('❌ Error approving task: ' + (e.message || 'Network error'));
+    }
+}
+
+// ─── Wallet Data Loader ───────────────────────────────────────────────────
+async function loadWalletData() {
+    const tbody  = document.querySelector('#walletTable tbody');
+    const balEl  = document.getElementById('walletTotalBalance');
+    const credEl = document.getElementById('walletTotalCredited');
+    const debEl  = document.getElementById('walletTotalDebited');
+
+    if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:#94a3b8;">⏳ Loading wallet details...</td></tr>`;
+
+    try {
+        const token = localStorage.getItem('token') || localStorage.getItem('userToken');
+        const res = await fetch(`${API_URL}/wallet/balance`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to fetch wallet data');
+        const data = await res.json();
+
+        if (balEl) balEl.innerHTML = `${data.balance ?? 0} <span style="font-size:1.3rem;color:white;">pts</span>`;
+        if (credEl) credEl.textContent = `${data.total_credited ?? 0} pts`;
+        if (debEl) debEl.textContent = `${data.total_debited ?? 0} pts`;
+
+        const txs = data.transactions || [];
+        if (txs.length === 0) {
+            if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2.5rem;color:#94a3b8;">🚫 No wallet transactions yet. Complete assigned tasks to earn points!</td></tr>`;
+            return;
+        }
+
+        if (tbody) {
+            tbody.innerHTML = txs.map((tx, idx) => `
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                    <td style="padding:0.9rem 1rem;font-weight:600;color:#64748b;">${idx + 1}</td>
+                    <td style="padding:0.9rem 1rem;">
+                        <div style="font-weight:700;color:#0f172a;">${tx.task_title || 'Task Reward'}</div>
+                        <div style="font-size:0.8rem;color:#64748b;margin-top:2px;">${tx.remarks || '-'}</div>
+                    </td>
+                    <td style="padding:0.9rem 1rem;">
+                        <span style="background:${tx.transaction_type === 'Credit' ? '#f0fdf4' : '#fef2f2'};color:${tx.transaction_type === 'Credit' ? '#16a34a' : '#dc2626'};padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">
+                            ${tx.transaction_type === 'Credit' ? '➕ Credit' : '➖ Debit'}
+                        </span>
+                    </td>
+                    <td style="padding:0.9rem 1rem;font-weight:800;color:${tx.transaction_type === 'Credit' ? '#16a34a' : '#dc2626'};font-size:1.05rem;">
+                        ${tx.transaction_type === 'Credit' ? '+' : '-'}${tx.points} pts
+                    </td>
+                    <td style="padding:0.9rem 1rem;color:#475569;font-size:0.85rem;">
+                        ${formatTaskDate(tx.created_at)}
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (err) {
+        console.error('Error loading wallet data:', err);
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:#dc2626;">❌ Failed to load wallet transactions.</td></tr>`;
     }
 }
 
@@ -3781,6 +3848,7 @@ window.openViewProofModal      = openViewProofModal;
 window.closeViewProofModal     = closeViewProofModal;
 window.approveTaskAssignment   = approveTaskAssignment;
 window.rejectTaskAssignment    = rejectTaskAssignment;
+window.loadWalletData          = loadWalletData;
 window.completeTask            = completeTask;
 window.handleProofDrop         = handleProofDrop;
 window.handleProofFileSelect   = handleProofFileSelect;

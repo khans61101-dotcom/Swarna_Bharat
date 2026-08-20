@@ -699,6 +699,9 @@
       <div class="sidebar-item" id="sidebarMyTasksItem" data-tab="myTasksTab" onclick="switchTab('myTasksTab', this)">
         <span class="icon">🎯</span> <span>Assigned Tasks</span>
       </div>
+      <div class="sidebar-item" id="sidebarWalletItem" data-tab="walletTab" onclick="switchTab('walletTab', this)">
+        <span class="icon">💳</span> <span>Wallet Balance</span>
+      </div>
 
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-label">CMS CONTENT</div>
@@ -1305,6 +1308,54 @@
                   <th>Assigned Date</th>
                   <th>Due Date</th>
                   <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: WALLET BALANCE -->
+      <div id="walletTab" class="tab-content" style="display:none;">
+        <div style="background:linear-gradient(135deg, #0b2b4a 0%, #1a4b6d 100%);border-radius:28px;padding:2.2rem 2.8rem;color:white;margin-bottom:2rem;box-shadow:0 15px 35px rgba(11,43,74,0.18);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
+          <div>
+            <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);font-weight:700;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:6px;">💳 Wallet Balance</div>
+            <div id="walletTotalBalance" style="font-size:3rem;font-weight:800;color:#38bdf8;margin-top:4px;">0 <span style="font-size:1.3rem;color:white;">pts</span></div>
+            <div style="font-size:0.88rem;color:rgba(255,255,255,0.85);margin-top:6px;">Task reward points credited automatically upon Admin approval.</div>
+          </div>
+          <div style="display:flex;gap:1.2rem;flex-wrap:wrap;">
+            <div style="background:rgba(255,255,255,0.12);padding:1.1rem 1.6rem;border-radius:20px;backdrop-filter:blur(8px);min-width:140px;text-align:center;">
+              <div id="walletTotalCredited" style="font-size:1.6rem;font-weight:800;color:#4ade80;">0 pts</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.75);margin-top:3px;font-weight:600;">Total Credited</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.12);padding:1.1rem 1.6rem;border-radius:20px;backdrop-filter:blur(8px);min-width:140px;text-align:center;">
+              <div id="walletTotalDebited" style="font-size:1.6rem;font-weight:800;color:#f87171;">0 pts</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.75);margin-top:3px;font-weight:600;">Total Debited</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-header">
+            <div>
+              <h3>📜 Wallet Transaction & Reward History</h3>
+              <p style="color:#64748B;font-size:0.88rem;margin-top:4px;">Complete statement of earned task reward points and transactions.</p>
+            </div>
+            <button onclick="loadWalletData()" style="background:#eef4fd;color:#1a4b6d;border:none;padding:0.6rem 1.3rem;border-radius:30px;font-size:0.85rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+              🔄 Refresh Balance
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="walletTable">
+              <thead>
+                <tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;text-align:left;font-size:0.82rem;color:#64748b;text-transform:uppercase;">
+                  <th style="padding:1rem;">#</th>
+                  <th style="padding:1rem;">Task / Remarks</th>
+                  <th style="padding:1rem;">Type</th>
+                  <th style="padding:1rem;">Points</th>
+                  <th style="padding:1rem;">Date</th>
                 </tr>
               </thead>
               <tbody></tbody>

@@ -61,7 +61,6 @@ export default function PartnersPage({
     ? safePartners 
     : safePartners.filter(p => p.role_name === filter);
 
-  // Stats for filter buttons
   const stats = {
     All: safePartners.length,
     Agency: getRoleStats('Agency'),
@@ -72,425 +71,406 @@ export default function PartnersPage({
     <div className="partners-container" style={{ 
       padding: '60px 20px 80px', 
       minHeight: '80vh',
-      background: 'var(--bg-light)',
-      color: 'var(--text-dark)'
+      position: 'relative',
+      overflow: 'hidden',
+      color: 'var(--text-dark)',
+      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
     }}>
-      {/* Header Section */}
-      <div style={{ 
-        textAlign: 'center', 
-        marginBottom: '50px',
-        position: 'relative'
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-40px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '80px',
-          height: '80px',
-          background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
-          borderRadius: '50%',
-          opacity: '0.08',
-          filter: 'blur(20px)'
-        }} />
-        
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '12px',
-          background: 'rgba(37, 99, 235, 0.15)',
-          padding: '8px 20px',
-          borderRadius: '50px',
-          marginBottom: '20px'
-        }}>
-          <Globe size={20} color="#2563EB" />
-          <span style={{ color: '#2563EB', fontWeight: 600, fontSize: '0.9rem' }}>
-            {lang === 'en' ? 'Global Network' : 'वैश्विक नेटवर्क'}
-          </span>
-        </div>
+      {/* Animated Gradient with better visibility */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'linear-gradient(135deg, #2563EB 0%, #7c3aed 30%, #0891b2 60%, #2563EB 100%)',
+        opacity: 0.4,
+        backgroundSize: '400% 400%',
+        animation: 'gradientMove 8s ease infinite',
+        pointerEvents: 'none'
+      }} />
 
-        <h2 style={{ 
-          fontSize: 'clamp(2rem, 4vw, 3rem)', 
-          fontWeight: 800, 
-          color: 'var(--text-dark)',
-          marginBottom: '12px',
-          letterSpacing: '-0.02em'
-        }}>
-          {lang === 'en' ? 'Our Network & Partners' : 'हमारे नेटवर्क और भागीदार'}
-        </h2>
-        
-        <p style={{ 
-          color: 'var(--text-muted)', 
-          maxWidth: '640px', 
-          margin: '0 auto', 
-          fontSize: '1.1rem',
-          lineHeight: '1.7'
-        }}>
-          {lang === 'en' 
-            ? 'Discover the dedicated agencies, NGOs, members, and users working together for a better future.' 
-            : 'बेहतर भविष्य के लिए एक साथ काम करने वाली एजेंसियों, गैर सरकारी संगठनों, सदस्यों और उपयोगकर्ताओं की खोज करें।'}
-        </p>
-      </div>
+      {/* Another overlay with purple/blue mix */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.3) 0%, rgba(124, 58, 237, 0.2) 50%, rgba(8, 145, 178, 0.2) 100%)',
+        pointerEvents: 'none'
+      }} />
 
-      {/* Filter Buttons with Stats */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        gap: '12px', 
-        marginBottom: '45px', 
-        flexWrap: 'wrap',
-        padding: '0 10px'
-      }}>
-        {['All', 'Agency', 'NGO'].map(role => { 
-          const isActive = filter === role;
-          const colors = getRoleColor(role);
-          
-          return (
-            <button
-              key={role}
-              onClick={() => setFilter(role)}
-              style={{
-                padding: '10px 24px',
-                borderRadius: '50px',
-                border: isActive ? 'none' : '1px solid var(--card-border)',
-                background: isActive 
-                  ? `linear-gradient(135deg, ${colors.color}, ${colors.color}dd)` 
-                  : 'var(--card-bg)',
-                color: isActive ? '#FFFFFF' : 'var(--text-dark)',
-                fontWeight: 600,
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: isActive 
-                  ? `0 4px 15px ${colors.color}40` 
-                  : '0 2px 8px rgba(0,0,0,0.04)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                transform: isActive ? 'scale(1.02)' : 'scale(1)',
-                position: 'relative'
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = colors.color;
-                  e.currentTarget.style.color = colors.color;
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.borderColor = 'var(--card-border)';
-                  e.currentTarget.style.color = 'var(--text-dark)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }
-              }}
-            >
-              {role === 'All' ? (lang === 'en' ? 'All' : 'सभी') : role}
-              <span style={{
-                background: isActive ? 'rgba(255,255,255,0.2)' : 'var(--bg-alt)',
-                padding: '2px 10px',
-                borderRadius: '20px',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                color: isActive ? 'inherit' : 'var(--text-muted)'
-              }}>
-                {stats[role] || 0}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Loading State */}
-      {loading ? (
+      {/* Content */}
+      <div style={{ position: 'relative', zIndex: 2 }}>
+        {/* Header Section */}
         <div style={{ 
           textAlign: 'center', 
-          padding: '60px 20px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '20px'
+          marginBottom: '50px',
+          position: 'relative'
         }}>
           <div style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            border: '4px solid var(--card-border)',
-            borderTopColor: '#2563EB',
-            animation: 'spin 0.8s linear infinite'
-          }} />
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
-            {lang === 'en' ? 'Loading network...' : 'नेटवर्क लोड हो रहा है...'}
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            background: 'rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(10px)',
+            padding: '8px 20px',
+            borderRadius: '50px',
+            marginBottom: '20px',
+            border: '1px solid rgba(255,255,255,0.15)'
+          }}>
+            <Globe size={20} color="#60a5fa" />
+            <span style={{ color: '#60a5fa', fontWeight: 600, fontSize: '0.9rem' }}>
+              {lang === 'en' ? 'Global Network' : 'वैश्विक नेटवर्क'}
+            </span>
+          </div>
+
+          <h2 style={{ 
+            fontSize: 'clamp(2rem, 4vw, 3rem)', 
+            fontWeight: 800, 
+            color: '#FFFFFF',
+            marginBottom: '12px',
+            letterSpacing: '-0.02em',
+            textShadow: '0 2px 20px rgba(0,0,0,0.5)'
+          }}>
+            {lang === 'en' ? 'Our Network & Partners' : 'हमारे नेटवर्क और भागीदार'}
+          </h2>
+          
+          <p style={{ 
+            color: '#cbd5e1', 
+            maxWidth: '640px', 
+            margin: '0 auto', 
+            fontSize: '1.1rem',
+            lineHeight: '1.7',
+            textShadow: '0 2px 10px rgba(0,0,0,0.3)'
+          }}>
+            {lang === 'en' 
+              ? 'Discover the dedicated agencies, NGOs, members, and users working together for a better future.' 
+              : 'बेहतर भविष्य के लिए एक साथ काम करने वाली एजेंसियों, गैर सरकारी संगठनों, सदस्यों और उपयोगकर्ताओं की खोज करें।'}
           </p>
         </div>
-      ) : filteredPartners.length > 0 ? (
-        // Partners Grid
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-          gap: '28px',
-          maxWidth: '1280px',
-          margin: '0 auto'
-        }}>
-          {filteredPartners.map((partner) => {
-            const colors = getRoleColor(partner.role_name);
-            const displayName = partner.organization_name || partner.name;
-            const initials = displayName.substring(0, 2).toUpperCase();
-            const isHovered = hoveredPartner === partner.id;
 
+        {/* Filter Buttons */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          gap: '12px', 
+          marginBottom: '45px', 
+          flexWrap: 'wrap',
+          padding: '0 10px'
+        }}>
+          {['All', 'Agency', 'NGO'].map(role => { 
+            const isActive = filter === role;
+            const colors = getRoleColor(role);
+            
             return (
-              <div 
-                key={partner.id} 
-                onClick={() => {
-                  setSelectedPartner(partner);
-                  setActiveTab("PartnerDetails");
-                }}  
-                onMouseEnter={() => setHoveredPartner(partner.id)}
-                onMouseLeave={() => setHoveredPartner(null)}
+              <button
+                key={role}
+                onClick={() => setFilter(role)}
                 style={{
-                  background: 'var(--card-bg)',
-                  borderRadius: '20px',
-                  padding: '30px 25px',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: isHovered 
-                    ? '0 20px 40px rgba(0,0,0,0.08)' 
-                    : '0 4px 15px rgba(0,0,0,0.03)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                  padding: '10px 24px',
+                  borderRadius: '50px',
+                  border: isActive ? 'none' : '1px solid rgba(255,255,255,0.15)',
+                  background: isActive 
+                    ? `linear-gradient(135deg, ${colors.color}, ${colors.color}dd)` 
+                    : 'rgba(255,255,255,0.08)',
+                  backdropFilter: 'blur(10px)',
+                  color: isActive ? '#FFFFFF' : '#cbd5e1',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
                   cursor: 'pointer',
-                  transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
-                  position: 'relative',
-                  overflow: 'hidden'
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: isActive 
+                    ? `0 4px 15px ${colors.color}40` 
+                    : '0 2px 8px rgba(0,0,0,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
                 }}
               >
-                {/* Gradient Top Bar */}
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '4px',
-                  background: `linear-gradient(90deg, ${colors.color}, ${colors.color}80)`,
-                  opacity: isHovered ? 1 : 0.6,
-                  transition: 'opacity 0.3s'
-                }} />
-
-                {/* Decorative Circle */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-40px',
-                  right: '-40px',
-                  width: '100px',
-                  height: '100px',
-                  borderRadius: '50%',
-                  background: `${colors.color}08`,
-                  pointerEvents: 'none'
-                }} />
-
-                {/* Avatar */}
-                {partner.profile_image ? (
-                  <img 
-                    src={getMediaUrl(partner.profile_image)}       
-                    alt={displayName}   
-                    style={{
-                      width: '90px',
-                      height: '90px',
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      marginBottom: '18px',
-                      border: `3px solid ${colors.border}`,
-                      boxShadow: isHovered ? `0 8px 25px ${colors.color}30` : 'none',
-                      transition: 'all 0.3s'
-                    }} 
-                  />
-                ) : (
-                  <div style={{
-                    width: '90px',
-                    height: '90px',
-                    borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${colors.bg}, ${colors.hover})`,
-                    color: colors.color,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '2rem',
-                    fontWeight: 800,
-                    marginBottom: '18px',
-                    border: `3px solid ${colors.border}`,
-                    boxShadow: isHovered ? `0 8px 25px ${colors.color}30` : 'none',
-                    transition: 'all 0.3s'
-                  }}>
-                    {initials}
-                  </div>
-                )}
-
-                {/* Name */}
-                <h3 style={{ 
-                  fontSize: '1.2rem', 
-                  fontWeight: 700, 
-                  color: 'var(--text-dark)', 
-                  marginBottom: '8px',
-                  transition: 'color 0.3s'
-                }}>
-                  {displayName}
-                </h3>
-                
-                {/* Role Badge */}
-                <div style={{ 
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 16px',
-                  borderRadius: '50px',
-                  background: 'var(--bg-alt)',
-                  color: colors.color,
-                  border: `1px solid ${colors.border}`,
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  marginBottom: '16px',
-                  transition: 'all 0.3s'
-                }}>
-                  {getRoleIcon(partner.role_name)}
-                  {partner.role_name}
-                </div>
-
-                {/* Location */}
-                {(partner.city || partner.state) && (
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '6px', 
-                    color: 'var(--text-muted)', 
-                    fontSize: '0.85rem',
-                    marginBottom: '16px'
-                  }}>
-                    <MapPin size={16} color="var(--text-muted)" />
-                    {[partner.city, partner.state].filter(Boolean).join(', ')}
-                  </div>
-                )}
-
-                {/* Stats or Description */}
-                {partner.description && (
-                  <p style={{
-                    fontSize: '0.85rem',
-                    color: '#64748B',
-                    lineHeight: '1.6',
-                    marginTop: '4px',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden'
-                  }}>
-                    {partner.description}
-                  </p>
-                )}
-
-                {/* View Profile Button - Appears on Hover */}
-                <div style={{
-                  marginTop: '20px',
-                  opacity: isHovered ? 1 : 0,
-                  transform: isHovered ? 'translateY(0)' : 'translateY(10px)',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  width: '100%'
-                }}>
-                  <button style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '12px',
-                    border: 'none',
-                    background: `linear-gradient(135deg, ${colors.color}, ${colors.color}cc)`,
-                    color: '#FFFFFF',
-                    fontWeight: 600,
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.02)';
-                    e.currentTarget.style.boxShadow = `0 4px 15px ${colors.color}50`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}>
-                    {lang === 'en' ? 'View Profile' : 'प्रोफ़ाइल देखें'}
-                    <TrendingUp size={16} />
-                  </button>
-                </div>
-
-                {/* Index Badge */}
-                
-
-                {/* Verified Badge (optional) */}
-                <div style={{
-                  position: 'absolute',
-                  top: '12px',
-                  right: '12px',
-                  background: '#10B981',
-                  color: '#FFFFFF',
+                {role === 'All' ? (lang === 'en' ? 'All' : 'सभी') : role}
+                <span style={{
+                  background: isActive ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)',
                   padding: '2px 10px',
-                  borderRadius: '50px',
-                  fontSize: '0.65rem',
-                  fontWeight: 600,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
+                  borderRadius: '20px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: isActive ? 'inherit' : '#94A3B8'
                 }}>
-                  <Star size={12} />
-                  Verified
-                </div>
-              </div>
+                  {stats[role] || 0}
+                </span>
+              </button>
             );
           })}
         </div>
-      ) : (
-        // Empty State
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '80px 20px',
-          maxWidth: '500px',
-          margin: '0 auto'
-        }}>
-          <div style={{
-            width: '100px',
-            height: '100px',
-            borderRadius: '50%',
-            background: '#F1F5F9',
+
+        {/* Loading State */}
+        {loading ? (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '60px 20px',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 20px'
+            gap: '20px'
           }}>
-            <Users size={48} color="#94A3B8" />
+            <div style={{
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              border: '4px solid rgba(37, 99, 235, 0.2)',
+              borderTopColor: '#60a5fa',
+              animation: 'spin 0.8s linear infinite'
+            }} />
+            <p style={{ color: '#cbd5e1', fontSize: '1.1rem' }}>
+              {lang === 'en' ? 'Loading network...' : 'नेटवर्क लोड हो रहा है...'}
+            </p>
           </div>
-          <h3 style={{ 
-            fontSize: '1.5rem', 
-            color: '#1E293B', 
-            marginBottom: '8px',
-            fontWeight: 700
+        ) : filteredPartners.length > 0 ? (
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+            gap: '28px',
+            maxWidth: '1280px',
+            margin: '0 auto'
           }}>
-            {lang === 'en' ? 'No partners found' : 'कोई भागीदार नहीं मिला'}
-          </h3>
-          <p style={{ color: '#94A3B8', lineHeight: '1.7' }}>
-            {lang === 'en' 
-              ? `There are no ${filter !== 'All' ? filter + 's' : 'partners'} to display at the moment.` 
-              : 'इस समय प्रदर्शित करने के लिए कोई भागीदार नहीं हैं।'}
-          </p>
-        </div>
-      )}
+            {filteredPartners.map((partner) => {
+              const colors = getRoleColor(partner.role_name);
+              const displayName = partner.organization_name || partner.name;
+              const initials = displayName.substring(0, 2).toUpperCase();
+              const isHovered = hoveredPartner === partner.id;
+
+              return (
+                <div 
+                  key={partner.id} 
+                  onClick={() => {
+                    setSelectedPartner(partner);
+                    setActiveTab("PartnerDetails");
+                  }}  
+                  onMouseEnter={() => setHoveredPartner(partner.id)}
+                  onMouseLeave={() => setHoveredPartner(null)}
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '20px',
+                    padding: '30px 25px',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    boxShadow: isHovered 
+                      ? '0 20px 40px rgba(0,0,0,0.4)' 
+                      : '0 4px 15px rgba(0,0,0,0.2)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    cursor: 'pointer',
+                    transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: `linear-gradient(90deg, ${colors.color}, ${colors.color}80)`,
+                    opacity: isHovered ? 1 : 0.6,
+                    transition: 'opacity 0.3s'
+                  }} />
+
+                  {partner.profile_image ? (
+                    <img 
+                      src={getMediaUrl(partner.profile_image)}       
+                      alt={displayName}   
+                      style={{
+                        width: '90px',
+                        height: '90px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        marginBottom: '18px',
+                        border: `3px solid ${colors.border}`,
+                        boxShadow: isHovered ? `0 8px 25px ${colors.color}40` : 'none',
+                        transition: 'all 0.3s'
+                      }} 
+                    />
+                  ) : (
+                    <div style={{
+                      width: '90px',
+                      height: '90px',
+                      borderRadius: '50%',
+                      background: `linear-gradient(135deg, ${colors.bg}, ${colors.hover})`,
+                      color: colors.color,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '2rem',
+                      fontWeight: 800,
+                      marginBottom: '18px',
+                      border: `3px solid ${colors.border}`,
+                      boxShadow: isHovered ? `0 8px 25px ${colors.color}40` : 'none',
+                      transition: 'all 0.3s'
+                    }}>
+                      {initials}
+                    </div>
+                  )}
+
+                  <h3 style={{ 
+                    fontSize: '1.2rem', 
+                    fontWeight: 700, 
+                    color: '#FFFFFF', 
+                    marginBottom: '8px',
+                    textShadow: '0 2px 10px rgba(0,0,0,0.3)'
+                  }}>
+                    {displayName}
+                  </h3>
+                  
+                  <div style={{ 
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '6px 16px',
+                    borderRadius: '50px',
+                    background: 'rgba(255,255,255,0.1)',
+                    color: colors.color,
+                    border: `1px solid ${colors.border}`,
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    marginBottom: '16px'
+                  }}>
+                    {getRoleIcon(partner.role_name)}
+                    {partner.role_name}
+                  </div>
+
+                  {(partner.city || partner.state) && (
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '6px', 
+                      color: '#94A3B8', 
+                      fontSize: '0.85rem',
+                      marginBottom: '16px'
+                    }}>
+                      <MapPin size={16} color="#94A3B8" />
+                      {[partner.city, partner.state].filter(Boolean).join(', ')}
+                    </div>
+                  )}
+
+                  {partner.description && (
+                    <p style={{
+                      fontSize: '0.85rem',
+                      color: '#cbd5e1',
+                      lineHeight: '1.6',
+                      marginTop: '4px',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}>
+                      {partner.description}
+                    </p>
+                  )}
+
+                  <div style={{
+                    marginTop: '20px',
+                    opacity: isHovered ? 1 : 0,
+                    transform: isHovered ? 'translateY(0)' : 'translateY(10px)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    width: '100%'
+                  }}>
+                    <button style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: '12px',
+                      border: 'none',
+                      background: `linear-gradient(135deg, ${colors.color}, ${colors.color}cc)`,
+                      color: '#FFFFFF',
+                      fontWeight: 600,
+                      fontSize: '0.9rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px'
+                    }}>
+                      {lang === 'en' ? 'View Profile' : 'प्रोफ़ाइल देखें'}
+                      <TrendingUp size={16} />
+                    </button>
+                  </div>
+
+                  <div style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '12px',
+                    background: '#10B981',
+                    color: '#FFFFFF',
+                    padding: '2px 10px',
+                    borderRadius: '50px',
+                    fontSize: '0.65rem',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                    <Star size={12} />
+                    Verified
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '80px 20px',
+            maxWidth: '500px',
+            margin: '0 auto'
+          }}>
+            <div style={{
+              width: '100px',
+              height: '100px',
+              borderRadius: '50%',
+              background: 'rgba(255,255,255,0.05)',
+              backdropFilter: 'blur(10px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 20px'
+            }}>
+              <Users size={48} color="#64748B" />
+            </div>
+            <h3 style={{ 
+              fontSize: '1.5rem', 
+              color: '#FFFFFF', 
+              marginBottom: '8px',
+              fontWeight: 700
+            }}>
+              {lang === 'en' ? 'No partners found' : 'कोई भागीदार नहीं मिला'}
+            </h3>
+            <p style={{ color: '#94A3B8', lineHeight: '1.7' }}>
+              {lang === 'en' 
+                ? `There are no ${filter !== 'All' ? filter + 's' : 'partners'} to display at the moment.` 
+                : 'इस समय प्रदर्शित करने के लिए कोई भागीदार नहीं हैं।'}
+            </p>
+          </div>
+        )}
+      </div>
 
       <style>
         {`
           @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+          }
+          @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
           }
           .partners-container {
             animation: fadeIn 0.6s ease;
@@ -503,4 +483,4 @@ export default function PartnersPage({
       </style>
     </div>
   );
-}  
+} 

@@ -1031,100 +1031,97 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
       {activeTab === 'Home' && (
         <>
           {/* Dynamic Hero Video Banner Section */}
-          <section className="banner-section" style={{ position: 'relative', overflow: 'hidden', minHeight: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              key={heroVideoSrc}
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transform: 'translate(-50%, -50%)',
-                filter: 'brightness(1.4)',
-                zIndex: 0
-              }}
-              src={heroVideoSrc}
-            />
-            <div className="banner-overlay" style={{ background: 'linear-gradient(180deg, rgba(11, 43, 74, 0.75) 0%, rgba(11, 43, 74, 0.88) 100%)', zIndex: 1 }}></div>
+<section className="banner-section" style={{ position: 'relative', overflow: 'hidden', minHeight: '600px', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-start' }}>
+  <video
+    autoPlay
+    loop
+    muted
+    playsInline
+    key={heroVideoSrc}
+    style={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      transform: 'translate(-50%, -50%)',
+      filter: 'brightness(1.4)',
+      zIndex: 0
+    }}
+    src={heroVideoSrc}
+  />
+  <div className="banner-overlay" style={{ background: 'linear-gradient(90deg, rgba(11, 43, 74, 0.85) 0%, rgba(11, 43, 74, 0.6) 60%, rgba(11, 43, 74, 0.2) 100%)', zIndex: 1, position: 'absolute', inset: 0 }}></div>
 
-            <div className="section-container banner-content" style={{ position: 'relative', zIndex: 2, padding: '60px 20px', textAlign: 'center', maxWidth: '920px', margin: '0 auto', color: '#FFF' }}>
-              <span className="banner-tag" style={{ background: 'rgba(37, 99, 235, 0.25)', color: '#2563EB', border: '1px solid rgba(37, 99, 235, 0.5)', padding: '6px 20px', borderRadius: '30px', fontWeight: 700, fontSize: '0.9rem', display: 'inline-block', marginBottom: '18px' }}>
-                {heroBadge}
-              </span>
-              <h2 className="banner-title" style={{ fontSize: '2.5rem', fontWeight: 800, lineHeight: 1.25, marginBottom: '18px', textShadow: '0 4px 20px rgba(0,0,0,0.5)', color: '#FFFFFF' }}>
-                {heroTitle}
-              </h2>
-              <p className="banner-desc" style={{ fontSize: '1.1rem', color: '#E2E8F0', maxWidth: '780px', margin: '0 auto 30px', lineHeight: 1.6 }}>
-                {heroSubtitle}
-              </p>
-              <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button
-                  className="btn-primary"
-                  onClick={() => setActiveTab(heroBtn1Link)}
-                  style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFF', border: 'none', padding: '14px 34px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)' }}
-                >
-                  {heroBtn1Text} <ChevronRight size={18} />
-                </button>
+  <div className="section-container banner-content" style={{ position: 'relative', zIndex: 2, padding: '60px 40px 80px 60px', textAlign: 'left', maxWidth: '650px', margin: '0', color: '#FFF', alignSelf: 'flex-end' }}>
+       
+    <h2 className="banner-title" style={{ fontSize: '2.5rem', fontWeight: 800, lineHeight: 1.25, marginBottom: '18px', textShadow: '0 4px 20px rgba(0,0,0,0.5)', color: '#FFFFFF' }}>
+      {heroTitle}
+    </h2>
+    <p className="banner-desc" style={{ fontSize: '1.1rem', color: '#E2E8F0', maxWidth: '580px', margin: '0 0 30px 0', lineHeight: 1.6 }}>
+      {heroSubtitle}
+    </p>
+    <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start', flexWrap: 'wrap' }}>
+      <button
+        className="btn-primary"
+        onClick={() => setActiveTab(heroBtn1Link)}
+        style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFF', border: 'none', padding: '14px 34px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(37, 99, 235, 0.4)' }}
+      >
+        {heroBtn1Text} <ChevronRight size={18} />
+      </button>
 
-                {heroBtn2Text && (
-                  <button
-                    onClick={() => setActiveTab(heroBtn2Link)}
-                    style={{ background: 'rgba(255, 255, 255, 0.15)', color: '#FFF', border: '1px solid rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(10px)', padding: '14px 32px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                  >
-                    <Play size={18} /> {heroBtn2Text}
-                  </button>
-                )}
-              </div>
-            </div>
+      {heroBtn2Text && (
+        <button
+          onClick={() => setActiveTab(heroBtn2Link)}
+          style={{ background: 'rgba(255, 255, 255, 0.15)', color: '#FFF', border: '1px solid rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(10px)', padding: '14px 32px', borderRadius: '40px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+        >
+          <Play size={18} /> {heroBtn2Text}
+        </button>
+      )}
+    </div>
+  </div>
 
-            {/* Slider Manual Navigation Arrows & Dots */}
-            {activeBanners.length > 1 && (
-              <>
-                <button
-                  onClick={prevSlide}
-                  style={{ position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', color: '#FFF', width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', transition: 'all 0.2s ease' }}
-                  title="Previous Banner"
-                >
-                  <ChevronLeft size={24} />
-                </button>
+  {/* Slider Manual Navigation Arrows & Dots */}
+  {activeBanners.length > 1 && (
+    <>
+      <button
+        onClick={prevSlide}
+        style={{ position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', color: '#FFF', width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', transition: 'all 0.2s ease' }}
+        title="Previous Banner"
+      >
+        <ChevronLeft size={24} />
+      </button>
 
-                <button
-                  onClick={nextSlide}
-                  style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', color: '#FFF', width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', transition: 'all 0.2s ease' }}
-                  title="Next Banner"
-                >
-                  <ChevronRight size={24} />
-                </button>
+      <button
+        onClick={nextSlide}
+        style={{ position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', color: '#FFF', width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(6px)', transition: 'all 0.2s ease' }}
+        title="Next Banner"
+      >
+        <ChevronRight size={24} />
+      </button>
 
-                {/* Dots Indicator Pills */}
-                <div style={{ position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', gap: '10px', background: 'rgba(0,0,0,0.45)', padding: '8px 18px', borderRadius: '30px', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)' }}>
-                  {activeBanners.map((b, idx) => (
-                    <button
-                      key={b.id || idx}
-                      onClick={() => setCurrentSlide(idx)}
-                      style={{
-                        width: (currentSlide % activeBanners.length) === idx ? '32px' : '10px',
-                        height: '10px',
-                        borderRadius: '5px',
-                        border: 'none',
-                        background: (currentSlide % activeBanners.length) === idx ? '#2563EB' : 'rgba(255,255,255,0.5)',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                      }}
-                      title={`Go to Banner ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </section>
-
+      {/* Dots Indicator Pills */}
+      <div style={{ position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', gap: '10px', background: 'rgba(0,0,0,0.45)', padding: '8px 18px', borderRadius: '30px', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+        {activeBanners.map((b, idx) => (
+          <button
+            key={b.id || idx}
+            onClick={() => setCurrentSlide(idx)}
+            style={{
+              width: (currentSlide % activeBanners.length) === idx ? '32px' : '10px',
+              height: '10px',
+              borderRadius: '5px',
+              border: 'none',
+              background: (currentSlide % activeBanners.length) === idx ? '#2563EB' : 'rgba(255,255,255,0.5)',
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }}
+            title={`Go to Banner ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </>
+  )}
+</section>  
           {/* <section className="marquee-section overflow-hidden w-full py-3" style={{ borderTop: '1px solid var(--card-border)', borderBottom: '1px solid var(--card-border)' }}>
             <div className="animate-marquee whitespace-nowrap" style={{ fontWeight: 600 }}>
               Hello 👋 Welcome to Swarna Bharat • Youth Power & Cultural Revival • Education • Digital Empowerment 🚀
@@ -1250,16 +1247,33 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
           </section>  
 
           {/* Impact Counter Bar */}
-          <section className="impact-counter-bar section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
-            <div className="impact-counter-grid">
-              {t.metrics.map((item, index) => (
-                <div key={index} className="impact-counter-item">
-                  <div className="impact-counter-number">{item.value}</div>
-                  <div className="impact-counter-label">{item.label}</div>
-                </div>
-              ))}
-            </div>
-          </section>  
+         <section className="impact-counter-bar section-bg-f8fafc" style={{ background: '#F8FAFC' }}>
+  <div className="impact-counter-grid">
+    {t.metrics.map((item, index) => (
+      <div 
+        key={index} 
+        className="impact-counter-item"
+        style={{
+          opacity: 0,
+          transform: 'translateY(30px)',
+          animation: `fadeUp 0.8s ease forwards ${index * 0.2}s`
+        }}
+      >
+        <div className="impact-counter-number">{item.value}</div>
+        <div className="impact-counter-label">{item.label}</div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>{`
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`}</style>  
 
           {/* Events Section */}
           <section className="section-bg-white" style={{ background: '#FFF' }}>
@@ -1413,25 +1427,8 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                   </h2>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                  <a
-                    href="https://www.youtube.com/@%E0%A4%B5%E0%A4%BF%E0%A4%B6%E0%A5%8D%E0%A4%B5%E0%A4%97%E0%A5%81%E0%A4%B0%E0%A5%81%E0%A4%AD%E0%A4%BE%E0%A4%B0%E0%A4%A4%E0%A4%85%E0%A4%AD%E0%A4%BF%E0%A4%AF%E0%A4%BE%E0%A4%A8"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      background: '#FF0000',
-                      color: '#FFF',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                      fontWeight: 700,
-                      fontSize: '0.85rem',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
-                  >
-                    <Video size={16} /> @विश्वगुरुभारतअभियान
-                  </a>
+                  
+                  
                   <span className="view-all-link" style={{ color: '#2563EB', cursor: 'pointer' }} onClick={() => setActiveTab('Videos')}>
                     {t.viewAllVideos} <ExternalLink size={16} />
                   </span>
@@ -1557,7 +1554,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
           </section>
 
           {/* Important Documents & Circulars Section */}
-          <section className="section-bg-white" style={{ background: '#FFF', padding: '60px 0', borderTop: '1px solid #E2E8F0' }}>
+          {/* <section className="section-bg-white" style={{ background: '#FFF', padding: '60px 0', borderTop: '1px solid #E2E8F0' }}>
             <div className="section-container">
               <div className="section-header">
                 <div className="section-title-wrap">
@@ -1612,7 +1609,7 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
                 </div>
               )}
             </div>
-          </section>
+          </section> */}
         </>
       )}
 
@@ -1748,3 +1745,4 @@ const [youtubeLoading, setYoutubeLoading] = useState(true);
     </div>
   );
 }
+  

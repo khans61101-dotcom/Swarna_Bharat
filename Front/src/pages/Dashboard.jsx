@@ -47,7 +47,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   const [proofVideoUrl, setProofVideoUrl] = useState('');
   const [submittingProof, setSubmittingProof] = useState(false);
   const [viewProofModal, setViewProofModal] = useState({ isOpen: false, task: null });
-  
+  const [walletData, setWalletData] = useState({ balance: 0, total_credited: 0, total_debited: 0, transactions: [] });
   const [newTaskData, setNewTaskData] = useState({
     title: '',
     description: '',
@@ -67,6 +67,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   useEffect(() => {
     if (activeDashTab === 'tasks') {
       fetchUserTasks();
+    }
+    if (activeDashTab === 'wallet') {
+      fetchWalletData();
     }
   }, [activeDashTab, user]);
 
@@ -129,6 +132,25 @@ export default function Dashboard({ setActiveTab, setUserState }) {
       }
     } catch (err) {
       console.error('Error fetching assigned tasks:', err);
+    }
+  };
+
+  const fetchWalletData = async () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_URL}/wallet/balance?t=${Date.now()}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Cache-Control': 'no-cache, no-store, must-revalidate'
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setWalletData(data);
+      }
+    } catch (err) {
+      console.error('Error fetching wallet balance:', err);
     }
   };
 
@@ -227,7 +249,6 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
     setCreatingTask(true);
     try {
-      // 1. Create Task Master
       const res = await fetch(`${API_URL}/tasks`, {
         method: 'POST',
         headers: {
@@ -255,7 +276,6 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
       const createdTaskId = data.task.id;
 
-      // 2. Assign Task to Selected Target Role
       const assignRes = await fetch(`${API_URL}/task-assignments`, {
         method: 'POST',
         headers: {
@@ -532,8 +552,37 @@ export default function Dashboard({ setActiveTab, setUserState }) {
       background: '#F8FAFC', 
       color: '#1E293B', 
       minHeight: '100vh', 
-      fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif" 
+      fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      {/* LIGHT GRADIENT BACKGROUND */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 25%, #dbeafe 50%, #eff6ff 75%, #f8fafc 100%)',
+        zIndex: 0,
+        pointerEvents: 'none'
+      }} />
+      
+      {/* Light Animated Overlay */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'linear-gradient(135deg, #2563EB 0%, #3b82f6 30%, #60a5fa 60%, #93bbfc 80%, #dbeafe 100%)',
+        opacity: 0.05,
+        backgroundSize: '400% 400%',
+        animation: 'gradientMove 20s ease infinite',
+        zIndex: 0,
+        pointerEvents: 'none'
+      }} />
+
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
@@ -549,6 +598,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
         }
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          25% { background-position: 50% 0%; }
+          50% { background-position: 100% 50%; }
+          75% { background-position: 50% 100%; }
+          100% { background-position: 0% 50%; }
         }
         .fade-in { animation: fadeIn 0.5s ease; }
         .stat-card:hover { transform: translateY(-4px); transition: all 0.3s ease; }
@@ -743,6 +799,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             const menuItems = [
               { id: 'overview', icon: LayoutDashboard, label: lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड' },
               { id: 'tasks', icon: CheckSquare, label: lang === 'en' ? 'My Tasks' : 'सौंपे गए कार्य', badge: assignedTasks.length },
+              { id: 'wallet', icon: Wallet, label: lang === 'en' ? 'Wallet Balance' : 'वॉलेट बैलेंस' },
               ...(isAgencyOrNgoOrAdmin ? [
                 { id: 'create_task', icon: PlusCircle, label: lang === 'en' ? 'Create Task' : 'नया कार्य बनाएं' }
               ] : []),
@@ -828,14 +885,17 @@ export default function Dashboard({ setActiveTab, setUserState }) {
         width: 'calc(100% - 280px)',
         minHeight: '100vh',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        position: 'relative',
+        zIndex: 1
       }}>
         {/* Header */}
         <header style={{
-          background: '#FFF',
+          background: 'rgba(255,255,255,0.85)',
+          backdropFilter: 'blur(10px)',
           padding: '0 28px',
           height: '72px',
-          borderBottom: '1px solid #E2E8F0',
+          borderBottom: '1px solid rgba(226, 232, 240, 0.5)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -848,7 +908,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             <button 
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)} 
               style={{
-                background: '#F1F5F9',
+                background: 'rgba(241, 245, 249, 0.8)',
                 border: 'none',
                 padding: '8px 10px',
                 borderRadius: '10px',
@@ -869,6 +929,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
               }}>
                 {activeDashTab === 'overview' && (lang === 'en' ? 'Dashboard Overview' : 'डैशबोर्ड अवलोकन')}
                 {activeDashTab === 'tasks' && (lang === 'en' ? 'My Assigned Tasks' : 'सौंपे गए कार्य')}
+                {activeDashTab === 'wallet' && (lang === 'en' ? 'My Wallet Balance & Points' : 'वॉलेट बैलेंस और पॉइंट्स')}
                 {activeDashTab === 'create_task' && (lang === 'en' ? 'Create & Assign Task' : 'नया कार्य बनाएं')}
                 {activeDashTab === 'network' && (lang === 'en' ? 'My Network' : 'मेरा नेटवर्क')}
                 {activeDashTab === 'media' && (lang === 'en' ? 'Media Gallery' : 'मीडिया गैलरी')}
@@ -880,13 +941,13 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              background: '#F8FAFC',
+              background: 'rgba(248, 250, 252, 0.8)',
               padding: '6px 16px',
               borderRadius: '30px',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              border: '1px solid #E2E8F0'
+              border: '1px solid rgba(226, 232, 240, 0.5)'
             }}>
               <div style={{
                 width: '8px',
@@ -937,10 +998,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                     key={idx}
                     className="stat-card"
                     style={{
-                      background: '#FFF',
+                      background: 'rgba(255,255,255,0.85)',
+                      backdropFilter: 'blur(10px)',
                       padding: '20px',
                       borderRadius: '18px',
-                      border: '1px solid #E2E8F0',
+                      border: '1px solid rgba(226, 232, 240, 0.5)',
                       boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
                       cursor: 'default',
                       transition: 'all 0.3s ease'
@@ -982,10 +1044,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
               {/* Referral Card */}
               <div style={{
-                background: '#FFF',
+                background: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(10px)',
                 borderRadius: '20px',
                 padding: '28px',
-                border: '1px solid #E2E8F0',
+                border: '1px solid rgba(226, 232, 240, 0.5)',
                 boxShadow: '0 2px 15px rgba(0,0,0,0.02)',
                 marginBottom: '28px'
               }}>
@@ -1038,10 +1101,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 </div>
                 <div style={{
                   marginTop: '16px',
-                  background: '#F8FAFC',
+                  background: 'rgba(248, 250, 252, 0.8)',
                   padding: '12px 16px',
                   borderRadius: '12px',
-                  border: '1px solid #E2E8F0',
+                  border: '1px solid rgba(226, 232, 240, 0.5)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -1074,10 +1137,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
               {/* Profile Details Card */}
               <div style={{
-                background: '#FFF',
+                background: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(10px)',
                 borderRadius: '20px',
                 padding: '28px',
-                border: '1px solid #E2E8F0',
+                border: '1px solid rgba(226, 232, 240, 0.5)',
                 boxShadow: '0 2px 15px rgba(0,0,0,0.02)',
                 marginBottom: '28px'
               }}>
@@ -1129,10 +1193,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                     { label: lang === 'en' ? 'UPI ID' : 'UPI आईडी', value: user.upi_id || 'N/A', icon: Zap },
                   ].map((item, idx) => (
                     <div key={idx} style={{
-                      background: '#F8FAFC',
+                      background: 'rgba(248, 250, 252, 0.8)',
                       padding: '12px 16px',
                       borderRadius: '12px',
-                      border: '1px solid #E2E8F0'
+                      border: '1px solid rgba(226, 232, 240, 0.5)'
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
                         <item.icon size={14} color="#94A3B8" />
@@ -1188,10 +1252,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                     key={idx}
                     onClick={item.action}
                     style={{
-                      background: '#FFF',
+                      background: 'rgba(255,255,255,0.85)',
+                      backdropFilter: 'blur(10px)',
                       padding: '20px',
                       borderRadius: '18px',
-                      border: '1px solid #E2E8F0',
+                      border: '1px solid rgba(226, 232, 240, 0.5)',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
@@ -1256,10 +1321,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   { label: lang === 'en' ? 'Completed / Approved' : 'पूर्ण / स्वीकृत', value: assignedTasks.filter(t => ['Approved', 'Completed'].includes(t.status)).length, color: '#16A34A', bg: '#F0FDF4' },
                 ].map((s, idx) => (
                   <div key={idx} style={{
-                    background: '#FFF',
+                    background: 'rgba(255,255,255,0.85)',
+                    backdropFilter: 'blur(10px)',
                     padding: '18px 20px',
                     borderRadius: '16px',
-                    border: '1px solid #E2E8F0',
+                    border: '1px solid rgba(226, 232, 240, 0.5)',
                     boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
                   }}>
                     <div style={{ fontSize: '1.6rem', fontWeight: 800, color: s.color }}>{s.value}</div>
@@ -1270,12 +1336,15 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
               {/* Tasks List Card */}
               <div style={{
-                background: '#FFF',
+                background: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(10px)',
                 borderRadius: '20px',
                 padding: '28px',
-                border: '1px solid #E2E8F0',
+                border: '1px solid rgba(226, 232, 240, 0.5)',
                 boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
               }}>
+                {/* ... rest of tasks content remains the same ... */}
+                {/* (tasks list content is unchanged, just the container has glass effect) */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -1295,8 +1364,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   <button
                     onClick={fetchUserTasks}
                     style={{
-                      background: '#F1F5F9',
-                      border: '1px solid #CBD5E1',
+                      background: 'rgba(241, 245, 249, 0.8)',
+                      border: '1px solid rgba(203, 213, 225, 0.5)',
                       padding: '8px 16px',
                       borderRadius: '30px',
                       fontSize: '0.8rem',
@@ -1316,9 +1385,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   <div style={{
                     textAlign: 'center',
                     padding: '60px 20px',
-                    background: '#F8FAFC',
+                    background: 'rgba(248, 250, 252, 0.8)',
                     borderRadius: '16px',
-                    border: '1px dashed #CBD5E1'
+                    border: '1px dashed rgba(203, 213, 225, 0.5)'
                   }}>
                     <CheckSquare size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
                     <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
@@ -1341,8 +1410,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         <div
                           key={t.id}
                           style={{
-                            background: '#F8FAFC',
-                            border: `1px solid ${isApproved ? '#86EFAC' : isRejected ? '#FCA5A5' : isSubmitted ? '#DDD6FE' : '#E2E8F0'}`,
+                            background: 'rgba(248, 250, 252, 0.8)',
+                            border: `1px solid ${isApproved ? '#86EFAC' : isRejected ? '#FCA5A5' : isSubmitted ? '#DDD6FE' : 'rgba(226, 232, 240, 0.5)'}`,
                             borderLeft: `5px solid ${isApproved ? '#16A34A' : isRejected ? '#DC2626' : isSubmitted ? '#7C3AED' : isInProgress ? '#2563EB' : '#2563EB'}`,
                             borderRadius: '16px',
                             padding: '20px 24px',
@@ -1414,7 +1483,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                             flexWrap: 'wrap',
                             gap: '12px',
                             paddingTop: '12px',
-                            borderTop: '1px solid #E2E8F0',
+                            borderTop: '1px solid rgba(226, 232, 240, 0.5)',
                             fontSize: '0.82rem',
                             color: '#64748B'
                           }}>
@@ -1528,19 +1597,157 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             </div>
           )}
 
-          {/* CREATE TASK TAB (Agency, NGO, Admin only) */}
-          {activeDashTab === 'create_task' && (
+          {/* WALLET TAB */}
+          {activeDashTab === 'wallet' && (
             <div className="fade-in">
+              <div style={{
+                background: 'linear-gradient(135deg, #0B2B4A 0%, #1A4B6D 100%)',
+                borderRadius: '24px',
+                padding: '32px 36px',
+                color: '#FFF',
+                marginBottom: '28px',
+                boxShadow: '0 15px 35px rgba(11, 43, 74, 0.18)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '20px'
+              }}>
+                <div>
+                  <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.75)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Wallet size={18} color="#38BDF8" /> {lang === 'en' ? 'My Wallet Balance' : 'मेरा वॉलेट बैलेंस'}
+                  </div>
+                  <div style={{ fontSize: '3rem', fontWeight: 800, color: '#38BDF8', marginTop: '6px' }}>
+                    {walletData.balance ?? 0} <span style={{ fontSize: '1.3rem', color: '#FFF' }}>pts</span>
+                  </div>
+                  <div style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.85)', marginTop: '6px' }}>
+                    {lang === 'en' ? 'Task reward points credited automatically upon Admin approval.' : 'एडमिन अनुमोदन पर कार्य पुरस्कार पॉइंट स्वचालित रूप से जमा किए जाते हैं।'}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.12)', padding: '16px 24px', borderRadius: '20px', backdropFilter: 'blur(8px)', minWidth: '140px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#4ADE80' }}>{walletData.total_credited ?? 0} pts</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.75)', marginTop: '3px', fontWeight: 600 }}>{lang === 'en' ? 'Total Credited' : 'कुल जमा'}</div>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.12)', padding: '16px 24px', borderRadius: '20px', backdropFilter: 'blur(8px)', minWidth: '140px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#F87171' }}>{walletData.total_debited ?? 0} pts</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.75)', marginTop: '3px', fontWeight: 600 }}>{lang === 'en' ? 'Total Debited' : 'कुल निकासी'}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Transactions Statement Card */}
               <div style={{
                 background: '#FFF',
                 borderRadius: '20px',
                 padding: '28px',
                 border: '1px solid #E2E8F0',
+                boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}>
+                      {lang === 'en' ? 'Wallet Transaction & Reward History' : 'वॉलेट लेन-देन और पुरस्कार विवरण'}
+                    </h4>
+                    <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748B' }}>
+                      {lang === 'en' ? 'Statement of earned task reward points and transactions.' : 'अर्जित कार्य पुरस्कार पॉइंट और लेन-देन का विवरण।'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={fetchWalletData}
+                    style={{
+                      background: '#F1F5F9',
+                      border: '1px solid #CBD5E1',
+                      padding: '8px 16px',
+                      borderRadius: '30px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      color: '#334155',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <RefreshCw size={14} /> {lang === 'en' ? 'Refresh Balance' : 'ताज़ा करें'}
+                  </button>
+                </div>
+
+                {(!walletData.transactions || walletData.transactions.length === 0) ? (
+                  <div style={{ textAlign: 'center', padding: '60px 20px', background: '#F8FAFC', borderRadius: '16px', border: '1px dashed #CBD5E1' }}>
+                    <Wallet size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
+                    <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
+                      {lang === 'en' ? 'No wallet transactions yet' : 'अभी तक कोई वॉलेट लेन-देन नहीं है'}
+                    </h4>
+                    <p style={{ color: '#64748B', fontSize: '0.9rem' }}>
+                      {lang === 'en' ? 'Complete assigned tasks to earn reward points!' : 'पुरस्कार पॉइंट कमाने के लिए सौंपे गए कार्य पूरे करें!'}
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {walletData.transactions.map((tx, idx) => (
+                      <div key={tx.id || idx} style={{
+                        background: '#F8FAFC',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '16px',
+                        padding: '16px 20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '12px'
+                      }}>
+                        <div>
+                          <h5 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 700, color: '#0F172A' }}>
+                            {tx.task_title || 'Task Reward Credit'}
+                          </h5>
+                          <p style={{ margin: '2px 0 0', fontSize: '0.82rem', color: '#64748B' }}>
+                            {tx.remarks || '-'}
+                          </p>
+                          <span style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '4px', display: 'inline-block' }}>
+                            {new Date(tx.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                          <span style={{
+                            background: tx.transaction_type === 'Credit' ? '#F0FDF4' : '#FEF2F2',
+                            color: tx.transaction_type === 'Credit' ? '#16A34A' : '#DC2626',
+                            padding: '4px 14px',
+                            borderRadius: '20px',
+                            fontSize: '0.78rem',
+                            fontWeight: 700,
+                            border: `1px solid ${tx.transaction_type === 'Credit' ? '#86EFAC' : '#FCA5A5'}`
+                          }}>
+                            {tx.transaction_type === 'Credit' ? '➕ Credit' : '➖ Debit'}
+                          </span>
+                          <span style={{ fontSize: '1.2rem', fontWeight: 800, color: tx.transaction_type === 'Credit' ? '#16A34A' : '#DC2626' }}>
+                            {tx.transaction_type === 'Credit' ? '+' : '-'}${tx.points} pts
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* CREATE TASK TAB (Agency, NGO, Admin only) */}
+          {activeDashTab === 'create_task' && (
+            <div className="fade-in">
+              <div style={{
+                background: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '20px',
+                padding: '28px',
+                border: '1px solid rgba(226, 232, 240, 0.5)',
                 boxShadow: '0 2px 15px rgba(0,0,0,0.02)',
                 maxWidth: '780px',
                 margin: '0 auto'
               }}>
-                <div style={{ marginBottom: '24px', borderBottom: '1px solid #E2E8F0', paddingBottom: '16px' }}>
+                <div style={{ marginBottom: '24px', borderBottom: '1px solid rgba(226, 232, 240, 0.5)', paddingBottom: '16px' }}>
                   <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <PlusCircle color="#2563EB" size={24} /> {lang === 'en' ? 'Create New Task & Assign to Role' : 'नया कार्य बनाएं और भूमिका को सौंपें'}
                   </h3>
@@ -1564,10 +1771,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         width: '100%',
                         padding: '12px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #CBD5E1',
+                        border: '1px solid rgba(203, 213, 225, 0.5)',
                         fontSize: '0.92rem',
                         outline: 'none',
-                        background: '#F8FAFC'
+                        background: 'rgba(248, 250, 252, 0.8)'
                       }}
                     />
                   </div>
@@ -1585,10 +1792,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         width: '100%',
                         padding: '12px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #CBD5E1',
+                        border: '1px solid rgba(203, 213, 225, 0.5)',
                         fontSize: '0.92rem',
                         outline: 'none',
-                        background: '#F8FAFC',
+                        background: 'rgba(248, 250, 252, 0.8)',
                         resize: 'vertical'
                       }}
                     />
@@ -1609,10 +1816,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         width: '100%',
                         padding: '12px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #CBD5E1',
+                        border: '1px solid rgba(203, 213, 225, 0.5)',
                         fontSize: '0.92rem',
                         outline: 'none',
-                        background: '#F8FAFC'
+                        background: 'rgba(248, 250, 252, 0.8)'
                       }}
                     />
                   </div>
@@ -1628,10 +1835,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         width: '100%',
                         padding: '12px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #CBD5E1',
+                        border: '1px solid rgba(203, 213, 225, 0.5)',
                         fontSize: '0.92rem',
                         outline: 'none',
-                        background: '#F8FAFC'
+                        background: 'rgba(248, 250, 252, 0.8)'
                       }}
                     >
                       <option value="Low">🟢 Low Priority</option>
@@ -1654,10 +1861,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         width: '100%',
                         padding: '12px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #CBD5E1',
+                        border: '1px solid rgba(203, 213, 225, 0.5)',
                         fontSize: '0.92rem',
                         outline: 'none',
-                        background: '#F8FAFC'
+                        background: 'rgba(248, 250, 252, 0.8)'
                       }}
                     />
                   </div>
@@ -1675,10 +1882,10 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         width: '100%',
                         padding: '12px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #CBD5E1',
+                        border: '1px solid rgba(203, 213, 225, 0.5)',
                         fontSize: '0.92rem',
                         outline: 'none',
-                        background: '#F8FAFC'
+                        background: 'rgba(248, 250, 252, 0.8)'
                       }}
                     />
                   </div>
@@ -1746,8 +1953,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   <button
                     onClick={() => setSelectedMember(null)}
                     style={{
-                      background: '#FFF',
-                      border: '1px solid #E2E8F0',
+                      background: 'rgba(255,255,255,0.85)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(226, 232, 240, 0.5)',
                       padding: '10px 24px',
                       borderRadius: '30px',
                       fontWeight: 700,
@@ -1768,10 +1976,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                 </div>
               ) : (
                 <div style={{
-                  background: '#FFF',
+                  background: 'rgba(255,255,255,0.85)',
+                  backdropFilter: 'blur(10px)',
                   borderRadius: '20px',
                   padding: '28px',
-                  border: '1px solid #E2E8F0',
+                  border: '1px solid rgba(226, 232, 240, 0.5)',
                   boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
                 }}>
                   <div style={{
@@ -1819,9 +2028,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         width: '100%',
                         padding: '12px 16px 12px 44px',
                         borderRadius: '14px',
-                        border: '1px solid #E2E8F0',
+                        border: '1px solid rgba(226, 232, 240, 0.5)',
                         fontSize: '0.9rem',
-                        background: '#F8FAFC',
+                        background: 'rgba(248, 250, 252, 0.8)',
                         color: '#1E293B',
                         outline: 'none',
                         transition: 'all 0.2s ease'
@@ -1846,9 +2055,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         <div style={{
                           textAlign: 'center',
                           padding: '60px 20px',
-                          background: '#F8FAFC',
+                          background: 'rgba(248, 250, 252, 0.8)',
                           borderRadius: '16px',
-                          border: '1px dashed #CBD5E1'
+                          border: '1px dashed rgba(203, 213, 225, 0.5)'
                         }}>
                           <Users size={48} color="#CBD5E1" style={{ marginBottom: '12px' }} />
                           <h4 style={{ fontSize: '1.1rem', color: '#334155', margin: '0 0 6px', fontWeight: 700 }}>
@@ -1890,8 +2099,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
                           <thead>
                             <tr style={{
-                              background: '#F8FAFC',
-                              borderBottom: '2px solid #E2E8F0',
+                              background: 'rgba(248, 250, 252, 0.8)',
+                              borderBottom: '2px solid rgba(226, 232, 240, 0.5)',
                               color: '#64748B',
                               fontSize: '0.75rem',
                               textTransform: 'uppercase',
@@ -1913,7 +2122,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                                 <tr 
                                   key={m.id || idx} 
                                   style={{
-                                    borderBottom: '1px solid #F1F5F9',
+                                    borderBottom: '1px solid rgba(241, 245, 249, 0.8)',
                                     cursor: 'pointer',
                                     transition: 'background 0.2s'
                                   }}
@@ -1996,10 +2205,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
             <div className="fade-in">
               {/* Upload */}
               <div style={{
-                background: '#FFF',
+                background: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(10px)',
                 borderRadius: '20px',
                 padding: '28px',
-                border: '1px solid #E2E8F0',
+                border: '1px solid rgba(226, 232, 240, 0.5)',
                 boxShadow: '0 2px 15px rgba(0,0,0,0.02)',
                 marginBottom: '28px'
               }}>
@@ -2025,8 +2235,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       width: '100%',
                       padding: '12px 16px',
                       borderRadius: '12px',
-                      border: '1px solid #E2E8F0',
-                      background: '#FFF',
+                      border: '1px solid rgba(226, 232, 240, 0.5)',
+                      background: 'rgba(255,255,255,0.8)',
                       color: '#1E293B',
                       outline: 'none',
                       fontSize: '0.9rem',
@@ -2041,8 +2251,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       width: '100%',
                       padding: '12px',
                       borderRadius: '12px',
-                      border: '2px dashed #CBD5E1',
-                      background: '#F8FAFC',
+                      border: '2px dashed rgba(203, 213, 225, 0.5)',
+                      background: 'rgba(248, 250, 252, 0.8)',
                       color: '#64748B',
                       cursor: 'pointer',
                       fontSize: '0.85rem'
@@ -2076,10 +2286,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
               {/* Gallery */}
               <div style={{
-                background: '#FFF',
+                background: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(10px)',
                 borderRadius: '20px',
                 padding: '28px',
-                border: '1px solid #E2E8F0',
+                border: '1px solid rgba(226, 232, 240, 0.5)',
                 boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
               }}>
                 <div style={{
@@ -2095,7 +2306,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       {lang === 'en' ? 'My Gallery' : 'मेरी गैलरी'} ({filteredMedia.length})
                     </h4>
                   </div>
-                  <div style={{ display: 'flex', gap: '8px', background: '#F1F5F9', padding: '4px', borderRadius: '12px' }}>
+                  <div style={{ display: 'flex', gap: '8px', background: 'rgba(241, 245, 249, 0.8)', padding: '4px', borderRadius: '12px' }}>
                     {['all', 'image', 'video'].map((filter) => (
                       <button
                         key={filter}
@@ -2125,9 +2336,9 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   <div style={{
                     textAlign: 'center',
                     padding: '60px 20px',
-                    background: '#F8FAFC',
+                    background: 'rgba(248, 250, 252, 0.8)',
                     borderRadius: '16px',
-                    border: '1px dashed #CBD5E1'
+                    border: '1px dashed rgba(203, 213, 225, 0.5)'
                   }}>
                     <Image size={44} color="#CBD5E1" style={{ marginBottom: '12px' }} />
                     <p style={{ margin: 0, fontWeight: 600, fontSize: '0.95rem', color: '#94A3B8' }}>
@@ -2153,8 +2364,8 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           style={{
                             borderRadius: '16px',
                             overflow: 'hidden',
-                            border: '1px solid #E2E8F0',
-                            background: '#F8FAFC',
+                            border: '1px solid rgba(226, 232, 240, 0.5)',
+                            background: 'rgba(248, 250, 252, 0.8)',
                             position: 'relative',
                             boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
                             transition: 'all 0.3s ease'
@@ -2241,10 +2452,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
           {activeDashTab === 'profile' && (
             <div className="fade-in">
               <div style={{
-                background: '#FFF',
+                background: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(10px)',
                 borderRadius: '20px',
                 padding: '30px',
-                border: '1px solid #E2E8F0',
+                border: '1px solid rgba(226, 232, 240, 0.5)',
                 boxShadow: '0 2px 15px rgba(0,0,0,0.02)'
               }}>
                 <div style={{
@@ -2284,7 +2496,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
 
                 <form onSubmit={handleSave} style={{ display: 'grid', gap: '20px' }}>
                   {/* 1. Personal Information */}
-                  <div style={{ background: '#F8FAFC', padding: '18px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                  <div style={{ background: 'rgba(248, 250, 252, 0.8)', padding: '18px', borderRadius: '14px', border: '1px solid rgba(226, 232, 240, 0.5)' }}>
                     <h5 style={{ margin: '0 0 14px', fontSize: '0.9rem', fontWeight: 800, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <User size={16} color="#2563EB" /> {lang === 'en' ? 'Personal Information' : 'व्यक्तिगत जानकारी'}
                     </h5>
@@ -2297,7 +2509,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           type="text"
                           value={formData.name || ''}
                           onChange={(e) => setFormData({...formData, name: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                       <div>
@@ -2308,7 +2520,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           type="text"
                           value={formData.phone || ''}
                           onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                       <div>
@@ -2319,14 +2531,14 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           type="date"
                           value={formData.dob || ''}
                           onChange={(e) => setFormData({...formData, dob: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* 2. Address & Location */}
-                  <div style={{ background: '#F8FAFC', padding: '18px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                  <div style={{ background: 'rgba(248, 250, 252, 0.8)', padding: '18px', borderRadius: '14px', border: '1px solid rgba(226, 232, 240, 0.5)' }}>
                     <h5 style={{ margin: '0 0 14px', fontSize: '0.9rem', fontWeight: 800, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <MapPin size={16} color="#2563EB" /> {lang === 'en' ? 'Address & Location' : 'पता और स्थान'}
                     </h5>
@@ -2339,7 +2551,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           type="text"
                           value={formData.address || ''}
                           onChange={(e) => setFormData({...formData, address: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                       <div>
@@ -2350,7 +2562,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           type="text"
                           value={formData.city || ''}
                           onChange={(e) => setFormData({...formData, city: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                       <div>
@@ -2361,7 +2573,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           type="text"
                           value={formData.state || ''}
                           onChange={(e) => setFormData({...formData, state: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                       <div>
@@ -2372,14 +2584,14 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           type="text"
                           value={formData.pincode || ''}
                           onChange={(e) => setFormData({...formData, pincode: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* 3. Bank & Payment Details */}
-                  <div style={{ background: '#F8FAFC', padding: '18px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+                  <div style={{ background: 'rgba(248, 250, 252, 0.8)', padding: '18px', borderRadius: '14px', border: '1px solid rgba(226, 232, 240, 0.5)' }}>
                     <h5 style={{ margin: '0 0 14px', fontSize: '0.9rem', fontWeight: 800, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <Wallet size={16} color="#2563EB" /> {lang === 'en' ? 'Bank & Payment Details' : 'बैंक एवं भुगतान विवरण'}
                     </h5>
@@ -2393,7 +2605,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           placeholder="e.g. State Bank of India"
                           value={formData.bank_name || ''}
                           onChange={(e) => setFormData({...formData, bank_name: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                       <div>
@@ -2405,7 +2617,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           placeholder="e.g. 123456789012"
                           value={formData.account_no || ''}
                           onChange={(e) => setFormData({...formData, account_no: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                       <div>
@@ -2417,7 +2629,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           placeholder="e.g. SBIN0001234"
                           value={formData.ifsc_code || ''}
                           onChange={(e) => setFormData({...formData, ifsc_code: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                       <div>
@@ -2429,7 +2641,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                           placeholder="e.g. name@upi"
                           value={formData.upi_id || ''}
                           onChange={(e) => setFormData({...formData, upi_id: e.target.value})}
-                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
+                          style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid rgba(203, 213, 225, 0.5)', background: '#FFF', color: '#1E293B', outline: 'none', fontSize: '0.9rem' }}
                         />
                       </div>
                     </div>
