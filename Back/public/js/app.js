@@ -699,34 +699,35 @@ async function loadOverviewStats() {
             fetch(`${API_URL}/enquiries`, { headers: tokenHeader }).catch(() => null)
         ]);
 
+        let uData = [], nData = [], eData = [], gData = [], bData = [], enqData = [];
         if (uRes && uRes.ok) {
-            const uData = await uRes.json();
+            uData = await uRes.json().catch(() => []);
             const countEl = document.getElementById('countUsers');
             if (countEl) countEl.textContent = uData.length || 0;
         }
         if (nRes && nRes.ok) {
-            const nData = await nRes.json();
+            nData = await nRes.json().catch(() => []);
             const countEl = document.getElementById('countNews');
             if (countEl) countEl.textContent = nData.length || 0;
         }
         if (eRes && eRes.ok) {
-            const eData = await eRes.json();
+            eData = await eRes.json().catch(() => []);
             const countEl = document.getElementById('countEvents');
             if (countEl) countEl.textContent = eData.length || 0;
         }
         if (gRes && gRes.ok) {
-            const gData = await gRes.json();
+            gData = await gRes.json().catch(() => []);
             const countEl = document.getElementById('countGallery');
             if (countEl) countEl.textContent = gData.length || 0;
         }
         if (bRes && bRes.ok) {
-            const bData = await bRes.json();
+            bData = await bRes.json().catch(() => []);
             const countEl = document.getElementById('countBlogs');
             if (countEl) countEl.textContent = bData.length || 0;
         }
         if (enqRes && enqRes.ok) {
-            const enqData = await enqRes.json();
-            const pendingCount = enqData.filter(item => item.status === 'Pending').length;
+            enqData = await enqRes.json().catch(() => []);
+            const pendingCount = Array.isArray(enqData) ? enqData.filter(item => item.status === 'Pending').length : 0;
             const countEl = document.getElementById('countEnquiries');
             if (countEl) countEl.textContent = pendingCount;
             const closedStatusVal = document.getElementById('closedStatusVal');
@@ -3749,7 +3750,8 @@ async function approveTaskAssignment(assignmentId) {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: JSON.stringify({})
         });
         
         let data;

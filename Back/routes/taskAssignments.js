@@ -264,7 +264,7 @@ async function recordWalletCredit(userId, taskId, points, taskTitle) {
 // ─── PATCH approve assignment (Admin only) ───────────────────────────────────
 // Status flow: Submitted -> Approved
 router.patch('/:id/approve', verifyToken, isAdmin, async (req, res) => {
-  const { earned_points } = req.body;
+  const earned_points = (req.body && req.body.earned_points != null) ? req.body.earned_points : undefined;
 
   try {
     const [rows] = await db.query(
