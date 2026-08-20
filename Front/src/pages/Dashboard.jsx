@@ -62,6 +62,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   useEffect(() => {
     fetchProfile();
     fetchUserTasks();
+    fetchWalletData();
   }, []);
 
   useEffect(() => {
@@ -539,12 +540,11 @@ export default function Dashboard({ setActiveTab, setUserState }) {
   });
 
   const statsCards = [
-    { icon: CheckSquare, label: lang === 'en' ? 'Tasks' : 'कार्य', value: userStats.taskCount, color: '#3B82F6', bg: '#EFF6FF' },
-    { icon: Users, label: lang === 'en' ? 'Downline' : 'डाउनलाइन', value: userStats.usersCount, color: '#10B981', bg: '#ECFDF5' },
-    { icon: Award, label: lang === 'en' ? 'Members' : 'सदस्य', value: userStats.membersCount, color: '#F59E0B', bg: '#FEF3C7' },
-    { icon: Film, label: lang === 'en' ? 'Media Posts' : 'मीडिया', value: userMedia.length, color: '#8B5CF6', bg: '#F5F3FF' },
-    { icon: Image, label: lang === 'en' ? 'Photos' : 'फ़ोटो', value: photosCount, color: '#EF4444', bg: '#FEE2E2' },
-    { icon: Video, label: lang === 'en' ? 'Videos' : 'वीडियो', value: videosCount, color: '#EC4899', bg: '#FCE7F3' },
+    { icon: Wallet, label: lang === 'en' ? 'Wallet Balance' : 'वॉलेट बैलेंस', value: `${walletData.balance ?? 0} Pts`, color: '#0284C7', bg: '#E0F2FE', tab: 'wallet' },
+    { icon: CheckSquare, label: lang === 'en' ? 'Tasks' : 'कार्य', value: userStats.taskCount, color: '#3B82F6', bg: '#EFF6FF', tab: 'tasks' },
+    { icon: Users, label: lang === 'en' ? 'Downline' : 'डाउनलाइन', value: userStats.usersCount, color: '#10B981', bg: '#ECFDF5', tab: 'network' },
+    { icon: Award, label: lang === 'en' ? 'Members' : 'सदस्य', value: userStats.membersCount, color: '#F59E0B', bg: '#FEF3C7', tab: 'network' },
+    { icon: Film, label: lang === 'en' ? 'Media Posts' : 'मीडिया', value: userMedia.length, color: '#8B5CF6', bg: '#F5F3FF', tab: 'media' },
   ];
 
   return (
@@ -997,6 +997,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                   <div
                     key={idx}
                     className="stat-card"
+                    onClick={() => stat.tab && setActiveDashTab(stat.tab)}
                     style={{
                       background: 'rgba(255,255,255,0.85)',
                       backdropFilter: 'blur(10px)',
@@ -1004,7 +1005,7 @@ export default function Dashboard({ setActiveTab, setUserState }) {
                       borderRadius: '18px',
                       border: '1px solid rgba(226, 232, 240, 0.5)',
                       boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
-                      cursor: 'default',
+                      cursor: stat.tab ? 'pointer' : 'default',
                       transition: 'all 0.3s ease'
                     }}
                   >
